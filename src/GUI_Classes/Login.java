@@ -19,11 +19,11 @@ public class Login {
         try{
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
             Statement statement = connection.createStatement();
-            String queryString = "SELECT compUsername, password FROM userdata"; //get username and password from database
+            String queryString = "SELECT username, password FROM userdata"; //get username and password from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()){ //Checks for username and password
-                String compUser = resultSet.getString("compUsername");
+                String compUser = resultSet.getString("username");
                 String password = resultSet.getString("password");
                 if(txtUsername.getText().equals(compUser) && txtPassword.getText().equals(password)){
                     System.out.println("Successful login");
