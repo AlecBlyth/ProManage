@@ -15,7 +15,7 @@ public class Login {
     public Label lblWarning;
 
     public void serverLogin(){
-        boolean check = false;
+        boolean check = false; //Successful login checker
         try{
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
             Statement statement = connection.createStatement();
