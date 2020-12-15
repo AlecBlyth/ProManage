@@ -14,23 +14,22 @@ public class ProManage extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        splashScreen splash = new splashScreen(3500);
-        splash.showIntro();
-        Parent root = FXMLLoader.load(getClass().getResource("../FXMLs/login.fxml"));
+        splashScreen splash = new splashScreen(3500); //Sets duration of splash screen
+        splash.showIntro(); //Show custom intro splash screen
+        Parent root = FXMLLoader.load(getClass().getResource("../FXMLs/login.fxml")); //Loads Login FXML
 
         primaryStage.initStyle(StageStyle.UNDECORATED); //Removes default app controls
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        root.setOnMouseDragged(event -> {
+        root.setOnMouseDragged(event -> { //Allows user to drag screen
             primaryStage.setX(event.getScreenX() - xOffset);
             primaryStage.setY(event.getScreenY() - yOffset);
         });
 
-        primaryStage.setScene(new Scene(root, 1280, 680));
+        primaryStage.setScene(new Scene(root, 1280, 680)); //This should be adjusted to user resolution (Was tested on a 3440x1440p screen)
         primaryStage.show();
-        System.out.println("test");
     }
 
 
