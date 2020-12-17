@@ -29,7 +29,7 @@ public class Login {
         System.exit(0); //Exits on button press
     }
 
-    public void login(ActionEvent actionEvent) {
+    public void login(ActionEvent login) {
         boolean check = false; //Successful login checker
         try{
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
@@ -45,20 +45,55 @@ public class Login {
                     check=true;
                     if(userType.equals("ADMIN")){ //Checks for usertype for GUI display and functionality
                         System.out.println("Logging in as ADMIN");
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/adminMenu.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/adminMenu.fxml")); //Display admin menu
                         AnchorPane root = loader.load();
-                        root.setOnMousePressed(event -> {
+                        root.setOnMousePressed(event -> { //Allow to move app around
                             xOffset = event.getSceneX();
                             yOffset = event.getSceneY();
                         });
                         Scene menuViewScene = new Scene(root);
-                        //Stage window = (Stage) ((Node) login().getSource());)
+                        Stage window = (Stage) ((Node) login.getSource()).getScene().getWindow();
+                        root.setOnMouseDragged(event -> {
+                            window.setX((event.getScreenX() - xOffset));
+                            window.setY((event.getScreenY() - yOffset));
+                        });
+                        window.setScene(menuViewScene); //Show new scene
+                        window.show();
                     }
                     if(userType.equals("USER")){
                         System.out.println("USER Login");
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/userMenu.fxml")); //Display admin menu
+                        AnchorPane root = loader.load();
+                        root.setOnMousePressed(event -> { //Allow to move app around
+                            xOffset = event.getSceneX();
+                            yOffset = event.getSceneY();
+                        });
+                        Scene menuViewScene = new Scene(root);
+                        Stage window = (Stage) ((Node) login.getSource()).getScene().getWindow();
+                        root.setOnMouseDragged(event -> {
+                            window.setX((event.getScreenX() - xOffset));
+                            window.setY((event.getScreenY() - yOffset));
+                        });
+                        window.setScene(menuViewScene); //Show new scene
+                        window.show();
+
                     }
                     if(userType.equals("CLIENT")){
                         System.out.println("CLIENT Login");
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/clientMenu.fxml")); //Display admin menu
+                        AnchorPane root = loader.load();
+                        root.setOnMousePressed(event -> { //Allow to move app around
+                            xOffset = event.getSceneX();
+                            yOffset = event.getSceneY();
+                        });
+                        Scene menuViewScene = new Scene(root);
+                        Stage window = (Stage) ((Node) login.getSource()).getScene().getWindow();
+                        root.setOnMouseDragged(event -> {
+                            window.setX((event.getScreenX() - xOffset));
+                            window.setY((event.getScreenY() - yOffset));
+                        });
+                        window.setScene(menuViewScene); //Show new scene
+                        window.show();
                     }
                 }
                 if (!check) {
