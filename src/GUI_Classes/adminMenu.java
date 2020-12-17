@@ -3,10 +3,16 @@ package GUI_Classes;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +28,10 @@ public class adminMenu {
 
     private int minute;
     private int hour;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
+
 
     Random rand = new Random();
 
@@ -81,14 +91,21 @@ public class adminMenu {
         tip.play();
     }
 
-    public void exit(ActionEvent actionEvent) { //Exit functionality
-        System.exit(0);
-    }
-
-    public void logOut(ActionEvent actionEvent) {
-    }
-
-    public void kanban(ActionEvent actionEvent) {
+    public void kanban(ActionEvent kanban) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanbanAdmin.fxml")); //Display admin menu
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> { //Allow to move app around
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene); //Show new scene
+        window.show();
     }
 
     public void tasks(ActionEvent actionEvent) {
@@ -106,5 +123,24 @@ public class adminMenu {
     public void requests(ActionEvent actionEvent) {
     }
 
+    public void exit(ActionEvent actionEvent) { //Exit functionality
+        System.exit(0);
+    }
 
+    public void logOut(ActionEvent logout) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml")); //Display admin menu
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> { //Allow to move app around
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene); //Show new scene
+        window.show();
+    }
 }
