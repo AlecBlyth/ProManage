@@ -4,9 +4,17 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.IOException;
 import java.sql.*;
+
 
 public class Login {
 
@@ -14,7 +22,14 @@ public class Login {
     public JFXPasswordField txtPassword;
     public Label lblWarning;
 
-    public void serverLogin(){
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    public void exit(){
+        System.exit(0); //Exits on button press
+    }
+
+    public void login(ActionEvent actionEvent) {
         boolean check = false; //Successful login checker
         try{
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
@@ -27,10 +42,17 @@ public class Login {
                 String password = resultSet.getString("password");
                 String userType = resultSet.getString("usertype");
                 if(txtUsername.getText().equals(compUser) && txtPassword.getText().equals(password)){
-                    System.out.println("Successful login");
                     check=true;
                     if(userType.equals("ADMIN")){ //Checks for usertype for GUI display and functionality
-                        System.out.println("ADMIN Login");
+                        System.out.println("Logging in as ADMIN");
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/adminMenu.fxml"));
+                        AnchorPane root = loader.load();
+                        root.setOnMousePressed(event -> {
+                            xOffset = event.getSceneX();
+                            yOffset = event.getSceneY();
+                        });
+                        Scene menuViewScene = new Scene(root);
+                        //Stage window = (Stage) ((Node) login().getSource());)
                     }
                     if(userType.equals("USER")){
                         System.out.println("USER Login");
@@ -49,16 +71,8 @@ public class Login {
                     }
                 }
             }
-        } catch (SQLException throwables) {
+        } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }
-    } //Login method
-
-    public void exit(){
-        System.exit(0); //Exits on button press
-    }
-
-    public void login(ActionEvent actionEvent) {
-        serverLogin(); //This is just jumping through hoops really.
     }
 }
