@@ -14,6 +14,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -117,10 +118,13 @@ public class kanbanUser {
 
     private JFXButton initButton(String colour,String taskname, String taskdesc){
         String fontcol = " ; -fx-text-fill: white;";
-        JFXButton button = new JFXButton("");
-        button.setStyle("-fx-background-color: " + colour  + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0");
-        button.setMinWidth(202.0);
-        button.setMinHeight(82.0);
+        JFXButton button = new JFXButton(taskname + "\n" +taskdesc);
+        button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;");
+        button.setFont(Font.font("Segoe UI"));
+
+        button.setPrefWidth(202);
+        button.setPrefHeight(82);
+        button.setWrapText(true);
 
         button.setOnDragDetected(e-> {
             Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
@@ -151,8 +155,6 @@ public class kanbanUser {
             }
         });
     }
-
-
 
     public void exit(ActionEvent actionEvent) {
         System.exit(0);

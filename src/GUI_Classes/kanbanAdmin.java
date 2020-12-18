@@ -12,6 +12,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -45,30 +46,31 @@ public class kanbanAdmin {
         paneDrag(paneFive);
 
         try {
-
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
             Statement statement = connection.createStatement();
-            String queryString = "SELECT section, taskhex FROM tasks"; //get tasks from database
+            String queryString = "SELECT section, taskhex, taskname, taskdesc FROM tasks"; //get tasks from database
             ResultSet resultSet = statement.executeQuery(queryString);
             while(resultSet.next()) {
                 String colour = resultSet.getString("taskhex");
+                String name = resultSet.getString("taskname");
+                String desc = resultSet.getString("taskdesc");
                 int paneID = resultSet.getInt("section");
 
                 switch(paneID){
                     case 1:
-                        paneOne.getChildren().add(initButton(colour));
+                        paneOne.getChildren().add(initButton(colour, name, desc));
                         break;
                     case 2:
-                        paneTwo.getChildren().add(initButton(colour));
+                        paneTwo.getChildren().add(initButton(colour, name, desc));
                         break;
                     case 3:
-                        paneThree.getChildren().add(initButton(colour));
+                        paneThree.getChildren().add(initButton(colour, name, desc));
                         break;
                     case 4:
-                        paneFour.getChildren().add(initButton(colour));
+                        paneFour.getChildren().add(initButton(colour, name, desc));
                         break;
                     case 5:
-                        paneFive.getChildren().add(initButton(colour));
+                        paneFive.getChildren().add(initButton(colour, name, desc));
                         break;
                 }
             }
@@ -98,15 +100,17 @@ public class kanbanAdmin {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
-    private JFXButton initButton(String colour){
+    private JFXButton initButton(String colour,String taskname, String taskdesc){
         String fontcol = " ; -fx-text-fill: white;";
-        JFXButton button = new JFXButton("TEST");
-        button.setStyle("-fx-background-color: " + colour  + fontcol + "-fx-font-weight: bold;");
-        button.setMinWidth(120);
+        JFXButton button = new JFXButton(taskname + "\n" +taskdesc);
+        button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;");
+        button.setFont(Font.font("Segoe UI"));
+
+        button.setPrefWidth(202);
+        button.setPrefHeight(82);
+        button.setWrapText(true);
 
         button.setOnDragDetected(e-> {
             Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
