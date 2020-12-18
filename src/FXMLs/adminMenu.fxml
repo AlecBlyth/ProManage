@@ -52,22 +52,22 @@
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#teamChat" prefHeight="74.0" prefWidth="236.0" text=" Team Chat" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#teamChat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#userProfile" prefHeight="74.0" prefWidth="236.0" text=" My Profile" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#userProfile" prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0" prefWidth="236.0" text=" Members" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0" prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#requests" prefHeight="74.0" prefWidth="236.0" text=" Requests" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#requests" prefHeight="74.0" prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
