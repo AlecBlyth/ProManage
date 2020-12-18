@@ -1,14 +1,25 @@
 package GUI_Classes;
 
+import com.jfoenix.controls.JFXButton;
 import eu.hansolo.medusa.Gauge;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.swing.*;
+import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -23,6 +34,9 @@ public class clientProgressOverall {
 
     private int minute;
     private int hour;
+
+    int sum = 0;
+    int compeleteTotal;
 
     public static String getFormattedDate(Date date){
         Calendar cal = Calendar.getInstance();
@@ -45,6 +59,8 @@ public class clientProgressOverall {
 
     public void initialize(){
 
+        ArrayList<Integer> TaskProgress = new ArrayList<>();
+
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> { //Updates clock every second and changes label according to time
             Calendar cal = Calendar.getInstance();
             minute = cal.get(Calendar.MINUTE);
@@ -59,10 +75,34 @@ public class clientProgressOverall {
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
 
-        gaugeProgress.setValue(100);
+        gaugeProgress.barColorProperty().setValue(Color.rgb(45,121,255)); //Changes colour of value bar
+        gaugeProgress.valueColorProperty().setValue(Color.WHITE); //Changes font colour
 
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT taskprogress FROM tasks"; //get tasks from database
+            ResultSet resultSet = statement.executeQuery(queryString);
+
+            while (resultSet.next()) { //Checks for username and password
+                int taskprog = resultSet.getInt("taskprogress");
+                TaskProgress.add(taskprog);
+                compeleteTotal = compeleteTotal+1;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        for(Integer tempSum : TaskProgress){ //Calculates average percentage
+            sum+= tempSum;
+        }
+        compeleteTotal = compeleteTotal * 100;
+        double currentProgress = sum;
+        double totalPercentage = currentProgress / compeleteTotal * 100;
+        gaugeProgress.setValue(totalPercentage);
 
     }
+
     public void progress(ActionEvent actionEvent) {
         //Do nothing since already on stage.
     }
@@ -79,9 +119,24 @@ public class clientProgressOverall {
     public void btnViewmore(ActionEvent actionEvent) {
     }
 
-    public void logOut(ActionEvent actionEvent) {
+    public void logOut(ActionEvent logout) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml")); //Display admin menu
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> { //Allow to move app around
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene); //Show new scene
+        window.show();
     }
 
     public void exit(ActionEvent actionEvent) {
+        System.exit(0);
     }
 }
