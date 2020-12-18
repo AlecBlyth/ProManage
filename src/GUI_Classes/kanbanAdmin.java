@@ -1,13 +1,17 @@
 package GUI_Classes;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,18 +21,62 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 
 public class kanbanAdmin {
 
+    private final DataFormat buttonFormat = new DataFormat(" ");
     public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked;
     public Label lblDate;
     public Label lblTime;
 
+
     private double xOffset = 0;
     private double yOffset = 0;
     @FXML private FlowPane paneOne, paneTwo, paneThree, paneFour, paneFive;
+    @FXML private JFXButton draggingButton;
 
-    public void initialize(){
+    public void initialize() {
+
+        paneDrag(paneOne);
+        paneDrag(paneTwo);
+        paneDrag(paneThree);
+        paneDrag(paneFour);
+        paneDrag(paneFive);
+
+        try {
+
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL dummy database |NOTE This is prone to SQL Injection
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT section, taskhex FROM tasks"; //get tasks from database
+            ResultSet resultSet = statement.executeQuery(queryString);
+            while(resultSet.next()) {
+                String colour = resultSet.getString("taskhex");
+                int paneID = resultSet.getInt("section");
+
+                switch(paneID){
+                    case 1:
+                        paneOne.getChildren().add(initButton(colour));
+                        break;
+                    case 2:
+                        paneTwo.getChildren().add(initButton(colour));
+                        break;
+                    case 3:
+                        paneThree.getChildren().add(initButton(colour));
+                        break;
+                    case 4:
+                        paneFour.getChildren().add(initButton(colour));
+                        break;
+                    case 5:
+                        paneFive.getChildren().add(initButton(colour));
+                        break;
+                }
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
 
         JSONParser parser = new JSONParser();
         try{
@@ -52,6 +100,42 @@ public class kanbanAdmin {
         }
 
 
+    }
+
+    private JFXButton initButton(String colour){
+        String fontcol = " ; -fx-text-fill: white;";
+        JFXButton button = new JFXButton("TEST");
+        button.setStyle("-fx-background-color: " + colour  + fontcol + "-fx-font-weight: bold;");
+        button.setMinWidth(120);
+
+        button.setOnDragDetected(e-> {
+            Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
+            db.setDragView(button.snapshot(null, null));
+            ClipboardContent cc = new ClipboardContent();
+            cc.put(buttonFormat, "button");
+            db.setContent(cc);
+            draggingButton = button;
+        });
+        button.setOnDragDone(e -> draggingButton = null);
+        return button;
+    }
+
+    private void paneDrag(Pane pane){
+        pane.setOnDragOver(e -> {
+            Dragboard db = e.getDragboard();
+            if(db.hasContent(buttonFormat) && draggingButton != null && draggingButton.getParent() != pane){
+                e.acceptTransferModes(TransferMode.MOVE);
+            }
+        });
+
+        pane.setOnDragDropped(e -> {
+            Dragboard db = e.getDragboard();
+            if(db.hasContent(buttonFormat)){
+                ((Pane)draggingButton.getParent()).getChildren().remove(draggingButton);
+                pane.getChildren().add(draggingButton);
+                e.setDropCompleted(true);
+                }
+            });
     }
 
 

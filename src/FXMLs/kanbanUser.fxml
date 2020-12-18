@@ -173,7 +173,7 @@
                               </JFXButton>
                            </children>
                         </FlowPane>
-                        <FlowPane fx:id="paneFive" prefWidth="190.0" style="-fx-background-color: white;" vgap="3.0">
+                        <FlowPane fx:id="paneFive" alignment="TOP_CENTER" prefWidth="190.0" style="-fx-background-color: white;" vgap="3.0">
                            <children>
                               <JFXButton prefHeight="82.0" prefWidth="202.0" style="-fx-background-color: #c00000; -fx-background-radius: 0;" text="Task: Ongoing Example                             This is an example task, this text represents The amount of text that could be put on task object with relation of the GUI " textFill="WHITE" textOverrun="CLIP" wrapText="true">
                                  <font>
