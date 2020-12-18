@@ -60,7 +60,7 @@ public class adminMenu {
 
         tips.add("Tip: Click on Kanban to begin managing your project");
         tips.add("Tip: Click on Tasks to begin manage/edit tasks");
-        tips.add("Tip: Click on Team Chat to communicate with team");
+        tips.add("Tip: Click on Chat to communicate with team");
         tips.add("Tip: Click on My Profile to edit your profile");
         tips.add("Tip: Click on Members to view/edit members");
         tips.add("Tip: Click on Client to see project requests");

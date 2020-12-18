@@ -48,7 +48,7 @@ public class userMenu {
 
         tips.add("Tip: Click on Kanban to begin managing your project");
         tips.add("Tip: Click on Tasks to begin manage/edit tasks");
-        tips.add("Tip: Click on Team Chat to communicate with team");
+        tips.add("Tip: Click on Chat to communicate with team");
         tips.add("Tip: Click on My Profile to edit your profile");
 
 

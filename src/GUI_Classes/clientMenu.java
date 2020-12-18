@@ -84,7 +84,21 @@ public class clientMenu {
         tip.play();
 
     }
-    public void progress(ActionEvent actionEvent) {
+    public void progress(ActionEvent progress) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clientProgress.fxml")); //Display admin menu
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> { //Allow to move app around
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) progress.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene); //Show new scene
+        window.show();
     }
 
     public void chat(ActionEvent actionEvent) {
