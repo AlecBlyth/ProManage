@@ -52,7 +52,7 @@ public class clientMenu {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     } //Date formatter for date label Label lblTips;
 
-    public clientMenu(){
+    public void initialize(){
         ArrayList<String> tips = new ArrayList<String>();
 
         tips.add("Tip: Click on Progress view your project's progress");
@@ -85,7 +85,7 @@ public class clientMenu {
 
     }
     public void progress(ActionEvent progress) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clientProgress.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/clientProgress.fxml")); //Display admin menu
         AnchorPane root = loader.load();
         root.setOnMousePressed(event -> { //Allow to move app around
             xOffset = event.getSceneX();

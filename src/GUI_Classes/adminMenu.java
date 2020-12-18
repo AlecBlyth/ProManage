@@ -54,7 +54,7 @@ public class adminMenu {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     } //Date formatter for date label
 
-    public adminMenu(){
+    public void initialize(){
 
         ArrayList<String> tips = new ArrayList<String>();
 
@@ -64,8 +64,6 @@ public class adminMenu {
         tips.add("Tip: Click on My Profile to edit your profile");
         tips.add("Tip: Click on Members to view/edit members");
         tips.add("Tip: Click on Client to see project requests");
-
-
 
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> { //Updates clock every second and changes label according to time
             Calendar cal = Calendar.getInstance();

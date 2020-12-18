@@ -21,6 +21,9 @@ import java.io.IOException;
 public class kanbanAdmin {
 
     public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked;
+    public Label lblDate;
+    public Label lblTime;
+
     private double xOffset = 0;
     private double yOffset = 0;
     @FXML private FlowPane paneOne, paneTwo, paneThree, paneFour, paneFive;

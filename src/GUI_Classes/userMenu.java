@@ -43,7 +43,7 @@ public class userMenu {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     } //Date formatter for date label
 
-    public userMenu(){
+    public void initialize(){
         ArrayList<String> tips = new ArrayList<String>();
 
         tips.add("Tip: Click on Kanban to begin managing your project");

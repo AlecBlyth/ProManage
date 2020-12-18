@@ -1,19 +1,26 @@
 package GUI_Classes;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class kanbanUser {
 
+    public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked;
+    public Label lblDate;
+    public Label lblTime;
+
     private double xOffset = 0;
     private double yOffset = 0;
-
+    @FXML private FlowPane paneOne, paneTwo, paneThree, paneFour, paneFive;
 
     public void kanban(ActionEvent actionEvent) {
     }
@@ -21,7 +28,7 @@ public class kanbanUser {
     public void tasks(ActionEvent actionEvent) {
     }
 
-    public void teamChat(ActionEvent actionEvent) {
+    public void Chat(ActionEvent actionEvent) {
     }
 
     public void userProfile(ActionEvent actionEvent) {
