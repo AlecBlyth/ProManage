@@ -99,7 +99,7 @@ public class clientMenu {
         });
         window.setScene(menuViewScene); //Show new scene
         window.show();
-    }
+    } //Progress menu
 
     public void chat(ActionEvent actionEvent) {
     }
@@ -111,7 +111,7 @@ public class clientMenu {
     }
 
     public void exit(ActionEvent actionEvent) {
-        System.exit(0);
+        System.exit(0); //Exits application
     }
 
     public void logOut(ActionEvent logout) throws IOException {
@@ -129,6 +129,5 @@ public class clientMenu {
         });
         window.setScene(menuViewScene); //Show new scene
         window.show();
-    }
-
+    } //Logs out
 }
