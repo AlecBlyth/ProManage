@@ -1,4 +1,4 @@
-package GUI_Classes;
+package GUI_Classes.Admin;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
@@ -6,11 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -26,12 +24,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 
-public class kanbanUser {
+public class kanbanAdmin {
 
+    private static DataFormat buttonFormat = new DataFormat(" ");
     public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked;
-    public static DataFormat buttonFormat = new DataFormat(" ");
     public Label lblDate;
     public Label lblTime;
+
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -101,25 +100,12 @@ public class kanbanUser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-    }
-
-    public void kanban(ActionEvent actionEvent) {
-    }
-
-    public void tasks(ActionEvent actionEvent) {
-    }
-
-    public void chat(ActionEvent actionEvent) {
-    }
-
-    public void userProfile(ActionEvent actionEvent) {
     }
 
     private JFXButton initButton(String colour,String taskname, String taskdesc){
         String fontcol = " ; -fx-text-fill: white;";
         JFXButton button = new JFXButton(taskname + "\n" +taskdesc);
-        button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;" + "-fx-alignment: TOP-LEFT;");
+        button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;" +"-fx-alignment: TOP-LEFT;");
         button.setFont(Font.font("Segoe UI"));
 
         button.setPrefWidth(202);
@@ -152,8 +138,28 @@ public class kanbanUser {
                 ((Pane)draggingButton.getParent()).getChildren().remove(draggingButton);
                 pane.getChildren().add(draggingButton);
                 e.setDropCompleted(true);
-            }
-        });
+                }
+            });
+    }
+
+
+    public void kanban(ActionEvent actionEvent) {
+        //Do nothing already on stage
+    }
+
+    public void tasks(ActionEvent actionEvent) {
+    }
+
+    public void chat(ActionEvent actionEvent) {
+    }
+
+    public void userProfile(ActionEvent actionEvent) {
+    }
+
+    public void members(ActionEvent actionEvent) {
+    }
+
+    public void requests(ActionEvent actionEvent) {
     }
 
     public void exit(ActionEvent actionEvent) {
@@ -161,7 +167,6 @@ public class kanbanUser {
     }
 
     public void logOut(ActionEvent logout) throws IOException {
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml")); //Display admin menu
         AnchorPane root = loader.load();
         root.setOnMousePressed(event -> { //Allow to move app around
