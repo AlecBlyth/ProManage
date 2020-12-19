@@ -85,7 +85,7 @@ public class clientMenu {
 
     }
     public void progress(ActionEvent progress) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/clientProgress.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml")); //Display admin menu
         AnchorPane root = loader.load();
         root.setOnMousePressed(event -> { //Allow to move app around
             xOffset = event.getSceneX();

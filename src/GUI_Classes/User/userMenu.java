@@ -86,7 +86,7 @@ public class userMenu {
     }
 
     public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanbanUser.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/kanbanUser.fxml")); //Display admin menu
         AnchorPane root = loader.load();
         root.setOnMousePressed(event -> { //Allow to move app around
             xOffset = event.getSceneX();

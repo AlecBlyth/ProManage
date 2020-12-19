@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_Classes.User.userMenu">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_Classes.Client.clientMenu">
    <children>
       <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
          <children>
@@ -39,25 +39,25 @@
          <children>
             <ImageView fitHeight="200.0" fitWidth="236.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/smallerLogo.png" />
+                  <Image url="@../../Styling/images/smallerLogo.png" />
                </image>
             </ImageView>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#progress" prefHeight="74.0" prefWidth="236.0" text="Progress" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0" prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font name="Segoe UI Light" size="23.0" />
-               </font>
-            </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#teamChat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Segoe UI Light" size="23.0" />
+                  <Font name="Segoe UI Light" size="26.0" />
                </font>
             </JFXButton>
             <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#profile" prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI Light" size="23.0" />
+               </font>
+            </JFXButton>
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#request" prefHeight="74.0" prefWidth="236.0" text="Request" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
@@ -68,7 +68,7 @@
          <children>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/KanbanIcon.png" />
+                  <Image url="@../../Styling/images/progressIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -76,7 +76,7 @@
             </ImageView>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/tasksIcon.png" />
+                  <Image url="@../../Styling/images/teamChatIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -87,7 +87,7 @@
             </ImageView>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/teamChatIcon.png" />
+                  <Image url="@../../Styling/images/myProfileIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -95,7 +95,7 @@
             </ImageView>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/myProfileIcon.png" />
+                  <Image url="@../../Styling/images/requestsIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -108,7 +108,7 @@
          <children>
             <ImageView fitHeight="272.0" fitWidth="552.0" layoutX="247.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/logo.png" />
+                  <Image url="@../../Styling/images/logo.png" />
                </image>
             </ImageView>
             <HBox alignment="CENTER" layoutX="1.0" layoutY="153.0" prefHeight="59.0" prefWidth="1045.0">
