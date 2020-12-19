@@ -110,7 +110,7 @@ public class kanbanUser {
     public void tasks(ActionEvent actionEvent) {
     }
 
-    public void Chat(ActionEvent actionEvent) {
+    public void chat(ActionEvent actionEvent) {
     }
 
     public void userProfile(ActionEvent actionEvent) {
@@ -121,7 +121,6 @@ public class kanbanUser {
         JFXButton button = new JFXButton(taskname + "\n" +taskdesc);
         button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;");
         button.setFont(Font.font("Segoe UI"));
-        System.out.println("TEST");
 
         button.setPrefWidth(202);
         button.setPrefHeight(82);

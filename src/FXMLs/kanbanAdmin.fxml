@@ -54,7 +54,7 @@
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#teamChat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>

@@ -39,6 +39,8 @@ public class kanbanAdmin {
 
     public void initialize() {
 
+        System.out.println("TEST");
+
         paneDrag(paneOne);
         paneDrag(paneTwo);
         paneDrag(paneThree);
@@ -149,7 +151,7 @@ public class kanbanAdmin {
     public void tasks(ActionEvent actionEvent) {
     }
 
-    public void teamChat(ActionEvent actionEvent) {
+    public void chat(ActionEvent actionEvent) {
     }
 
     public void userProfile(ActionEvent actionEvent) {
