@@ -29,7 +29,7 @@ import java.sql.*;
 public class kanbanUser {
 
     public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked;
-    public final DataFormat buttonFormat = new DataFormat(" ");
+    public static DataFormat buttonFormat = new DataFormat(" ");
     public Label lblDate;
     public Label lblTime;
 
@@ -121,6 +121,7 @@ public class kanbanUser {
         JFXButton button = new JFXButton(taskname + "\n" +taskdesc);
         button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;");
         button.setFont(Font.font("Segoe UI"));
+        System.out.println("TEST");
 
         button.setPrefWidth(202);
         button.setPrefHeight(82);

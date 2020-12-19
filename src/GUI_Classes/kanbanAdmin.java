@@ -26,7 +26,7 @@ import java.sql.*;
 
 public class kanbanAdmin {
 
-    private final DataFormat buttonFormat = new DataFormat(" ");
+    private static DataFormat buttonFormat = new DataFormat(" ");
     public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked;
     public Label lblDate;
     public Label lblTime;
