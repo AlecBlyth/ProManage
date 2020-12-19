@@ -45,7 +45,7 @@ public class Login {
                     check=true;
                     if(userType.equals("ADMIN")){ //Checks for usertype for GUI display and functionality
                         System.out.println("Logging in as ADMIN");
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/adminMenu.fxml")); //Display admin menu
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/adminMenu.fxml")); //Display admin menu
                         AnchorPane root = loader.load();
                         root.setOnMousePressed(event -> { //Allow to move app around
                             xOffset = event.getSceneX();
@@ -62,7 +62,7 @@ public class Login {
                     }
                     if(userType.equals("USER")){
                         System.out.println("USER Login");
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/userMenu.fxml")); //Display admin menu
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/User/userMenu.fxml")); //Display admin menu
                         AnchorPane root = loader.load();
                         root.setOnMousePressed(event -> { //Allow to move app around
                             xOffset = event.getSceneX();
@@ -80,7 +80,7 @@ public class Login {
                     }
                     if(userType.equals("CLIENT")){
                         System.out.println("CLIENT Login");
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/clientMenu.fxml")); //Display admin menu
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml")); //Display admin menu
                         AnchorPane root = loader.load();
                         root.setOnMousePressed(event -> { //Allow to move app around
                             xOffset = event.getSceneX();

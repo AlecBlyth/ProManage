@@ -5,15 +5,17 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_Classes.Admin.adminMenu">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_Classes.User.kanbanUser">
    <children>
       <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
          <children>
@@ -39,7 +41,7 @@
          <children>
             <ImageView fitHeight="200.0" fitWidth="236.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/smallerLogo.png" />
+                  <Image url="@../../Styling/images/smallerLogo.png" />
                </image>
             </ImageView>
             <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
@@ -52,22 +54,12 @@
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#teamChat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
+            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
             </JFXButton>
             <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#userProfile" prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Segoe UI Light" size="23.0" />
-               </font>
-            </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0" prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Segoe UI Light" size="23.0" />
-               </font>
-            </JFXButton>
-            <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#requests" prefHeight="74.0" prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Segoe UI Light" size="23.0" />
                </font>
@@ -78,7 +70,7 @@
          <children>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/KanbanIcon.png" />
+                  <Image url="@../../Styling/images/KanbanIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -86,7 +78,7 @@
             </ImageView>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/tasksIcon.png" />
+                  <Image url="@../../Styling/images/tasksIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -97,7 +89,7 @@
             </ImageView>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/teamChatIcon.png" />
+                  <Image url="@../../Styling/images/teamChatIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -105,23 +97,7 @@
             </ImageView>
             <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                <image>
-                  <Image url="@../Styling/images/myProfileIcon.png" />
-               </image>
-               <viewport>
-                  <Rectangle2D />
-               </viewport>
-            </ImageView>
-            <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-               <image>
-                  <Image url="@../Styling/images/membersIcon.png" />
-               </image>
-               <viewport>
-                  <Rectangle2D />
-               </viewport>
-            </ImageView>
-            <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-               <image>
-                  <Image url="@../Styling/images/requestsIcon.png" />
+                  <Image url="@../../Styling/images/myProfileIcon.png" />
                </image>
                <viewport>
                   <Rectangle2D />
@@ -132,20 +108,44 @@
       <JFXButton layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE" />
       <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
          <children>
-            <ImageView fitHeight="272.0" fitWidth="552.0" layoutX="247.0" layoutY="41.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../Styling/images/logo.png" />
-               </image>
-            </ImageView>
-            <HBox alignment="CENTER" layoutX="1.0" layoutY="153.0" prefHeight="59.0" prefWidth="1045.0">
+            <HBox alignment="CENTER" layoutX="8.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
                <children>
-                  <Label fx:id="lblTips" text="Tips: Click on Kanban to begin managing your project" textFill="#909090">
-                     <font>
-                        <Font size="17.0" />
-                     </font>
-                  </Label>
+                  <Label fx:id="lblBacklog" text="Backlog" textAlignment="CENTER" textFill="WHITE" />
                </children>
             </HBox>
+            <HBox alignment="CENTER" layoutX="215.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
+               <children>
+                  <Label fx:id="lblTodo" text="To Do" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="422.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
+               <children>
+                  <Label fx:id="lblProgress" text="In Progress" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="629.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
+               <children>
+                  <Label fx:id="lblComplete" text="Complete" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="836.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
+               <children>
+                  <Label fx:id="lblBlocked" text="Blocked" textFill="WHITE" />
+               </children>
+            </HBox>
+            <ScrollPane hbarPolicy="NEVER" layoutX="9.0" layoutY="58.0" prefHeight="588.0" prefWidth="1030.0" style="-fx-background-color: #262626;" stylesheets="@../../Styling/CSS/theme.css" vbarPolicy="ALWAYS">
+               <content>
+                  <HBox alignment="CENTER" prefHeight="588.0" spacing="3.0" style="-fx-background-color: #262626;">
+                     <children>
+                        <FlowPane fx:id="paneOne" alignment="TOP_CENTER" columnHalignment="CENTER" prefWidth="200.0" rowValignment="TOP" style="-fx-background-color: white;" vgap="3.0" />
+                        <FlowPane fx:id="paneTwo" alignment="TOP_CENTER" prefWidth="200.0" style="-fx-background-color: white;" vgap="3.0" />
+                        <FlowPane fx:id="paneThree" alignment="TOP_CENTER" prefWidth="200.0" style="-fx-background-color: white;" vgap="3.0" />
+                        <FlowPane fx:id="paneFour" alignment="TOP_CENTER" prefWidth="200.0" style="-fx-background-color: white;" vgap="3.0" />
+                        <FlowPane fx:id="paneFive" alignment="TOP_CENTER" prefHeight="588.0" prefWidth="200.0" style="-fx-background-color: white;" vgap="3.0" />
+                     </children>
+                  </HBox>
+               </content>
+            </ScrollPane>
          </children>
       </Pane>
    </children>

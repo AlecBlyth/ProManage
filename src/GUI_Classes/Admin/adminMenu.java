@@ -2,7 +2,6 @@ package GUI_Classes.Admin;
 
 import javafx.animation.*;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -90,7 +89,7 @@ public class adminMenu {
     }
 
     public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanbanAdmin.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/kanbanAdmin.fxml")); //Display admin menu
         AnchorPane root = loader.load();
         root.setOnMousePressed(event -> { //Allow to move app around
             xOffset = event.getSceneX();
