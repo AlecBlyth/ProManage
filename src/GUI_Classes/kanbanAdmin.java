@@ -39,8 +39,6 @@ public class kanbanAdmin {
 
     public void initialize() {
 
-        System.out.println("TEST");
-
         paneDrag(paneOne);
         paneDrag(paneTwo);
         paneDrag(paneThree);
@@ -107,7 +105,7 @@ public class kanbanAdmin {
     private JFXButton initButton(String colour,String taskname, String taskdesc){
         String fontcol = " ; -fx-text-fill: white;";
         JFXButton button = new JFXButton(taskname + "\n" +taskdesc);
-        button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;");
+        button.setStyle("-fx-background-color: " + colour + fontcol + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;" +"-fx-alignment: TOP-LEFT;");
         button.setFont(Font.font("Segoe UI"));
 
         button.setPrefWidth(202);
