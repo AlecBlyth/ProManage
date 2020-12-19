@@ -8,37 +8,36 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class clientMenu {
 
+    //FXML components
+    public Label lblDate, lblTime, lblTips;
+
+    //Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
-    public Label lblDate;
-    public Label lblTime;
-    public Label lblTips;
-
-    private int minute;
-    private int hour;
-
-    Random rand = new Random();
-
-    public static String getFormattedDate(Date date){
+    //SYSTEM METHODS
+    public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int day=cal.get(Calendar.DATE);
+        int day = cal.get(Calendar.DATE);
 
-        if(!((day>10) && (day<19))) //Allows for th st nd suffixes
+        if (!((day > 10) && (day < 19)))
             switch (day % 10) {
                 case 1:
                     return new SimpleDateFormat("d'st' MMMM yyyy").format(date);
@@ -50,44 +49,45 @@ public class clientMenu {
                     return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
             }
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
-    } //Date formatter for date label Label lblTips;
+    }
 
-    public void initialize(){
-        ArrayList<String> tips = new ArrayList<String>();
+    public void initialize() {
+
+        initTime();
+
+        ArrayList<String> tips = new ArrayList<>();
 
         tips.add("Tip: Click on Progress view your project's progress");
         tips.add("Tip: Click on Chat to communicate with project manager");
         tips.add("Tip: Click on Request to manage project requests");
         tips.add("Tip: Click on My Profile to edit your profile");
 
-        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> { //Updates clock every second and changes label according to time
-            Calendar cal = Calendar.getInstance();
-            minute = cal.get(Calendar.MINUTE);
-            hour = cal.get(Calendar.HOUR);
-            String curTime = String.format("%02d:%02d", hour, minute);
-            lblTime.setText(curTime);
-            lblDate.setText(getFormattedDate(cal.getTime())); //Gets date and changes label to date
-        }),
-                new KeyFrame(Duration.seconds(1))
-        );
-
-        clock.setCycleCount(Animation.INDEFINITE);
-        clock.play();
-
         Timeline tip = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-            int x = rand.nextInt((3 - 1) + 1) + 1;
+            int x = ThreadLocalRandom.current().nextInt(0, 3 + 1);
             lblTips.setText(tips.get(x));
         }),
                 new KeyFrame(Duration.seconds(1))
         );
         tip.setCycleCount(Animation.INDEFINITE);
         tip.play();
-
     }
+
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    //CLIENT FEATURES
     public void progress(ActionEvent progress) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
         AnchorPane root = loader.load();
-        root.setOnMousePressed(event -> { //Allow to move app around
+        root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
@@ -97,27 +97,29 @@ public class clientMenu {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene); //Show new scene
+        window.setScene(menuViewScene);
         window.show();
-    } //Progress menu
-
-    public void chat(ActionEvent actionEvent) {
     }
 
-    public void profile(ActionEvent actionEvent) {
+    public void chat(ActionEvent chat) {
     }
 
-    public void request(ActionEvent actionEvent) {
+    public void request(ActionEvent request) {
     }
 
-    public void exit(ActionEvent actionEvent) {
-        System.exit(0); //Exits application
+    //USER FEATURES
+    public void profile(ActionEvent profile) {
+    }
+
+    //NAVIGATION
+    public void exit(ActionEvent exit) {
+        System.exit(0);
     }
 
     public void logOut(ActionEvent logout) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml"));
         AnchorPane root = loader.load();
-        root.setOnMousePressed(event -> { //Allow to move app around
+        root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
@@ -127,7 +129,24 @@ public class clientMenu {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene); //Show new scene
+        window.setScene(menuViewScene);
         window.show();
-    } //Logs out
+    }
+
+    public void menu(MouseEvent mouseEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    }
 }
