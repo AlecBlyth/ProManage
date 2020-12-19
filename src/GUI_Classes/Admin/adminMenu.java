@@ -1,9 +1,8 @@
-package GUI_Classes;
+package GUI_Classes.Admin;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +19,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-public class userMenu {
+public class adminMenu {
+
 
     public Label lblDate;
     public Label lblTime;
@@ -30,6 +31,7 @@ public class userMenu {
 
     private double xOffset = 0;
     private double yOffset = 0;
+
 
     Random rand = new Random();
 
@@ -53,13 +55,15 @@ public class userMenu {
     } //Date formatter for date label
 
     public void initialize(){
+
         ArrayList<String> tips = new ArrayList<String>();
 
         tips.add("Tip: Click on Kanban to begin managing your project");
         tips.add("Tip: Click on Tasks to begin manage/edit tasks");
         tips.add("Tip: Click on Chat to communicate with team");
         tips.add("Tip: Click on My Profile to edit your profile");
-
+        tips.add("Tip: Click on Members to view/edit members");
+        tips.add("Tip: Click on Client to see project requests");
 
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> { //Updates clock every second and changes label according to time
             Calendar cal = Calendar.getInstance();
@@ -67,16 +71,16 @@ public class userMenu {
             hour = cal.get(Calendar.HOUR);
             String curTime = String.format("%02d:%02d", hour, minute);
             lblTime.setText(curTime);
-            lblDate.setText(getFormattedDate(cal.getTime())); //Gets date and changes label to date
+            lblDate.setText(getFormattedDate(cal.getTime())); //Gets date and changes label to date 
         }),
                 new KeyFrame(Duration.seconds(1))
-        );
+                );
 
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
 
         Timeline tip = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-            int x = rand.nextInt((3 - 1) + 1) + 1;
+            int x = rand.nextInt((5 - 1) + 1) + 1;
             lblTips.setText(tips.get(x));
         }),
                 new KeyFrame(Duration.seconds(1))
@@ -86,7 +90,7 @@ public class userMenu {
     }
 
     public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanbanUser.fxml")); //Display admin menu
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanbanAdmin.fxml")); //Display admin menu
         AnchorPane root = loader.load();
         root.setOnMousePressed(event -> { //Allow to move app around
             xOffset = event.getSceneX();
@@ -108,14 +112,33 @@ public class userMenu {
     public void teamChat(ActionEvent actionEvent) {
     }
 
-    public void profile(ActionEvent actionEvent) {
+    public void userProfile(ActionEvent actionEvent) {
     }
 
-    public void logOut(ActionEvent actionEvent) {
+    public void members(ActionEvent actionEvent) {
     }
 
-    public void exit(ActionEvent actionEvent) {
+    public void requests(ActionEvent actionEvent) {
+    }
+
+    public void exit(ActionEvent actionEvent) { //Exit functionality
         System.exit(0);
     }
 
+    public void logOut(ActionEvent logout) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml")); //Display admin menu
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> { //Allow to move app around
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene); //Show new scene
+        window.show();
+    }
 }
