@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_Classes.menu">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_Classes.Admin.memberEditor">
     <children>
         <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
             <children>
@@ -39,7 +39,7 @@
             <children>
                 <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/smallerLogo.png" />
+                        <Image url="@../../Styling/images/smallerLogo.png" />
                     </image>
                 </ImageView>
                 <JFXButton alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
@@ -78,7 +78,7 @@
             <children>
                 <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/KanbanIcon.png" />
+                        <Image url="@../../Styling/images/KanbanIcon.png" />
                     </image>
                     <viewport>
                         <Rectangle2D />
@@ -86,7 +86,7 @@
                 </ImageView>
                 <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/tasksIcon.png" />
+                        <Image url="@../../Styling/images/tasksIcon.png" />
                     </image>
                     <viewport>
                         <Rectangle2D />
@@ -97,7 +97,7 @@
                 </ImageView>
                 <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/teamChatIcon.png" />
+                        <Image url="@../../Styling/images/teamChatIcon.png" />
                     </image>
                     <viewport>
                         <Rectangle2D />
@@ -105,7 +105,7 @@
                 </ImageView>
                 <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/myProfileIcon.png" />
+                        <Image url="@../../Styling/images/myProfileIcon.png" />
                     </image>
                     <viewport>
                         <Rectangle2D />
@@ -113,7 +113,7 @@
                 </ImageView>
                 <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/membersIcon.png" />
+                        <Image url="@../../Styling/images/membersIcon.png" />
                     </image>
                     <viewport>
                         <Rectangle2D />
@@ -121,7 +121,7 @@
                 </ImageView>
                 <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
                     <image>
-                        <Image url="@../Styling/images/requestsIcon.png" />
+                        <Image url="@../../Styling/images/requestsIcon.png" />
                     </image>
                     <viewport>
                         <Rectangle2D />
