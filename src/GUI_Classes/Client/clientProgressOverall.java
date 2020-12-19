@@ -112,7 +112,21 @@ public class clientProgressOverall {
     public void request(ActionEvent request) {
     }
 
-    public void btnViewmore(ActionEvent viewMore) {
+    public void btnViewmore(ActionEvent viewMore) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgressDetailed.fxml"));
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) viewMore.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     //USER FEATURES

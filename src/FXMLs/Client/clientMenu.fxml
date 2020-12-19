@@ -124,7 +124,7 @@
                 </ImageView>
                 <HBox alignment="CENTER" layoutX="1.0" layoutY="153.0" prefHeight="59.0" prefWidth="1045.0">
                     <children>
-                        <Label fx:id="lblTips" text="Tip: Click on Kanban to begin managing your project"
+                        <Label fx:id="lblTips" text="Tip: Click on progress view your project's progress"
                                textFill="#909090">
                             <font>
                                 <Font size="17.0"/>
