@@ -248,6 +248,7 @@ public class kanban {
                             ps.setInt(3, id);
                             ps.executeUpdate();
                             draggingButton.setStyle("-fx-background-color: " + "#c00000" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:9.0;" + "-fx-alignment: TOP-LEFT;");
+
                         }
 
                     }
