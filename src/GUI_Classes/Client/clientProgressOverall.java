@@ -119,13 +119,13 @@ public class clientProgressOverall {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene detailedViewScene = new Scene(root);
         Stage window = (Stage) ((Node) viewMore.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(detailedViewScene);
         window.show();
     }
 
@@ -145,13 +145,13 @@ public class clientProgressOverall {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene loginViewScene = new Scene(root);
         Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(loginViewScene);
         window.show();
     }
 

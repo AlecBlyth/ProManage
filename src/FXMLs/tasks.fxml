@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Accordion?>
@@ -130,6 +131,33 @@
             </children>
         </VBox>
         <JFXButton layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE" />
-        <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0" />
+        <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
+         <children>
+            <JFXListView fx:id="lsvTasks" layoutX="14.0" layoutY="43.0" prefHeight="499.0" prefWidth="1016.0" stylesheets="@../Styling/CSS/MaterialDesign.css" />
+            <HBox alignment="CENTER" layoutX="15.0" layoutY="547.0" prefHeight="74.0" prefWidth="421.0" spacing="10.0">
+               <children>
+                  <JFXButton fx:id="btnCreateTask" onAction="#createTask" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #123d82; -fx-background-radius: 0;" text="Create Task" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI" size="12.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="btnEditTask" onAction="#editTask" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Edit Task" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI" size="12.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="btnDeleteTask" onAction="#deleteTask" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #333f50; -fx-background-radius: 0;" text="Delete Task" textFill="WHITE">
+                     <font>
+                        <Font name="Segoe UI" size="12.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <JFXButton layoutX="896.0" layoutY="558.0" onAction="#viewTask" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #a6a6a6; -fx-background-radius: 0;" text="View Task" textFill="WHITE">
+               <font>
+                  <Font name="Segoe UI" size="12.0" />
+               </font>
+            </JFXButton>
+         </children></Pane>
     </children>
 </AnchorPane>

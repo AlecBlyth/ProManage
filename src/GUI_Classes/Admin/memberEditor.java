@@ -1,6 +1,7 @@
 package GUI_Classes.Admin;
 
 import GUI_Classes.menu;
+import GUI_Classes.tasks;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -101,17 +102,33 @@ public class memberEditor {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene kanbanViewScene = new Scene(root);
         Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(kanbanViewScene);
         window.show();
     }
 
-    public void tasks(ActionEvent tasks) {
+    public void tasks(ActionEvent task) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
+        window.show();
     }
 
     public void chat(ActionEvent chat) {
@@ -140,13 +157,13 @@ public class memberEditor {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene loginViewScene = new Scene(root);
         Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(loginViewScene);
         window.show();
     }
 

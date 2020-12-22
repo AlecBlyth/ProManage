@@ -1,6 +1,7 @@
 package GUI_Classes;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +32,10 @@ public class tasks {
     public ImageView reqIcon;
     public JFXButton btnMembers;
     public JFXButton btnRequests;
+    public JFXButton btnCreateTask;
+    public JFXButton btnEditTask;
+    public JFXButton btnDeleteTask;
+    public JFXListView lsvTasks;
 
     //Variables
     private double xOffset = 0;
@@ -67,6 +73,12 @@ public class tasks {
             btnRequests.setVisible(true);
             memberIcon.setVisible(true);
             reqIcon.setVisible(true);
+            btnCreateTask.setVisible(true);
+            btnEditTask.setVisible(true);
+            btnDeleteTask.setVisible(true);
+            btnCreateTask.setDisable(false);
+            btnEditTask.setDisable(false);
+            btnDeleteTask.setDisable(false);
             btnMembers.setDisable(false);
             btnRequests.setDisable(false);
         } else {
@@ -74,9 +86,32 @@ public class tasks {
             btnRequests.setVisible(false);
             memberIcon.setVisible(false);
             reqIcon.setVisible(false);
+            btnCreateTask.setVisible(false);
+            btnEditTask.setVisible(false);
+            btnDeleteTask.setVisible(false);
             btnMembers.setDisable(true);
             btnRequests.setDisable(true);
+            btnCreateTask.setDisable(true);
+            btnEditTask.setDisable(true);
+            btnDeleteTask.setDisable(true);
         }
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT taskname, taskdesc, taskid FROM tasks"; //gets task data from database
+            ResultSet resultSet = statement.executeQuery(queryString);
+            while (resultSet.next()) {
+                String name = resultSet.getString("taskname");
+                String desc = resultSet.getString("taskdesc");
+                int id = resultSet.getInt("taskid");
+                lsvTasks.getItems().add("Task ID: " + id + " | Task: " + name + " | Task Description: " + desc);
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+
     } //Initialise controller
 
     public void initTime() {
@@ -121,7 +156,19 @@ public class tasks {
     public void profile(ActionEvent profile) {
     }
 
+    public void viewTask(ActionEvent view) {
+    }
+
     //ADMIN FEATURES
+    public void createTask(ActionEvent create) {
+    }
+
+    public void editTask(ActionEvent edit) {
+    }
+
+    public void deleteTask(ActionEvent delete) {
+    }
+
     public void members(ActionEvent members) {
     }
 
@@ -140,13 +187,13 @@ public class tasks {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene loginViewScene = new Scene(root);
         Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(loginViewScene);
         window.show();
     }
 
@@ -168,4 +215,5 @@ public class tasks {
         window.setScene(menuViewScene);
         window.show();
     }
+
 }

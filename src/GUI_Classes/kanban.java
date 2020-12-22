@@ -183,18 +183,20 @@ public class kanban {
             draggingButton = button;
         });
 
+        button.setId(String.valueOf(id));
+
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(mouseEvent.getButton() == MouseButton.PRIMARY){
                     if(mouseEvent.getClickCount() == 2)
-                        System.out.println("DOUBLE CLICKED");
+                        System.out.println(button.getId());
                 }
             }
         });
 
         button.setOnDragDone(e -> draggingButton = null);
-        button.setId(String.valueOf(id));
+
 
         return button;
     }
@@ -217,7 +219,7 @@ public class kanban {
                 try {
                     Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                     Statement statement = connection.createStatement();
-                    String queryString = "SELECT section, taskhex, taskid FROM tasks"; //gets task data from database
+                    String queryString = "SELECT taskid FROM tasks"; //gets task data from database
                     String updateQuery = "UPDATE tasks SET section=?, taskhex=? WHERE taskid=?";
                     PreparedStatement ps = connection.prepareStatement(updateQuery);
                     ResultSet resultSet = statement.executeQuery(queryString);
@@ -284,7 +286,23 @@ public class kanban {
         //Do nothing already on stage
     }
 
-    public void tasks(ActionEvent tasks) {
+    public void tasks(ActionEvent task) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
+        window.show();
     }
 
     public void chat(ActionEvent chat) {

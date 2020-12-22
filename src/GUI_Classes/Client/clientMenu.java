@@ -91,13 +91,13 @@ public class clientMenu {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene progressViewScene = new Scene(root);
         Stage window = (Stage) ((Node) progress.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(progressViewScene);
         window.show();
     }
 
@@ -123,13 +123,13 @@ public class clientMenu {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene loginViewScene = new Scene(root);
         Stage window = (Stage) ((Node) logout.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(loginViewScene);
         window.show();
     }
 
