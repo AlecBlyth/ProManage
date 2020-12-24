@@ -21,7 +21,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -130,7 +129,7 @@ public class tasks {
         try {
             Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
             JSONObject jsonObject = (JSONObject) obj;
-            boolean subCheck = ((Boolean) jsonObject.get("projectSubjects")).booleanValue();
+            boolean subCheck = (Boolean) jsonObject.get("projectSubjects");
             lsvTasks.setCellFactory(param -> new ListCell<taskObject>() {
                 @Override
                 public void updateItem(taskObject task, boolean empty) {
@@ -150,11 +149,7 @@ public class tasks {
                     }
                 }
             });
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
 
@@ -213,7 +208,6 @@ public class tasks {
     }
 
     public void deleteTask(ActionEvent delete) {
-
         taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
         System.out.println(selectedItem.getTaskID());
     }
@@ -264,5 +258,4 @@ public class tasks {
         window.setScene(menuViewScene);
         window.show();
     }
-
 }

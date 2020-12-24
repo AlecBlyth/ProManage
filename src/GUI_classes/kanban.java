@@ -188,8 +188,8 @@ public class kanban {
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                    if(mouseEvent.getClickCount() == 2)
+                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                    if (mouseEvent.getClickCount() == 2)
                         System.out.println(button.getId());
                 }
             }
