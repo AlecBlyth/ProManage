@@ -1,4 +1,4 @@
-package GUI_Classes;
+package GUI_classes;
 
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;

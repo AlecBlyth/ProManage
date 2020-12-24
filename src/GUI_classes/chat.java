@@ -1,4 +1,4 @@
-package GUI_Classes;
+package GUI_classes;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
@@ -95,7 +95,7 @@ public class chat {
     public void kanban(ActionEvent kanban) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
-        GUI_Classes.kanban kanbanScene = loader.getController();
+        GUI_classes.kanban kanbanScene = loader.getController();
         kanbanScene.initialize(currentUser);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();

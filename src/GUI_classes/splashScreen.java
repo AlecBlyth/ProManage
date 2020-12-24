@@ -1,9 +1,8 @@
-package GUI_Classes;
+package GUI_classes;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 public class splashScreen extends JWindow {
 

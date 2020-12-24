@@ -1,6 +1,5 @@
-package GUI_Classes.Client;
+package GUI_classes.Client;
 
-import eu.hansolo.medusa.Gauge;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,30 +10,26 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
-import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class clientProgressOverall {
+public class clientMenu {
 
-    //FXML Components
-    public Gauge gaugeProgress;
-    public Label lblDate, lblTime;
+    //FXML components
+    public Label lblDate, lblTime, lblTips;
 
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
-    private int sum = 0;
-    private int completeTotal;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -60,34 +55,21 @@ public class clientProgressOverall {
 
         initTime();
 
-        ArrayList<Integer> TaskProgress = new ArrayList<>();
+        ArrayList<String> tips = new ArrayList<>();
 
-        gaugeProgress.barColorProperty().setValue(Color.rgb(45, 121, 255)); //Changes colour of gauge bar
-        gaugeProgress.valueColorProperty().setValue(Color.WHITE); //Changes font colour of gauge
+        tips.add("Tip: Click on progress view your project's progress");
+        tips.add("Tip: Click on chat to communicate with project manager");
+        tips.add("Tip: Click on request to manage project requests");
+        tips.add("Tip: Click on my Profile to edit your profile");
 
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL server
-            Statement statement = connection.createStatement();
-            String queryString = "SELECT taskprogress FROM tasks";
-            ResultSet resultSet = statement.executeQuery(queryString);
-
-            while (resultSet.next()) {
-                int taskprog = resultSet.getInt("taskprogress");
-                TaskProgress.add(taskprog);
-                completeTotal = completeTotal + 1;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        for (Integer tempSum : TaskProgress) { //Calculates average percentage
-            sum += tempSum;
-        }
-        completeTotal = completeTotal * 100;
-        double currentProgress = sum;
-        double totalPercentage = currentProgress / completeTotal * 100;
-        gaugeProgress.setValue(totalPercentage); //Sets gauge value to total percentage
-
+        Timeline tip = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
+            int x = ThreadLocalRandom.current().nextInt(0, 3 + 1);
+            lblTips.setText(tips.get(x));
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        tip.setCycleCount(Animation.INDEFINITE);
+        tip.play();
     }
 
     public void initTime() {
@@ -102,31 +84,27 @@ public class clientProgressOverall {
     }
 
     //CLIENT FEATURES
-    public void progress(ActionEvent progress) {
-        //Do nothing since already on stage.
+    public void progress(ActionEvent progress) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene progressViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) progress.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(progressViewScene);
+        window.show();
     }
 
     public void chat(ActionEvent chat) {
     }
 
     public void request(ActionEvent request) {
-    }
-
-    public void btnViewmore(ActionEvent viewMore) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgressDetailed.fxml"));
-        AnchorPane root = loader.load();
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene detailedViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) viewMore.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(detailedViewScene);
-        window.show();
     }
 
     //USER FEATURES

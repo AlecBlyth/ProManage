@@ -1,5 +1,6 @@
-package GUI_Classes.Client;
+package GUI_classes.Client;
 
+import com.jfoenix.controls.JFXListView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -14,18 +15,18 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class clientMenu {
+public class clientProgressDetailed {
 
     //FXML components
-    public Label lblDate, lblTime, lblTips;
+    public Label lblDate, lblTime;
+    public JFXListView ltvTasks;
 
     //Variables
     private double xOffset = 0;
@@ -51,25 +52,20 @@ public class clientMenu {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     }
 
-    public void initialize() {
-
+    public void initialize() throws SQLException {
         initTime();
 
-        ArrayList<String> tips = new ArrayList<>();
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin");
+        Statement statement = connection.createStatement();
+        String queryString = "SELECT taskname, taskdesc, taskprogress FROM tasks";
+        ResultSet resultSet = statement.executeQuery(queryString);
+        while (resultSet.next()) {
+            String taskname = resultSet.getString("taskname");
+            String taskdesc = resultSet.getString("taskdesc");
+            int taskprog = resultSet.getInt("taskprogress");
+            ltvTasks.getItems().add("Task: " + taskname + " | Description: " + taskdesc + " | Progress: " + taskprog + "%"); //Displays task from database
 
-        tips.add("Tip: Click on progress view your project's progress");
-        tips.add("Tip: Click on chat to communicate with project manager");
-        tips.add("Tip: Click on request to manage project requests");
-        tips.add("Tip: Click on my Profile to edit your profile");
-
-        Timeline tip = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
-            int x = ThreadLocalRandom.current().nextInt(0, 3 + 1);
-            lblTips.setText(tips.get(x));
-        }),
-                new KeyFrame(Duration.seconds(1))
-        );
-        tip.setCycleCount(Animation.INDEFINITE);
-        tip.play();
+        }
     }
 
     public void initTime() {
@@ -149,4 +145,5 @@ public class clientMenu {
         window.setScene(menuViewScene);
         window.show();
     }
+
 }

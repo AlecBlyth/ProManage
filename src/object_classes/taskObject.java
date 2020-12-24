@@ -1,4 +1,4 @@
-package GUI_Classes;
+package object_classes;
 
 public class taskObject {
 
@@ -43,7 +43,7 @@ public class taskObject {
         return taskSubject;
     }
 
-    taskObject(int id, String taskType, String taskName, String taskDesc, String taskHex, int taskProgress, int taskSection, String taskSubject){
+    public taskObject(int id, String taskType, String taskName, String taskDesc, String taskHex, int taskProgress, int taskSection, String taskSubject){
         this.id = id;
         this.taskType = taskType;
         this.taskName = taskName;

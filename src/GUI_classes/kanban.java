@@ -1,4 +1,4 @@
-package GUI_Classes;
+package GUI_classes;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;

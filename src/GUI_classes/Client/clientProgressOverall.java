@@ -1,8 +1,6 @@
-package GUI_Classes.Admin;
+package GUI_classes.Client;
 
-import GUI_Classes.menu;
-import GUI_Classes.tasks;
-import com.jfoenix.controls.JFXButton;
+import eu.hansolo.medusa.Gauge;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,34 +9,32 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class taskEditor {
+public class clientProgressOverall {
+
     //FXML Components
-    public Label lblDate;
-    public Label lblTime;
-    public ImageView memberIcon;
-    public ImageView reqIcon;
-    public JFXButton btnMembers;
-    public JFXButton btnRequests;
+    public Gauge gaugeProgress;
+    public Label lblDate, lblTime;
 
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
-
-    //Passed Variables
-    public String currentUser;
+    private int sum = 0;
+    private int completeTotal;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -46,7 +42,7 @@ public class taskEditor {
         cal.setTime(date);
         int day = cal.get(Calendar.DATE);
 
-        if (!((day > 10) && (day < 19))) //Allows for th st nd suffixes
+        if (!((day > 10) && (day < 19)))
             switch (day % 10) {
                 case 1:
                     return new SimpleDateFormat("d'st' MMMM yyyy").format(date);
@@ -57,95 +53,88 @@ public class taskEditor {
                 default:
                     return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
             }
-        return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
-    } //Date formatter for date label
+        return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
+    }
 
-    public void initialize(String userType) {
+    public void initialize() {
+
         initTime();
-        currentUser = userType; //Sets currentUser to userType
 
-        if ("ADMIN".equals(userType)) {
-            btnMembers.setVisible(true);
-            btnRequests.setVisible(true);
-            memberIcon.setVisible(true);
-            reqIcon.setVisible(true);
-            btnMembers.setDisable(false);
-            btnRequests.setDisable(false);
-        } else {
-            btnMembers.setVisible(false);
-            btnRequests.setVisible(false);
-            memberIcon.setVisible(false);
-            reqIcon.setVisible(false);
-            btnMembers.setDisable(true);
-            btnRequests.setDisable(true);
+        ArrayList<Integer> TaskProgress = new ArrayList<>();
+
+        gaugeProgress.barColorProperty().setValue(Color.rgb(45, 121, 255)); //Changes colour of gauge bar
+        gaugeProgress.valueColorProperty().setValue(Color.WHITE); //Changes font colour of gauge
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL server
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT taskprogress FROM tasks";
+            ResultSet resultSet = statement.executeQuery(queryString);
+
+            while (resultSet.next()) {
+                int taskprog = resultSet.getInt("taskprogress");
+                TaskProgress.add(taskprog);
+                completeTotal = completeTotal + 1;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
-    } //Initialise controller
+
+        for (Integer tempSum : TaskProgress) { //Calculates average percentage
+            sum += tempSum;
+        }
+        completeTotal = completeTotal * 100;
+        double currentProgress = sum;
+        double totalPercentage = currentProgress / completeTotal * 100;
+        gaugeProgress.setValue(totalPercentage); //Sets gauge value to total percentage
+
+    }
 
     public void initTime() {
         Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
         DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
                 event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
                 new KeyFrame(Duration.seconds(1)));
         timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play(); //Updates the clock
-    } //Initialise time
-
-    //ADMIN AND USER FEATURES
-    public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
-        AnchorPane root = loader.load();
-        GUI_Classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene kanbanViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(kanbanViewScene);
-        window.show();
+        timeline.play();
     }
 
-    public void tasks(ActionEvent task) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
-        AnchorPane root = loader.load();
-        GUI_Classes.tasks tasks = loader.getController();
-        tasks.initialize(currentUser);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene taskViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(taskViewScene);
-        window.show();
+    //CLIENT FEATURES
+    public void progress(ActionEvent progress) {
+        //Do nothing since already on stage.
     }
 
     public void chat(ActionEvent chat) {
     }
 
+    public void request(ActionEvent request) {
+    }
+
+    public void btnViewmore(ActionEvent viewMore) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgressDetailed.fxml"));
+        AnchorPane root = loader.load();
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene detailedViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) viewMore.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(detailedViewScene);
+        window.show();
+    }
+
+    //USER FEATURES
     public void profile(ActionEvent profile) {
     }
 
-    //ADMIN FEATURES
-    public void members(ActionEvent members) {
-    }
-
-    public void requests(ActionEvent requests) {
-    }
-
     //NAVIGATION
-    public void exit(ActionEvent exit) { //Exit functionality
+    public void exit(ActionEvent exit) {
         System.exit(0);
     }
 
@@ -167,10 +156,8 @@ public class taskEditor {
     }
 
     public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
         AnchorPane root = loader.load();
-        menu menu = loader.getController();
-        menu.initialize(currentUser);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
