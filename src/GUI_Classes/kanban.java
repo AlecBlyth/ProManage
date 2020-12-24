@@ -220,7 +220,7 @@ public class kanban {
                     Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                     Statement statement = connection.createStatement();
                     String queryString = "SELECT taskid FROM tasks"; //gets task data from database
-                    String updateQuery = "UPDATE tasks SET section=?, taskhex=? WHERE taskid=?";
+                    String updateQuery = "UPDATE tasks SET section=?, taskhex=?, taskprogress=? WHERE taskid=?";
                     PreparedStatement ps = connection.prepareStatement(updateQuery);
                     ResultSet resultSet = statement.executeQuery(queryString);
                     while (resultSet.next()) {
@@ -229,35 +229,40 @@ public class kanban {
                         if (pane.getId().equals(paneOne.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 1);
                             ps.setString(2, "#123d82");
-                            ps.setInt(3, id);
+                            ps.setInt(3, 0);
+                            ps.setInt(4, id);
                             ps.executeUpdate();
                             draggingButton.setStyle("-fx-background-color: " + "#123d82" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
                         }
                         if (pane.getId().equals(paneTwo.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 2);
                             ps.setString(2, "#333f50");
-                            ps.setInt(3, id);
+                            ps.setInt(3, 10);
+                            ps.setInt(4, id);
                             ps.executeUpdate();
                             draggingButton.setStyle("-fx-background-color: " + "#333f50" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
                         }
                         if (pane.getId().equals(paneThree.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 3);
                             ps.setString(2, "#2d79ff");
-                            ps.setInt(3, id);
+                            ps.setInt(3, 25);
+                            ps.setInt(4, id);
                             ps.executeUpdate();
                             draggingButton.setStyle("-fx-background-color: " + "#2d79ff" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
                         }
                         if (pane.getId().equals(paneFour.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 4);
                             ps.setString(2, "#00b050");
-                            ps.setInt(3, id);
+                            ps.setInt(3, 100);
+                            ps.setInt(4, id);
                             ps.executeUpdate();
                             draggingButton.setStyle("-fx-background-color: " + "#00b050" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
                         }
                         if (pane.getId().equals(paneFive.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 5);
                             ps.setString(2, "#c00000");
-                            ps.setInt(3, id);
+                            ps.setInt(3, 0);
+                            ps.setInt(4, id);
                             ps.executeUpdate();
                             draggingButton.setStyle("-fx-background-color: " + "#c00000" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
 

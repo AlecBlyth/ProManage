@@ -140,8 +140,7 @@
 .list-view {
     -fx-background-color: #404040;
 }
-
-.list-view .list-cell:hover {
+.list-view .list-cell:filled:hover {
     -fx-background-color: #4da7ff;
 }
 

@@ -10,12 +10,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -35,7 +44,7 @@ public class tasks {
     public JFXButton btnCreateTask;
     public JFXButton btnEditTask;
     public JFXButton btnDeleteTask;
-    public JFXListView lsvTasks;
+    public JFXListView<taskObject> lsvTasks;
 
     //Variables
     private double xOffset = 0;
@@ -99,18 +108,57 @@ public class tasks {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskname, taskdesc, taskid FROM tasks"; //gets task data from database
+            String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
             while (resultSet.next()) {
+                int id = resultSet.getInt("taskid");
+                String type = resultSet.getString("tasktype");
                 String name = resultSet.getString("taskname");
                 String desc = resultSet.getString("taskdesc");
-                int id = resultSet.getInt("taskid");
-                lsvTasks.getItems().add("Task ID: " + id + " | Task: " + name + " | Task Description: " + desc);
+                String hex = resultSet.getString("taskhex");
+                int prog = resultSet.getInt("taskprogress");
+                int section = resultSet.getInt("section");
+                String subject = resultSet.getString("tasksubject");
+
+                taskObject taskObject = new taskObject(id, type, name, desc, hex, prog, section, subject);
+                lsvTasks.getItems().addAll(taskObject);
+
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
+        JSONParser parser = new JSONParser(); //Used to read from JSON file
+        try {
+            Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
+            JSONObject jsonObject = (JSONObject) obj;
+            boolean subCheck = ((Boolean) jsonObject.get("projectSubjects")).booleanValue();
+            lsvTasks.setCellFactory(param -> new ListCell<taskObject>() {
+                @Override
+                public void updateItem(taskObject task, boolean empty) {
+                    super.updateItem(task, empty);
+                    if (!subCheck) {
+                        if (empty || task == null) {
+                            setText(null);
+                        } else {
+                            setText("Task ID: " + task.getTaskID() + " | Task: " + task.getTaskName() + " | Description: " + task.getTaskDesc() + " | Progress: " + task.getTaskProgress());
+                        }
+                    } else {
+                        if (empty || task == null) {
+                            setText(null);
+                        } else {
+                            setText("Task ID: " + task.getTaskID() + " | Task: " + task.getTaskName() + " | Description: " + task.getTaskDesc() + " | Progress: " + task.getTaskProgress() + " | Subject:  " + task.getTaskSubject());
+                        }
+                    }
+                }
+            });
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     } //Initialise controller
 
@@ -167,6 +215,9 @@ public class tasks {
     }
 
     public void deleteTask(ActionEvent delete) {
+
+        taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
+        System.out.println(selectedItem.getTaskID());
     }
 
     public void members(ActionEvent members) {
