@@ -137,7 +137,7 @@
             <JFXListView fx:id="lsvChat" layoutX="15.0" layoutY="14.0" prefHeight="510.0" prefWidth="1016.0" stylesheets="@../Styling/CSS/MaterialDesign.css" />
             <HBox alignment="CENTER" layoutX="831.0" layoutY="533.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <JFXButton fx:id="btnSendMsg" onAction="#editTask" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Send" textFill="WHITE">
+                  <JFXButton fx:id="btnSendMsg" onAction="#sendMessage" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Send" textFill="WHITE">
                      <font>
                         <Font name="Segoe UI" size="12.0" />
                      </font>

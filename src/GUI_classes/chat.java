@@ -1,6 +1,8 @@
 package GUI_classes;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -31,6 +33,9 @@ public class chat {
     public ImageView reqIcon;
     public JFXButton btnMembers;
     public JFXButton btnRequests;
+    public JFXTextArea txtMessage;
+    public JFXButton btnSendMsg;
+    public JFXListView lsvChat;
 
     //Variables
     private double xOffset = 0;
@@ -137,6 +142,9 @@ public class chat {
     public void profile(ActionEvent profile) {
     }
 
+    public void sendMessage(ActionEvent actionEvent) {
+    }
+
     //ADMIN FEATURES
     public void members(ActionEvent members) {
     }
@@ -184,4 +192,5 @@ public class chat {
         window.setScene(menuViewScene);
         window.show();
     }
+
 }
