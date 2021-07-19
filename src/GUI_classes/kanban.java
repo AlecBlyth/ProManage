@@ -310,7 +310,23 @@ public class kanban {
         window.show();
     }
 
-    public void chat(ActionEvent chat) {
+    public void chat(ActionEvent chat) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) chat.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
+        window.show();
     }
 
     public void profile(ActionEvent profile) {
