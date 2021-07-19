@@ -39,7 +39,8 @@ public class memberEditor {
     private double yOffset = 0;
 
     //Passed Variables
-    public String currentUser;
+    private String currentUser;
+    private String currentUsername;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -61,9 +62,10 @@ public class memberEditor {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType) {
+    public void initialize(String userType, String userName) {
         initTime();
         currentUser = userType; //Sets currentUser to userType
+        currentUsername = userName;
 
         if ("ADMIN".equals(userType)) {
             btnMembers.setVisible(true);
@@ -98,7 +100,7 @@ public class memberEditor {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
         GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser);
+        kanbanScene.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -117,7 +119,7 @@ public class memberEditor {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
         AnchorPane root = loader.load();
         tasks tasks = loader.getController();
-        tasks.initialize(currentUser);
+        tasks.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -136,7 +138,7 @@ public class memberEditor {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
         GUI_classes.chat chat = loader.getController();
-        chat.initialize(currentUser);
+        chat.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -188,7 +190,7 @@ public class memberEditor {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();
         menu menu = loader.getController();
-        menu.initialize(currentUser);
+        menu.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

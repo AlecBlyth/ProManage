@@ -48,7 +48,7 @@ public class login {
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml")); //Loads FXML file
                         AnchorPane root = loader.load();
                         menu MenuScene = loader.getController(); //Gets controller from menu
-                        MenuScene.initialize(userType); //Sends userType to menu
+                        MenuScene.initialize(userType, compUser); //Sends userType to menu
                         root.setOnMousePressed(event -> { //On mouse press, gets current cords
                             xOffset = event.getSceneX();
                             yOffset = event.getSceneY();

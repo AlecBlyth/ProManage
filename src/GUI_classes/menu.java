@@ -37,7 +37,8 @@ public class menu {
     private double yOffset = 0;
 
     //Passed Variables
-    public String currentUser;
+    private String currentUser;
+    private String currentUsername;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -59,9 +60,11 @@ public class menu {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType) {
+    public void initialize(String userType, String userName) {
         initTime();
         currentUser = userType; //Sets currentUser to userType
+        currentUsername = userName;
+
         ArrayList<String> tips = new ArrayList<>(); //Arraylist for tips
 
         tips.add("Tip: Click on kanban to begin managing your project"); //Adds tips to array
@@ -132,7 +135,7 @@ public class menu {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
         GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser);
+        kanbanScene.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -151,7 +154,7 @@ public class menu {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
         AnchorPane root = loader.load();
         tasks tasks = loader.getController();
-        tasks.initialize(currentUser);
+        tasks.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -170,7 +173,7 @@ public class menu {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
         chat chat = loader.getController();
-        chat.initialize(currentUser);
+        chat.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

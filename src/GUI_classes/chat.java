@@ -16,8 +16,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import object_classes.taskObject;
 
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +44,8 @@ public class chat {
     private double yOffset = 0;
 
     //Passed Variables
-    public String currentUser;
+    private String currentUser;
+    private String currentUsername;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -64,9 +67,10 @@ public class chat {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType) {
+    public void initialize(String userType, String userName) {
         initTime();
         currentUser = userType; //Sets currentUser to userType
+        currentUsername = userName;
 
         if ("ADMIN".equals(userType)) {
             btnMembers.setVisible(true);
@@ -101,7 +105,7 @@ public class chat {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
         GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser);
+        kanbanScene.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -120,7 +124,7 @@ public class chat {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
         AnchorPane root = loader.load();
         tasks tasks = loader.getController();
-        tasks.initialize(currentUser);
+        tasks.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -143,6 +147,10 @@ public class chat {
     }
 
     public void sendMessage(ActionEvent actionEvent) {
+        System.out.println();
+        System.out.println(txtMessage.getText());
+        System.out.println(currentUsername);
+        txtMessage.clear();
     }
 
     //ADMIN FEATURES
@@ -178,7 +186,7 @@ public class chat {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();
         menu menu = loader.getController();
-        menu.initialize(currentUser);
+        menu.initialize(currentUser, currentUsername);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
