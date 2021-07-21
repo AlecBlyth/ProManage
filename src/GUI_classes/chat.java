@@ -147,10 +147,14 @@ public class chat {
     }
 
     public void sendMessage(ActionEvent actionEvent) {
-        System.out.println();
-        System.out.println(txtMessage.getText());
-        System.out.println(currentUsername);
-        txtMessage.clear();
+        while (!txtMessage.getText().isEmpty() ){
+
+            System.out.println(currentUsername);
+            System.out.println(txtMessage.getText());
+            System.out.println(lblTime.getText()); //Lazy way to get time, could do this more efficient, this may cause incorrect time when message is sent.
+
+            txtMessage.clear();
+        }
     }
 
     //ADMIN FEATURES
