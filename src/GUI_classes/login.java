@@ -33,16 +33,18 @@ public class login {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
             Statement statement = connection.createStatement(); //Creates a statement
-            String queryString = "SELECT username, password, usertype FROM userdata"; //gets user details from database
+            String queryString = "SELECT username, password, usertype, firstname, surname FROM userdata"; //gets user details from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
                 String compUser = resultSet.getString("username"); //gets username from database
                 String password = resultSet.getString("password"); //gets password from database
                 String userType = resultSet.getString("usertype"); //gets usertype from database
+                String userName = resultSet.getString("firstname") + resultSet.getString("surname");
 
                 if (txtUsername.getText().equals(compUser) && txtPassword.getText().equals(password)) {
                     check = true;
+                    System.out.println(userName);
                     if (userType.equals("ADMIN") || userType.equals("USER")) {
                         System.out.println("Logging in as ADMIN"); //Checks for usertype
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml")); //Loads FXML file

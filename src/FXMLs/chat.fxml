@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
@@ -134,7 +133,11 @@
         <JFXButton layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE" />
         <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
          <children>
-            <JFXListView fx:id="lsvChat" layoutX="15.0" layoutY="14.0" prefHeight="510.0" prefWidth="1016.0" stylesheets="@../Styling/CSS/MaterialDesign.css" />
+            <JFXTextArea fx:id="txtMessages" editable="false" layoutX="14.0" layoutY="14.0" prefHeight="510.0" prefWidth="1016.0" style="-fx-background-color: #282727; -fx-text-fill: white;" unFocusColor="#282727">
+               <font>
+                  <Font name="Segoe UI" size="14.0" />
+               </font>
+            </JFXTextArea>
             <HBox alignment="CENTER" layoutX="831.0" layoutY="533.0" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <JFXButton fx:id="btnSendMsg" onAction="#sendMessage" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Send" textFill="WHITE">

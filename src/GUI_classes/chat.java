@@ -16,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import object_classes.taskObject;
 
 import java.io.IOException;
 import java.sql.*;
@@ -37,7 +36,7 @@ public class chat {
     public JFXButton btnRequests;
     public JFXTextArea txtMessage;
     public JFXButton btnSendMsg;
-    public JFXListView lsvChat;
+    public JFXTextArea txtMessages;
 
     //Variables
     private double xOffset = 0;
@@ -87,7 +86,31 @@ public class chat {
             btnMembers.setDisable(true);
             btnRequests.setDisable(true);
         }
+
+        getMessages();
+
     } //Initialise controller
+
+    public void getMessages(){
+
+        txtMessages.clear();
+
+        try {
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+        Statement statement = connection.createStatement();
+        String queryString = "SELECT email, message, time FROM teamchatlog"; //gets message data from database
+        ResultSet resultSet = statement.executeQuery(queryString);
+        while (resultSet.next()) {
+            String email = resultSet.getString("email"); //TODO Replace with username
+            String message = resultSet.getString("message");
+            String time = resultSet.getString("time");
+            String collectedMsg = (time + ": " + email + ": " + message);
+            txtMessages.appendText(collectedMsg + "\n");
+
+        }
+    } catch (SQLException throwables) {
+        throwables.printStackTrace();
+    }}
 
     public void initTime() {
         Calendar cal = Calendar.getInstance();
@@ -146,13 +169,29 @@ public class chat {
     public void profile(ActionEvent profile) {
     }
 
-    public void sendMessage(ActionEvent actionEvent) {
+    public void sendMessage(ActionEvent sendMessage) {
+
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        String time = LocalTime.now().format(SHORT_TIME_FORMATTER);
+
         while (!txtMessage.getText().isEmpty() ){
 
-            System.out.println(currentUsername);
-            System.out.println(txtMessage.getText());
-            System.out.println(lblTime.getText()); //Lazy way to get time, could do this more efficient, this may cause incorrect time when message is sent.
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String queryString = "insert into teamchatlog (username, email, message, time)" + " VALUES (?, ?, ?, ?)";
+                PreparedStatement preparedStatement = connection.prepareStatement(queryString);
+                preparedStatement.setString(1, "ExampleUsername"); //TODO CHANGE THIS TO USERNAME
+                preparedStatement.setString(2, currentUsername); //TODO CHANGE THIS TO EMAIL
+                preparedStatement.setString(3, txtMessage.getText());
+                preparedStatement.setString(4, time);
 
+                preparedStatement.executeUpdate();
+                getMessages();
+                connection.close();
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             txtMessage.clear();
         }
     }
