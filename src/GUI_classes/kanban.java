@@ -52,7 +52,7 @@ public class kanban {
 
     //Passed variables
     private String currentUser;
-    private String currentUsername;
+    private int currentID;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -74,12 +74,12 @@ public class kanban {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType, String userName) {
+    public void initialize(String userType, int userID) {
 
         initTime();
 
         currentUser = userType; //Sets currentUser to userType
-        currentUsername = userName;
+        currentID = userID;
 
         switch (userType) {
             case "USER":
@@ -297,7 +297,7 @@ public class kanban {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
         AnchorPane root = loader.load();
         tasks tasks = loader.getController();
-        tasks.initialize(currentUser, currentUsername);
+        tasks.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -316,7 +316,7 @@ public class kanban {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
         chat chat = loader.getController();
-        chat.initialize(currentUser, currentUsername);
+        chat.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -367,7 +367,7 @@ public class kanban {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();
         menu menu = loader.getController();
-        menu.initialize(currentUser, currentUsername);
+        menu.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

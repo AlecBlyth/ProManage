@@ -1,7 +1,6 @@
 package GUI_classes;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -45,6 +44,8 @@ public class chat {
     //Passed Variables
     private String currentUser;
     private String currentUsername;
+    private String currentEmail;
+    private int currentID;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -66,10 +67,10 @@ public class chat {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType, String userName) {
+    public void initialize(String userType, int id) {
         initTime();
         currentUser = userType; //Sets currentUser to userType
-        currentUsername = userName;
+        currentID = id;
 
         if ("ADMIN".equals(userType)) {
             btnMembers.setVisible(true);
@@ -89,6 +90,22 @@ public class chat {
 
         getMessages();
 
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
+            Statement statement = connection.createStatement(); //Creates a statement
+            String queryString = "SELECT username, firstname, surname, userID FROM userdata"; //gets user details from database
+            ResultSet resultSet = statement.executeQuery(queryString);
+            while (resultSet.next()) {
+                int idCheck = resultSet.getInt("userID");
+                if (currentID == idCheck) {
+                    currentEmail = resultSet.getString("username");
+                    currentUsername = resultSet.getString("firstname") + resultSet.getString("surname");
+                }
+            }
+        } catch (SQLException throwables) {
+        throwables.printStackTrace();
+    }
+
     } //Initialise controller
 
     public void getMessages(){
@@ -98,13 +115,13 @@ public class chat {
         try {
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
         Statement statement = connection.createStatement();
-        String queryString = "SELECT email, message, time FROM teamchatlog"; //gets message data from database
+        String queryString = "SELECT username, message, time FROM teamchatlog"; //gets message data from database
         ResultSet resultSet = statement.executeQuery(queryString);
         while (resultSet.next()) {
-            String email = resultSet.getString("email"); //TODO Replace with username
+            String email = resultSet.getString("username"); //TODO RENAME TO EMAIL - MYSQL
             String message = resultSet.getString("message");
             String time = resultSet.getString("time");
-            String collectedMsg = (time + ": " + email + ": " + message);
+            String collectedMsg = (time + ": " + email + "\n" + message);
             txtMessages.appendText(collectedMsg + "\n");
 
         }
@@ -128,7 +145,7 @@ public class chat {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
         GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser, currentUsername);
+        kanbanScene.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -147,7 +164,7 @@ public class chat {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
         AnchorPane root = loader.load();
         tasks tasks = loader.getController();
-        tasks.initialize(currentUser, currentUsername);
+        tasks.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -180,8 +197,8 @@ public class chat {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                 String queryString = "insert into teamchatlog (username, email, message, time)" + " VALUES (?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(queryString);
-                preparedStatement.setString(1, "ExampleUsername"); //TODO CHANGE THIS TO USERNAME
-                preparedStatement.setString(2, currentUsername); //TODO CHANGE THIS TO EMAIL
+                preparedStatement.setString(1, currentUsername);
+                preparedStatement.setString(2, currentEmail);
                 preparedStatement.setString(3, txtMessage.getText());
                 preparedStatement.setString(4, time);
 
@@ -229,7 +246,7 @@ public class chat {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();
         menu menu = loader.getController();
-        menu.initialize(currentUser, currentUsername);
+        menu.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
