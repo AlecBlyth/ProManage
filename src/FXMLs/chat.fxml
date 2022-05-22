@@ -6,6 +6,7 @@
 <?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -132,26 +133,22 @@
         </VBox>
         <JFXButton layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE" />
         <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
-         <children>
-            <JFXTextArea fx:id="txtMessages" editable="false" layoutX="14.0" layoutY="14.0" prefHeight="510.0" prefWidth="1016.0" style="-fx-background-color: #282727; -fx-text-fill: white;" unFocusColor="#282727">
-               <font>
-                  <Font name="Segoe UI" size="14.0" />
-               </font>
-            </JFXTextArea>
-            <HBox alignment="CENTER" layoutX="831.0" layoutY="533.0" prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <JFXButton fx:id="btnSendMsg" onAction="#sendMessage" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Send" textFill="WHITE">
-                     <font>
+            <children>
+                <JFXTextArea fx:id="txtMessage" focusColor="#1649e1" layoutX="238.0" layoutY="560.0" onKeyPressed="#CTRLEnter" prefHeight="58.0" prefWidth="570.0" promptText="Type message here  (CTRL + Enter to Send)" stylesheets="@../Styling/CSS/MaterialDesign.css">
+                    <font>
+                        <Font name="Segoe UI" size="13.0" />
+                    </font>
+                </JFXTextArea>
+                <ScrollPane fx:id="chatPane" accessibleRole="PARENT" hbarPolicy="NEVER" layoutX="173.0" layoutY="45.0" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: rgba(0, 0, 0, 0);" stylesheets="@../Styling/CSS/MaterialDesign.css" vvalue="1.0">
+                    <content>
+                        <VBox fx:id="chatLine" alignment="TOP_RIGHT" prefHeight="498.0" prefWidth="678.0" style="-fx-background-color: rgba(0, 0, 0, 0);" stylesheets="@../Styling/CSS/MaterialDesign.css" />
+                    </content>
+                </ScrollPane>
+                <JFXButton fx:id="btnSend" layoutX="831.0" layoutY="567.0" onAction="#sendMessage" prefHeight="43.0" prefWidth="85.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Send" textFill="WHITE">
+                    <font>
                         <Font name="Segoe UI" size="12.0" />
-                     </font>
-                  </JFXButton>
-               </children>
-            </HBox>
-            <JFXTextArea fx:id="txtMessage" focusColor="#1649e1" layoutX="15.0" layoutY="542.0" prefHeight="83.0" prefWidth="815.0" promptText="Enter Message Here" style="-fx-text-fill: white; -fx-prompt-text-fill: white;" wrapText="true">
-               <font>
-                  <Font name="Segoe UI" size="12.0" />
-               </font>
-            </JFXTextArea>
-         </children></Pane>
+                    </font>
+                </JFXButton>
+            </children></Pane>
     </children>
 </AnchorPane>

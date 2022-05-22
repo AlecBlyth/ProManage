@@ -27,7 +27,7 @@
                 <Image url="@../Styling/images/logo.png"/>
             </image>
         </ImageView>
-        <JFXTextField fx:id="txtUsername" focusColor="#296fef" layoutX="453.0" layoutY="269.0" onAction="#login"
+        <JFXTextField fx:id="txtEmail" focusColor="#296fef" layoutX="453.0" layoutY="269.0" onAction="#login"
                       prefHeight="39.0" prefWidth="375.0" promptText="Company Username" style="-fx-text-fill: WHITE;"
                       unFocusColor="WHITE">
             <font>

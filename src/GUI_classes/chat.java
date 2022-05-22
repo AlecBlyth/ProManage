@@ -5,17 +5,27 @@ import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import bluebub.Bubble;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -34,12 +44,17 @@ public class chat {
     public JFXButton btnMembers;
     public JFXButton btnRequests;
     public JFXTextArea txtMessage;
-    public JFXButton btnSendMsg;
-    public JFXTextArea txtMessages;
+    public JFXButton btnSend;
+    public VBox chatLine; //Replaces text field, used for modernisation.
+    public ScrollPane chatPane;
 
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
+    boolean isRunning;
+
+    //Threads
+    Thread messageThread; //Used for updating UI
 
     //Passed Variables
     private String currentUser;
@@ -48,6 +63,9 @@ public class chat {
     private int currentID;
 
     //SYSTEM METHODS
+
+    final KeyCombination KeyCodeCombination =new KeyCodeCombination(KeyCode.ENTER,KeyCombination.CONTROL_DOWN); //Used for quick send
+
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -68,9 +86,13 @@ public class chat {
     } //Date formatter for date label
 
     public void initialize(String userType, int id) {
+
+        chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
+
         initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = id;
+        isRunning = true;
 
         if ("ADMIN".equals(userType)) {
             btnMembers.setVisible(true);
@@ -88,46 +110,86 @@ public class chat {
             btnRequests.setDisable(true);
         }
 
-        getMessages();
-
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
             Statement statement = connection.createStatement(); //Creates a statement
-            String queryString = "SELECT username, firstname, surname, userID FROM userdata"; //gets user details from database
+            String queryString = "SELECT email, firstname, surname, userID FROM userdata"; //gets user details from database
             ResultSet resultSet = statement.executeQuery(queryString);
             while (resultSet.next()) {
                 int idCheck = resultSet.getInt("userID");
                 if (currentID == idCheck) {
-                    currentEmail = resultSet.getString("username");
-                    currentUsername = resultSet.getString("firstname") + resultSet.getString("surname");
+                    currentEmail = resultSet.getString("email");
+                    currentUsername = resultSet.getString("firstname") + " " + resultSet.getString("surname"); //Gets name from database and generates a username.
                 }
             }
         } catch (SQLException throwables) {
         throwables.printStackTrace();
-    }
 
+    }
+        messageThread = new Thread(this::messageThread);
+        messageThread.start();
     } //Initialise controller
 
-    public void getMessages(){
+    private void messageThread(){
 
-        txtMessages.clear();
-
-        try {
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
-        Statement statement = connection.createStatement();
-        String queryString = "SELECT username, message, time FROM teamchatlog"; //gets message data from database
-        ResultSet resultSet = statement.executeQuery(queryString);
-        while (resultSet.next()) {
-            String email = resultSet.getString("username"); //TODO RENAME TO EMAIL - MYSQL
-            String message = resultSet.getString("message");
-            String time = resultSet.getString("time");
-            String collectedMsg = (time + ": " + email + "\n" + message);
-            txtMessages.appendText(collectedMsg + "\n");
+        while(isRunning) {
+            Platform.runLater(this::getMessages);
+            try{
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
         }
-    } catch (SQLException throwables) {
-        throwables.printStackTrace();
-    }}
+
+    } //Updates chat room for any changes, allows for instant messaging, which without you will need to refresh manually
+
+    public void getMessages() {
+
+        chatLine.getChildren().clear(); //Clears chatbox to avoid looping duplicate messages
+
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Statement statement = connection.createStatement();
+                String queryString = "SELECT username, email, message, time FROM teamchatlog"; //gets message data from database
+                ResultSet resultSet = statement.executeQuery(queryString);
+                while (resultSet.next()) {
+                    String email = resultSet.getString("email");
+                    String username = resultSet.getString("username");
+                    String message = resultSet.getString("message");
+                    String time = resultSet.getString("time");
+
+                    StringBuilder sb = new StringBuilder(message); //In order to fit into message bubbles, message is spilt after 70 characters and given a space.
+                    int x = 0;
+                    while (x + 70 < sb.length() && (x = sb.indexOf(" ", x + 70)) != 1){
+                        sb.replace(x, x + 1, "\n"); //Adds space to string when needed.
+                    }
+                    message = sb.toString(); //Converts sb string to message
+
+                    HBox hBox = new HBox(12); //Needed for chat bubbles
+                    HBox hBox2 = new HBox(12);
+
+                    if (email.equals(currentEmail)) {
+                        Bubble b1 = new Bubble(message, username + " : " + time); //Current user bubble
+                        b1.setBubbleColor(Color.rgb(33, 150, 243));
+                        hBox.setAlignment(Pos.CENTER_RIGHT); //Aligns bubble to the right if the message belongs to current user.
+                        hBox.setPadding(new Insets(6.5));
+                        hBox.setSpacing(90);
+                        hBox.getChildren().addAll(b1);
+                    } else {
+                        Bubble b2 = new Bubble(message, username + " : " + time); //Other user's bubble
+                        hBox2.setAlignment(Pos.CENTER_LEFT); //Aligns bubble to left if the message isn't from the current user.
+                        b2.setBubbleColor(Color.rgb(4, 44, 76));
+                        hBox2.setPadding(new Insets(6.5));
+                        hBox2.setSpacing(130);
+                        hBox2.getChildren().addAll(b2);
+                    }
+                    chatLine.getChildren().addAll(hBox, hBox2); //Adds generated bubbles to vbox
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+    } //Gets chat messages from server
 
     public void initTime() {
         Calendar cal = Calendar.getInstance();
@@ -188,10 +250,14 @@ public class chat {
 
     public void sendMessage(ActionEvent sendMessage) {
 
+        chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
+
         DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
         String time = LocalTime.now().format(SHORT_TIME_FORMATTER);
 
         while (!txtMessage.getText().isEmpty() ){
+
+            //&& (txtMessage.getText().length() > 10)
 
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
@@ -203,13 +269,19 @@ public class chat {
                 preparedStatement.setString(4, time);
 
                 preparedStatement.executeUpdate();
-                getMessages();
+                //getMessages();
                 connection.close();
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
             txtMessage.clear();
+        }
+    }
+
+    public void CTRLEnter(KeyEvent keyEvent) {
+        if(KeyCodeCombination.match(keyEvent)){
+            btnSend.fire();
         }
     }
 
@@ -260,5 +332,6 @@ public class chat {
         window.setScene(menuViewScene);
         window.show();
     }
+
 
 }

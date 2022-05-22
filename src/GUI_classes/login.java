@@ -19,7 +19,7 @@ import java.sql.*;
 public class login {
 
     //FXML Components
-    public JFXTextField txtUsername;
+    public JFXTextField txtEmail;
     public JFXPasswordField txtPassword;
     public Label lblWarning; //Label used to alert user of incorrect login
 
@@ -33,16 +33,16 @@ public class login {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
             Statement statement = connection.createStatement(); //Creates a statement
-            String queryString = "SELECT username, password, usertype, userID FROM userdata"; //gets user details from database
+            String queryString = "SELECT email, password, usertype, userID FROM userdata"; //gets user details from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
-                String compUser = resultSet.getString("username"); //gets username from database
+                String compUser = resultSet.getString("email"); //gets email from database
                 String password = resultSet.getString("password"); //gets password from database
                 String userType = resultSet.getString("usertype"); //gets usertype from database
                 int id = resultSet.getInt("userID");
 
-                if (txtUsername.getText().equals(compUser) && txtPassword.getText().equals(password)) {
+                if (txtEmail.getText().equals(compUser) && txtPassword.getText().equals(password)) {
                     check = true;
                     System.out.println(id);
                     if (userType.equals("ADMIN") || userType.equals("USER")) {

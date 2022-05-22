@@ -133,7 +133,7 @@
 
 /*******************************************************************************
  *                                                                             *
- * List View                                                           *
+ * List View                                                                   *
  *                                                                             *
  ******************************************************************************/
 
@@ -241,3 +241,61 @@
 .scroll-bar:horizontal:focused {
     -fx-background-color: -fx-box-border,-fx-box-border,white;
 }
+/*******************************************************************************
+ *                                                                             *
+ * Chat Styling                                                                *
+ *                                                                             *
+ ******************************************************************************/
+
+#chatPane{
+    -fx-background-color: transparent;
+}
+
+#chatLine{
+    -fx-background-color: transparent;
+}
+
+#chatPane > .viewport {
+   -fx-background-color: transparent;
+}
+
+ #txtMessage{
+     -fx-padding: 0 15;
+     -fx-background-color: transparent, white, transparent,white;
+     -fx-background-insets: 0, 6, 0;
+     -fx-background-radius: 1.6em;
+     -fx-prompt-text-fill: grey;
+ }
+ #txtMessage .scroll-pane{
+     -fx-background-color: transparent;
+ }
+ #txtMessage .scroll-pane >.viewport , #txtMsg >.viewport{
+     -fx-background-color: transparent;
+ }
+
+ #txtMessage .scroll-pane .scroll-bar:vertical, #txtMsg .scroll-bar:vertical{
+     -fx-background-color:inherit;
+ }
+
+ #txtMessage .scroll-pane .scroll-bar:vertical .track{
+     -fx-background-color:transparent;
+     -fx-border-color:transparent;
+     -fx-background-radius: 0em;
+
+ }
+ #txtMessage .scroll-pane .scroll-bar:vertical .increment-button,
+ #txtMessage .scroll-pane .scroll-bar:vertical .decrement-button{
+     -fx-background-color:transparent;
+     -fx-background-radius: 0em;
+     -fx-padding:0 0 10 0;
+
+ }
+
+ #txtMessage .scroll-pane  .scroll-bar .increment-arrow,
+ #txtMessage .scroll-pane  .scroll-bar .decrement-arrow {
+     -fx-shape: " ";
+     -fx-padding:0;
+ }
+ #txtMessage .scroll-pane .scroll-bar:vertical .thumb {
+     -fx-background-color:transparent;
+ }
