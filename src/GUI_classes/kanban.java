@@ -5,9 +5,9 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -23,7 +23,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -75,12 +74,10 @@ public class kanban {
     } //Date formatter for date label
 
     public void initialize(String userType, int userID) {
-
         initTime();
 
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
-
         switch (userType) {
             case "USER":
                 btnMembers.setVisible(false);
@@ -120,7 +117,6 @@ public class kanban {
                 String desc = resultSet.getString("taskdesc");
                 int paneID = resultSet.getInt("section");
                 int id = resultSet.getInt("taskid");
-
                 paneDrag(paneOne); //Allows flowpanes for button dragging
                 paneDrag(paneTwo);
                 paneDrag(paneThree);
@@ -171,11 +167,9 @@ public class kanban {
         JFXButton button = new JFXButton(taskname + "\n" + taskdesc); //Sets text in button
         button.setStyle("-fx-background-color: " + colour + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;"); //Button formatting
         button.setFont(Font.font("Segoe UI")); //Button font
-
         button.setPrefWidth(195);
         button.setPrefHeight(80);
         button.setWrapText(true); //Allows text to break to allow for larger descriptions
-
         button.setOnDragDetected(e -> { //Allows button to be dragged from screen
             Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
             db.setDragView(button.snapshot(null, null));
@@ -184,22 +178,19 @@ public class kanban {
             db.setContent(cc);
             draggingButton = button;
         });
-
+        button.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEvent -> button.setCursor(Cursor.OPEN_HAND));
+        button.addEventHandler(MouseEvent.MOUSE_EXITED, mouseEvent -> button.setCursor(Cursor.DEFAULT));
+        button.addEventHandler(MouseEvent.MOUSE_PRESSED, mouseEvent -> button.setCursor(Cursor.CLOSED_HAND));
+        button.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEvent -> button.setCursor(Cursor.OPEN_HAND));
         button.setId(String.valueOf(id));
 
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                    if (mouseEvent.getClickCount() == 2)
-                        System.out.println(button.getId());
-                }
+        button.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                if (mouseEvent.getClickCount() == 2)
+                    System.out.println(button.getId());
             }
         });
-
         button.setOnDragDone(e -> draggingButton = null);
-
-
         return button;
     }
 
@@ -213,11 +204,11 @@ public class kanban {
         });
         pane.setOnDragDropped(e -> {
             Dragboard db = e.getDragboard();
+            draggingButton.setCursor(Cursor.OPEN_HAND);
             if (db.hasContent(btnFormat)) {
                 ((Pane) draggingButton.getParent()).getChildren().remove(draggingButton); //Removes button from previous pane
                 pane.getChildren().add(draggingButton); //Adds button to new pane
                 e.setDropCompleted(true); //finish dragging
-
                 try {
                     Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                     Statement statement = connection.createStatement();
@@ -227,7 +218,6 @@ public class kanban {
                     ResultSet resultSet = statement.executeQuery(queryString);
                     while (resultSet.next()) {
                         int id = resultSet.getInt("taskid");
-
                         if (pane.getId().equals(paneOne.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 1);
                             ps.setString(2, "#123d82");

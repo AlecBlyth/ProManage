@@ -7,7 +7,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,8 +23,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import bluebub.Bubble;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -51,10 +48,10 @@ public class chat {
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
-    boolean isRunning;
 
     //Threads
     Thread messageThread; //Used for updating UI
+    boolean isRunning; //Used for threading
 
     //Passed Variables
     private String currentUser;
@@ -64,7 +61,7 @@ public class chat {
 
     //SYSTEM METHODS
 
-    final KeyCombination KeyCodeCombination =new KeyCodeCombination(KeyCode.ENTER,KeyCombination.CONTROL_DOWN); //Used for quick send
+    final KeyCombination KeyCodeCombination =new KeyCodeCombination(KeyCode.ENTER,KeyCombination.CONTROL_DOWN); //Used for key combo input
 
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -189,7 +186,7 @@ public class chat {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-    } //Gets chat messages from server
+    } //Gets chat messages from server and populates GUI with chat bubbles.
 
     public void initTime() {
         Calendar cal = Calendar.getInstance();
@@ -246,6 +243,7 @@ public class chat {
     }
 
     public void profile(ActionEvent profile) {
+        //TODO
     }
 
     public void sendMessage(ActionEvent sendMessage) {
@@ -257,8 +255,6 @@ public class chat {
 
         while (!txtMessage.getText().isEmpty() ){
 
-            //&& (txtMessage.getText().length() > 10)
-
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                 String queryString = "insert into teamchatlog (username, email, message, time)" + " VALUES (?, ?, ?, ?)";
@@ -269,7 +265,6 @@ public class chat {
                 preparedStatement.setString(4, time);
 
                 preparedStatement.executeUpdate();
-                //getMessages();
                 connection.close();
 
             } catch (SQLException throwables) {
@@ -277,13 +272,13 @@ public class chat {
             }
             txtMessage.clear();
         }
-    }
+    } //Sends message to server
 
     public void CTRLEnter(KeyEvent keyEvent) {
         if(KeyCodeCombination.match(keyEvent)){
             btnSend.fire();
         }
-    }
+    } //Allows user to send message via CTRL + Enter
 
     //ADMIN FEATURES
     public void members(ActionEvent members) {
@@ -332,6 +327,5 @@ public class chat {
         window.setScene(menuViewScene);
         window.show();
     }
-
 
 }

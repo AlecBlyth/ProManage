@@ -1,7 +1,6 @@
 package GUI_classes;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXListView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -10,25 +9,28 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import object_classes.taskObject;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import static javafx.geometry.Pos.CENTER;
 
 public class tasks {
     //FXML Components
@@ -41,7 +43,10 @@ public class tasks {
     public JFXButton btnCreateTask;
     public JFXButton btnEditTask;
     public JFXButton btnDeleteTask;
-    public JFXListView<taskObject> lsvTasks;
+
+    public ScrollPane taskPane;
+    public VBox taskVertical;
+
 
     //Variables
     private double xOffset = 0;
@@ -104,12 +109,23 @@ public class tasks {
             btnDeleteTask.setDisable(true);
         }
 
+        getTasks();
+
+    } //Initialise controller
+
+    public void getTasks() {
+
+        int i = 0;
+        ArrayList<taskObject> taskArray = new ArrayList();
+        taskVertical.getChildren().clear();
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
+
             while (resultSet.next()) {
+
                 int id = resultSet.getInt("taskid");
                 String type = resultSet.getString("tasktype");
                 String name = resultSet.getString("taskname");
@@ -118,44 +134,114 @@ public class tasks {
                 int prog = resultSet.getInt("taskprogress");
                 int section = resultSet.getInt("section");
                 String subject = resultSet.getString("tasksubject");
-
-                taskObject taskObject = new taskObject(id, type, name, desc, hex, prog, section, subject);
-                lsvTasks.getItems().addAll(taskObject);
-
+                taskObject task = new taskObject(id, type, name, desc, hex, prog, section, subject);
+                taskArray.add(task);
             }
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
-        JSONParser parser = new JSONParser(); //Used to read from JSON file
-        try {
-            Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
-            JSONObject jsonObject = (JSONObject) obj;
-            boolean subCheck = (Boolean) jsonObject.get("projectSubjects");
-            lsvTasks.setCellFactory(param -> new ListCell<taskObject>() {
-                @Override
-                public void updateItem(taskObject task, boolean empty) {
-                    super.updateItem(task, empty);
-                    if (!subCheck) {
-                        if (empty || task == null) {
-                            setText(null);
-                        } else {
-                            setText("Task ID: " + task.getTaskID() + " | Task: " + task.getTaskName() + " | Description: " + task.getTaskDesc() + " | Progress: " + task.getTaskProgress());
-                        }
-                    } else {
-                        if (empty || task == null) {
-                            setText(null);
-                        } else {
-                            setText("Task ID: " + task.getTaskID() + " | Task: " + task.getTaskName() + " | Description: " + task.getTaskDesc() + " | Progress: " + task.getTaskProgress() + " | Subject:  " + task.getTaskSubject());
-                        }
-                    }
+        //BAD CODE BELOW, TRIED TO MAKE THIS DYNAMIC BUT ENDED UP SETTING UP A HARD LIMIT OF 24 TASKS PER PROJECT//
+
+        HBox taskHorizontal = new HBox();
+        taskHorizontal.setSpacing(5);
+        taskHorizontal.setAlignment(CENTER);
+        taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+        taskHorizontal.minHeight(Region.USE_PREF_SIZE);
+        taskHorizontal.prefWidth(1020);
+        taskHorizontal.prefHeight(235);
+
+        HBox taskHorizontal2 = new HBox();
+        taskHorizontal2.setSpacing(5);
+        taskHorizontal2.setAlignment(CENTER);
+        taskHorizontal2.minWidth(Region.USE_COMPUTED_SIZE);
+        taskHorizontal2.minHeight(Region.USE_PREF_SIZE);
+        taskHorizontal2.prefWidth(1020);
+        taskHorizontal2.prefHeight(235);
+
+        HBox taskHorizontal3 = new HBox();
+        taskHorizontal3.setSpacing(5);
+        taskHorizontal3.setAlignment(CENTER);
+        taskHorizontal3.minWidth(Region.USE_COMPUTED_SIZE);
+        taskHorizontal3.minHeight(Region.USE_PREF_SIZE);
+        taskHorizontal3.prefWidth(1020);
+        taskHorizontal3.prefHeight(235);
+
+        HBox taskHorizontal4 = new HBox();
+        taskHorizontal4.setSpacing(5);
+        taskHorizontal4.setAlignment(CENTER);
+        taskHorizontal4.minWidth(Region.USE_COMPUTED_SIZE);
+        taskHorizontal4.minHeight(Region.USE_PREF_SIZE);
+        taskHorizontal4.prefWidth(1020);
+        taskHorizontal4.prefHeight(235);
+
+        HBox taskHorizontal5 = new HBox();
+        taskHorizontal5.setSpacing(5);
+        taskHorizontal5.setAlignment(CENTER);
+        taskHorizontal5.minWidth(Region.USE_COMPUTED_SIZE);
+        taskHorizontal5.minHeight(Region.USE_PREF_SIZE);
+        taskHorizontal5.prefWidth(1020);
+        taskHorizontal5.prefHeight(235);
+
+        HBox taskHorizontal6 = new HBox();
+        taskHorizontal6.setSpacing(5);
+        taskHorizontal6.setAlignment(CENTER);
+        taskHorizontal6.minWidth(Region.USE_COMPUTED_SIZE);
+        taskHorizontal6.minHeight(Region.USE_PREF_SIZE);
+        taskHorizontal6.prefWidth(1020);
+        taskHorizontal6.prefHeight(235);
+
+
+        for (taskObject taskObject : taskArray){
+            i++;
+            ToggleButton toggleButton = new ToggleButton();
+            toggleButton.setMinHeight(225);
+            toggleButton.setMinWidth(248);
+
+            toggleButton.setMaxHeight(225);
+            toggleButton.setMaxWidth(248);
+
+            toggleButton.setWrapText(true);
+            toggleButton.setTextOverrun(OverrunStyle.CLIP);
+            toggleButton.setStyle("-fx-base: " + taskObject.getTaskHex() + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 11.0;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+            toggleButton.setText("Task ID: " + taskObject.getTaskID() + "\n" + "Task: " + taskObject.getTaskName() + "\n" + "\n" + "Description:" + "\n" + taskObject.getTaskDesc() + "\n" + "PROGRESS: " + taskObject.getTaskProgress() + "\n" + "SUBJECT: " + taskObject.getTaskSubject());
+            toggleButton.setId(String.valueOf(taskObject.getTaskID()));
+
+            toggleButton.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                    if (mouseEvent.getClickCount() == 1)
+                        System.out.println(toggleButton.getId());
+                    //SET UP TASK VIEW / EDITOR.
                 }
             });
-        } catch (ParseException | IOException e) {
-            e.printStackTrace();
-        }
 
-    } //Initialise controller
+
+            if(i <= 4) {
+                taskHorizontal.getChildren().addAll(toggleButton);
+            } //Was going to use case statements, but you can't have 0-4 ranges with case statements, have to use if statements
+            if(i <= 8 && i > 4) {
+                taskHorizontal2.getChildren().addAll(toggleButton);
+            }
+            if(i <= 12  && i > 8) {
+                taskHorizontal3.getChildren().addAll(toggleButton);
+            }
+            if(i <= 16 && i > 12) {
+                taskHorizontal4.getChildren().addAll(toggleButton);
+            }
+            if(i <= 20 && i > 16) {
+                taskHorizontal5.getChildren().addAll(toggleButton);
+            }
+            if(i <= 24 && i > 20) {
+                taskHorizontal6.getChildren().addAll(toggleButton);
+            } // God this is so messy.
+        }
+        taskVertical.getChildren().addAll(taskHorizontal,taskHorizontal2,taskHorizontal3,taskHorizontal4,taskHorizontal5,taskHorizontal6); //At least this is clean, sort of.
+
+
+
+
+    }
 
     public void initTime() {
         Calendar cal = Calendar.getInstance();
@@ -225,8 +311,8 @@ public class tasks {
     }
 
     public void deleteTask(ActionEvent delete) {
-        taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
-        System.out.println(selectedItem.getTaskID());
+        //taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
+        //System.out.println(selectedItem.getTaskID());
     }
 
     public void members(ActionEvent members) {
