@@ -22,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import object_classes.taskObject;
+
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -31,23 +32,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import static javafx.geometry.Pos.CENTER;
 
 public class tasks {
     //FXML Components
-    public Label lblDate;
-    public Label lblTime;
-    public ImageView memberIcon;
-    public ImageView reqIcon;
-    public JFXButton btnMembers;
-    public JFXButton btnRequests;
-    public JFXButton btnCreateTask;
-    public JFXButton btnEditTask;
-    public JFXButton btnDeleteTask;
+    public Label lblDate, lblTime;
+    public ImageView memberIcon, reqIcon;
     public ScrollPane taskPane;
     public VBox taskVertical;
-    public JFXButton exitBtn;
-
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnDeleteTask, btnEditTask, btnCreateTask;
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
@@ -75,10 +69,26 @@ public class tasks {
             }
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
+
     public void initialize(String userType, int userID) {
 
-        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
-        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+
 
         initTime();
         currentUser = userType; //Sets currentUser to userType
@@ -115,6 +125,7 @@ public class tasks {
         getTasks();
 
     } //Initialise controller
+
     public void getTasks() {
         int x = 0;
         ArrayList<HBox> hBoxArrayList = new ArrayList<>();
@@ -158,7 +169,8 @@ public class tasks {
                         if (mouseEvent.getClickCount() == 1)
                             System.out.println(toggleButton.getId());
                         //SET UP TASK VIEW / EDITOR.
-                    } });
+                    }
+                });
 
                 buttonArray.add(toggleButton);
 
@@ -191,6 +203,7 @@ public class tasks {
             throwables.printStackTrace();
         }
     }
+
     public void initTime() {
         Calendar cal = Calendar.getInstance();
         lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
@@ -221,9 +234,11 @@ public class tasks {
         window.setScene(menuViewScene);
         window.show();
     }
+
     public void tasks(ActionEvent tasks) {
         //DO NOTHING
     }
+
     public void chat(ActionEvent chatRoom) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
@@ -242,22 +257,28 @@ public class tasks {
         window.setScene(chatViewScene);
         window.show();
     }
+
     public void profile(ActionEvent profile) {
     }
+
     public void viewTask(ActionEvent view) {
     }
 
     //ADMIN FEATURES
     public void createTask(ActionEvent create) {
     }
+
     public void editTask(ActionEvent edit) {
     }
+
     public void deleteTask(ActionEvent delete) {
         //taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
         //System.out.println(selectedItem.getTaskID());
     }
+
     public void members(ActionEvent members) {
     }
+
     public void requests(ActionEvent requests) {
     }
 
@@ -265,6 +286,7 @@ public class tasks {
     public void exit(ActionEvent exit) { //Exit functionality
         System.exit(0);
     }
+
     public void logOut(ActionEvent logout) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml"));
         AnchorPane root = loader.load();
@@ -281,6 +303,7 @@ public class tasks {
         window.setScene(loginViewScene);
         window.show();
     }
+
     public void menu(MouseEvent mouseEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();

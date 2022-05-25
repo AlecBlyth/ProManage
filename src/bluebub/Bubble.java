@@ -9,17 +9,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
- *
  * @author zeppel
+ * @version 1
+ * <p>
+ * Library for creating nice chatbubbles in JavaFX Copyright zeppel 2019
+ * <p>
+ * Requirements: JavaFX
  * @web https://zeppel.eu
  * @github github.com/zeppelsoftware
- *
- * @version 1
- *
- *         Library for creating nice chatbubbles in JavaFX Copyright zeppel 2019
- *
- *         Requirements: JavaFX
- *
  */
 public class Bubble extends Group {
     private int p = 14;
@@ -54,26 +51,24 @@ public class Bubble extends Group {
      */
     public Bubble(String text, String meta, boolean quadratic) {
         super();
-        if(quadratic == true) {
+        if (quadratic == true) {
             init(0, 0, text, meta);
             r.setHeight(r.getWidth());
-        }
-        else
+        } else
             init(0, 0, text, meta);
     }
 
     /**
      * create a quadratic chat bubble
-     * 
+     *
      * @param text
      */
     public Bubble(String text, boolean quadratic) {
         super();
-        if(quadratic == true) {
+        if (quadratic == true) {
             init(0, 0, text, "");
             r.setHeight(r.getWidth());
-        }
-        else
+        } else
             init(0, 0, text, "");
     }
 
@@ -105,7 +100,7 @@ public class Bubble extends Group {
         // temp for text
         Text temp = new Text(text);
         temp.setFont(textFont);
-        if(temp.getText().length() <= 10){ //ADDED FOR APP TO ALLOW SPACE FOR NAME PLUS TIME - Alec
+        if (temp.getText().length() <= 10) { //ADDED FOR APP TO ALLOW SPACE FOR NAME PLUS TIME - Alec
             s = s + 45;
         }
         int textW = (int) temp.getLayoutBounds().getWidth();
@@ -155,6 +150,7 @@ public class Bubble extends Group {
 
     /**
      * set bubble width
+     *
      * @param width
      */
     public void setWidth(double width) {
@@ -163,6 +159,7 @@ public class Bubble extends Group {
 
     /**
      * set bubble height
+     *
      * @param height
      */
     public void setHeight(double height) {
@@ -171,6 +168,7 @@ public class Bubble extends Group {
 
     /**
      * Set bubble quadratic size
+     *
      * @param size
      */
     public void setQuadraticSize(double size) {
@@ -180,6 +178,7 @@ public class Bubble extends Group {
 
     /**
      * set the radius of the bubble edges
+     *
      * @param radius
      */
     public void setEdgeRadius(int radius) {

@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import bluebub.Bubble;
+
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -34,17 +35,12 @@ import java.util.Date;
 public class chat {
 
     //FXML Components
-    public Label lblDate;
-    public Label lblTime;
-    public ImageView memberIcon;
-    public ImageView reqIcon;
-    public JFXButton btnMembers;
-    public JFXButton btnRequests;
     public JFXTextArea txtMessage;
-    public JFXButton btnSend;
     public VBox chatLine; //Replaces text field, used for modernisation.
     public ScrollPane chatPane;
-    public JFXButton exitBtn;
+    public Label lblDate, lblTime;
+    public ImageView memberIcon, reqIcon;
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnSend;
 
     //Variables
     private double xOffset = 0;
@@ -62,7 +58,7 @@ public class chat {
 
     //SYSTEM METHODS
 
-    final KeyCombination KeyCodeCombination =new KeyCodeCombination(KeyCode.ENTER,KeyCombination.CONTROL_DOWN); //Used for key combo input
+    final KeyCombination KeyCodeCombination = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.CONTROL_DOWN); //Used for key combo input
 
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -85,8 +81,23 @@ public class chat {
 
     public void initialize(String userType, int id) {
 
-        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
-        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+
 
         chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
 
@@ -124,18 +135,18 @@ public class chat {
                 }
             }
         } catch (SQLException throwables) {
-        throwables.printStackTrace();
+            throwables.printStackTrace();
 
-    }
+        }
         messageThread = new Thread(this::messageThread);
         messageThread.start();
     } //Initialise controller
 
-    private void messageThread(){
+    private void messageThread() {
 
-        while(isRunning) {
+        while (isRunning) {
             Platform.runLater(this::getMessages);
-            try{
+            try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -149,47 +160,47 @@ public class chat {
 
         chatLine.getChildren().clear(); //Clears chatbox to avoid looping duplicate messages
 
-            try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
-                Statement statement = connection.createStatement();
-                String queryString = "SELECT username, email, message, time FROM teamchatlog"; //gets message data from database
-                ResultSet resultSet = statement.executeQuery(queryString);
-                while (resultSet.next()) {
-                    String email = resultSet.getString("email");
-                    String username = resultSet.getString("username");
-                    String message = resultSet.getString("message");
-                    String time = resultSet.getString("time");
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT username, email, message, time FROM teamchatlog"; //gets message data from database
+            ResultSet resultSet = statement.executeQuery(queryString);
+            while (resultSet.next()) {
+                String email = resultSet.getString("email");
+                String username = resultSet.getString("username");
+                String message = resultSet.getString("message");
+                String time = resultSet.getString("time");
 
-                    StringBuilder sb = new StringBuilder(message); //In order to fit into message bubbles, message is spilt after 70 characters and given a space.
-                    int x = 0;
-                    while (x + 70 < sb.length() && (x = sb.indexOf(" ", x + 70)) != 1){
-                        sb.replace(x, x + 1, "\n"); //Adds space to string when needed.
-                    }
-                    message = sb.toString(); //Converts sb string to message
-
-                    HBox hBox = new HBox(12); //Needed for chat bubbles
-                    HBox hBox2 = new HBox(12);
-
-                    if (email.equals(currentEmail)) {
-                        Bubble b1 = new Bubble(message, username + " : " + time); //Current user bubble
-                        b1.setBubbleColor(Color.rgb(33, 150, 243));
-                        hBox.setAlignment(Pos.CENTER_RIGHT); //Aligns bubble to the right if the message belongs to current user.
-                        hBox.setPadding(new Insets(6.5));
-                        hBox.setSpacing(90);
-                        hBox.getChildren().addAll(b1);
-                    } else {
-                        Bubble b2 = new Bubble(message, username + " : " + time); //Other user's bubble
-                        hBox2.setAlignment(Pos.CENTER_LEFT); //Aligns bubble to left if the message isn't from the current user.
-                        b2.setBubbleColor(Color.rgb(4, 44, 76));
-                        hBox2.setPadding(new Insets(6.5));
-                        hBox2.setSpacing(130);
-                        hBox2.getChildren().addAll(b2);
-                    }
-                    chatLine.getChildren().addAll(hBox, hBox2); //Adds generated bubbles to vbox
+                StringBuilder sb = new StringBuilder(message); //In order to fit into message bubbles, message is spilt after 70 characters and given a space.
+                int x = 0;
+                while (x + 70 < sb.length() && (x = sb.indexOf(" ", x + 70)) != 1) {
+                    sb.replace(x, x + 1, "\n"); //Adds space to string when needed.
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                message = sb.toString(); //Converts sb string to message
+
+                HBox hBox = new HBox(12); //Needed for chat bubbles
+                HBox hBox2 = new HBox(12);
+
+                if (email.equals(currentEmail)) {
+                    Bubble b1 = new Bubble(message, username + " : " + time); //Current user bubble
+                    b1.setBubbleColor(Color.rgb(33, 150, 243));
+                    hBox.setAlignment(Pos.CENTER_RIGHT); //Aligns bubble to the right if the message belongs to current user.
+                    hBox.setPadding(new Insets(6.5));
+                    hBox.setSpacing(90);
+                    hBox.getChildren().addAll(b1);
+                } else {
+                    Bubble b2 = new Bubble(message, username + " : " + time); //Other user's bubble
+                    hBox2.setAlignment(Pos.CENTER_LEFT); //Aligns bubble to left if the message isn't from the current user.
+                    b2.setBubbleColor(Color.rgb(4, 44, 76));
+                    hBox2.setPadding(new Insets(6.5));
+                    hBox2.setSpacing(130);
+                    hBox2.getChildren().addAll(b2);
+                }
+                chatLine.getChildren().addAll(hBox, hBox2); //Adds generated bubbles to vbox
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     } //Gets chat messages from server and populates GUI with chat bubbles.
 
     public void initTime() {
@@ -257,7 +268,7 @@ public class chat {
         DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
         String time = LocalTime.now().format(SHORT_TIME_FORMATTER);
 
-        while (!txtMessage.getText().isEmpty() ){
+        while (!txtMessage.getText().isEmpty()) {
 
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
@@ -279,7 +290,7 @@ public class chat {
     } //Sends message to server
 
     public void CTRLEnter(KeyEvent keyEvent) {
-        if(KeyCodeCombination.match(keyEvent)){
+        if (KeyCodeCombination.match(keyEvent)) {
             btnSend.fire();
         }
     } //Allows user to send message via CTRL + Enter
