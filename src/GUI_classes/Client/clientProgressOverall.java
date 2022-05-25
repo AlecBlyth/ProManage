@@ -1,5 +1,6 @@
 package GUI_classes.Client;
 
+import com.jfoenix.controls.JFXButton;
 import eu.hansolo.medusa.Gauge;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -29,6 +30,7 @@ public class clientProgressOverall {
     //FXML Components
     public Gauge gaugeProgress;
     public Label lblDate, lblTime;
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0;
@@ -57,6 +59,9 @@ public class clientProgressOverall {
     }
 
     public void initialize() {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
 
         initTime();
 

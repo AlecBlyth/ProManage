@@ -38,6 +38,7 @@ public class kanban {
     public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked, lblDate, lblTime;
     public JFXButton btnMembers, btnRequests;
     public ImageView memberIcon, reqIcon;
+    public JFXButton exitBtn;
     @FXML
     private FlowPane paneOne, paneTwo, paneThree, paneFour, paneFive;
     @FXML
@@ -74,6 +75,10 @@ public class kanban {
     } //Date formatter for date label
 
     public void initialize(String userType, int userID) {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+
         initTime();
 
         currentUser = userType; //Sets currentUser to userType

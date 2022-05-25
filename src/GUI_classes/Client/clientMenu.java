@@ -1,5 +1,6 @@
 package GUI_classes.Client;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -26,6 +27,7 @@ public class clientMenu {
 
     //FXML components
     public Label lblDate, lblTime, lblTips;
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0;
@@ -52,6 +54,9 @@ public class clientMenu {
     }
 
     public void initialize() {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
 
         initTime();
 

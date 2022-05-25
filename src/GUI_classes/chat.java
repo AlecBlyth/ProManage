@@ -44,6 +44,7 @@ public class chat {
     public JFXButton btnSend;
     public VBox chatLine; //Replaces text field, used for modernisation.
     public ScrollPane chatPane;
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0;
@@ -83,6 +84,9 @@ public class chat {
     } //Date formatter for date label
 
     public void initialize(String userType, int id) {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
 
         chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
 
@@ -132,7 +136,7 @@ public class chat {
         while(isRunning) {
             Platform.runLater(this::getMessages);
             try{
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.CopyOnWriteArrayList;
 import static javafx.geometry.Pos.CENTER;
 
 public class tasks {
@@ -43,10 +44,9 @@ public class tasks {
     public JFXButton btnCreateTask;
     public JFXButton btnEditTask;
     public JFXButton btnDeleteTask;
-
     public ScrollPane taskPane;
     public VBox taskVertical;
-
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0;
@@ -75,8 +75,11 @@ public class tasks {
             }
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
-
     public void initialize(String userType, int userID) {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+
         initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
@@ -107,17 +110,18 @@ public class tasks {
             btnCreateTask.setDisable(true);
             btnEditTask.setDisable(true);
             btnDeleteTask.setDisable(true);
-        }
+        } //User validation
 
         getTasks();
 
     } //Initialise controller
-
     public void getTasks() {
-
-        int i = 0;
+        int x = 0;
+        ArrayList<HBox> hBoxArrayList = new ArrayList<>();
+        CopyOnWriteArrayList<ToggleButton> buttonArray = new CopyOnWriteArrayList<>();
         ArrayList<taskObject> taskArray = new ArrayList();
         taskVertical.getChildren().clear();
+
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
@@ -125,6 +129,7 @@ public class tasks {
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
+                x++;
 
                 int id = resultSet.getInt("taskid");
                 String type = resultSet.getString("tasktype");
@@ -135,114 +140,57 @@ public class tasks {
                 int section = resultSet.getInt("section");
                 String subject = resultSet.getString("tasksubject");
                 taskObject task = new taskObject(id, type, name, desc, hex, prog, section, subject);
-                taskArray.add(task);
-            }
 
+                taskArray.add(task);
+
+                ToggleButton toggleButton = new ToggleButton();
+                toggleButton.setMinHeight(225);
+                toggleButton.setMinWidth(248);
+                toggleButton.setMaxHeight(225);
+                toggleButton.setMaxWidth(248);
+                toggleButton.setWrapText(true);
+                toggleButton.setTextOverrun(OverrunStyle.CLIP);
+                toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 11.0;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+                toggleButton.setText("Task ID: " + id + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+                toggleButton.setId(String.valueOf(id));
+                toggleButton.setOnMouseClicked(mouseEvent -> {
+                    if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                        if (mouseEvent.getClickCount() == 1)
+                            System.out.println(toggleButton.getId());
+                        //SET UP TASK VIEW / EDITOR.
+                    } });
+
+                buttonArray.add(toggleButton);
+
+                if (buttonArray.size() == 4) {
+                    HBox taskHorizontal = new HBox();
+                    taskHorizontal.setSpacing(5);
+                    taskHorizontal.setAlignment(CENTER);
+                    taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+                    taskHorizontal.minHeight(Region.USE_PREF_SIZE);
+                    taskHorizontal.prefWidth(1020);
+                    taskHorizontal.prefHeight(235);
+                    taskHorizontal.getChildren().addAll(buttonArray);
+                    buttonArray.clear();
+                    hBoxArrayList.add(taskHorizontal);
+                }
+                if (buttonArray.size() < 4 && x == 10) {
+                    HBox taskHorizontal = new HBox();
+                    taskHorizontal.setSpacing(5);
+                    taskHorizontal.setAlignment(CENTER);
+                    taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+                    taskHorizontal.minHeight(Region.USE_PREF_SIZE);
+                    taskHorizontal.prefWidth(1020);
+                    taskHorizontal.prefHeight(235);
+                    taskHorizontal.getChildren().addAll(buttonArray);
+                    hBoxArrayList.add(taskHorizontal);
+                }
+            }
+            taskVertical.getChildren().addAll(hBoxArrayList);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-        //BAD CODE BELOW, TRIED TO MAKE THIS DYNAMIC BUT ENDED UP SETTING UP A HARD LIMIT OF 24 TASKS PER PROJECT//
-
-        HBox taskHorizontal = new HBox();
-        taskHorizontal.setSpacing(5);
-        taskHorizontal.setAlignment(CENTER);
-        taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
-        taskHorizontal.minHeight(Region.USE_PREF_SIZE);
-        taskHorizontal.prefWidth(1020);
-        taskHorizontal.prefHeight(235);
-
-        HBox taskHorizontal2 = new HBox();
-        taskHorizontal2.setSpacing(5);
-        taskHorizontal2.setAlignment(CENTER);
-        taskHorizontal2.minWidth(Region.USE_COMPUTED_SIZE);
-        taskHorizontal2.minHeight(Region.USE_PREF_SIZE);
-        taskHorizontal2.prefWidth(1020);
-        taskHorizontal2.prefHeight(235);
-
-        HBox taskHorizontal3 = new HBox();
-        taskHorizontal3.setSpacing(5);
-        taskHorizontal3.setAlignment(CENTER);
-        taskHorizontal3.minWidth(Region.USE_COMPUTED_SIZE);
-        taskHorizontal3.minHeight(Region.USE_PREF_SIZE);
-        taskHorizontal3.prefWidth(1020);
-        taskHorizontal3.prefHeight(235);
-
-        HBox taskHorizontal4 = new HBox();
-        taskHorizontal4.setSpacing(5);
-        taskHorizontal4.setAlignment(CENTER);
-        taskHorizontal4.minWidth(Region.USE_COMPUTED_SIZE);
-        taskHorizontal4.minHeight(Region.USE_PREF_SIZE);
-        taskHorizontal4.prefWidth(1020);
-        taskHorizontal4.prefHeight(235);
-
-        HBox taskHorizontal5 = new HBox();
-        taskHorizontal5.setSpacing(5);
-        taskHorizontal5.setAlignment(CENTER);
-        taskHorizontal5.minWidth(Region.USE_COMPUTED_SIZE);
-        taskHorizontal5.minHeight(Region.USE_PREF_SIZE);
-        taskHorizontal5.prefWidth(1020);
-        taskHorizontal5.prefHeight(235);
-
-        HBox taskHorizontal6 = new HBox();
-        taskHorizontal6.setSpacing(5);
-        taskHorizontal6.setAlignment(CENTER);
-        taskHorizontal6.minWidth(Region.USE_COMPUTED_SIZE);
-        taskHorizontal6.minHeight(Region.USE_PREF_SIZE);
-        taskHorizontal6.prefWidth(1020);
-        taskHorizontal6.prefHeight(235);
-
-
-        for (taskObject taskObject : taskArray){
-            i++;
-            ToggleButton toggleButton = new ToggleButton();
-            toggleButton.setMinHeight(225);
-            toggleButton.setMinWidth(248);
-
-            toggleButton.setMaxHeight(225);
-            toggleButton.setMaxWidth(248);
-
-            toggleButton.setWrapText(true);
-            toggleButton.setTextOverrun(OverrunStyle.CLIP);
-            toggleButton.setStyle("-fx-base: " + taskObject.getTaskHex() + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 11.0;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
-            toggleButton.setText("Task ID: " + taskObject.getTaskID() + "\n" + "Task: " + taskObject.getTaskName() + "\n" + "\n" + "Description:" + "\n" + taskObject.getTaskDesc() + "\n" + "PROGRESS: " + taskObject.getTaskProgress() + "\n" + "SUBJECT: " + taskObject.getTaskSubject());
-            toggleButton.setId(String.valueOf(taskObject.getTaskID()));
-
-            toggleButton.setOnMouseClicked(mouseEvent -> {
-                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                    if (mouseEvent.getClickCount() == 1)
-                        System.out.println(toggleButton.getId());
-                    //SET UP TASK VIEW / EDITOR.
-                }
-            });
-
-
-            if(i <= 4) {
-                taskHorizontal.getChildren().addAll(toggleButton);
-            } //Was going to use case statements, but you can't have 0-4 ranges with case statements, have to use if statements
-            if(i <= 8 && i > 4) {
-                taskHorizontal2.getChildren().addAll(toggleButton);
-            }
-            if(i <= 12  && i > 8) {
-                taskHorizontal3.getChildren().addAll(toggleButton);
-            }
-            if(i <= 16 && i > 12) {
-                taskHorizontal4.getChildren().addAll(toggleButton);
-            }
-            if(i <= 20 && i > 16) {
-                taskHorizontal5.getChildren().addAll(toggleButton);
-            }
-            if(i <= 24 && i > 20) {
-                taskHorizontal6.getChildren().addAll(toggleButton);
-            } // God this is so messy.
-        }
-        taskVertical.getChildren().addAll(taskHorizontal,taskHorizontal2,taskHorizontal3,taskHorizontal4,taskHorizontal5,taskHorizontal6); //At least this is clean, sort of.
-
-
-
-
     }
-
     public void initTime() {
         Calendar cal = Calendar.getInstance();
         lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
@@ -273,11 +221,9 @@ public class tasks {
         window.setScene(menuViewScene);
         window.show();
     }
-
     public void tasks(ActionEvent tasks) {
         //DO NOTHING
     }
-
     public void chat(ActionEvent chatRoom) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
@@ -296,28 +242,22 @@ public class tasks {
         window.setScene(chatViewScene);
         window.show();
     }
-
     public void profile(ActionEvent profile) {
     }
-
     public void viewTask(ActionEvent view) {
     }
 
     //ADMIN FEATURES
     public void createTask(ActionEvent create) {
     }
-
     public void editTask(ActionEvent edit) {
     }
-
     public void deleteTask(ActionEvent delete) {
         //taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
         //System.out.println(selectedItem.getTaskID());
     }
-
     public void members(ActionEvent members) {
     }
-
     public void requests(ActionEvent requests) {
     }
 
@@ -325,7 +265,6 @@ public class tasks {
     public void exit(ActionEvent exit) { //Exit functionality
         System.exit(0);
     }
-
     public void logOut(ActionEvent logout) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml"));
         AnchorPane root = loader.load();
@@ -342,7 +281,6 @@ public class tasks {
         window.setScene(loginViewScene);
         window.show();
     }
-
     public void menu(MouseEvent mouseEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();

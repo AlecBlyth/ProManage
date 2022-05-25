@@ -1,5 +1,6 @@
 package GUI_classes;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
@@ -22,12 +23,17 @@ public class login {
     public JFXTextField txtEmail;
     public JFXPasswordField txtPassword;
     public Label lblWarning; //Label used to alert user of incorrect login
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0; //Used to allow user to move GUI around screen
     private double yOffset = 0;
 
     //SYSTEM METHOD
+    public void initialize(){
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+    }
     public void login(ActionEvent login) {
         boolean check = false; //Boolean that checks for successful login
         try {
@@ -98,8 +104,8 @@ public class login {
     }
 
     //NAVIGATION
-    public void exit() {
+
+    public void exit(ActionEvent event) {
         System.exit(0);
     }
-
 }

@@ -1,5 +1,6 @@
 package GUI_classes.Client;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -27,6 +28,7 @@ public class clientProgressDetailed {
     //FXML components
     public Label lblDate, lblTime;
     public JFXListView ltvTasks;
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0;
@@ -53,6 +55,10 @@ public class clientProgressDetailed {
     }
 
     public void initialize() throws SQLException {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+
         initTime();
 
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin");

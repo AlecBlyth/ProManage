@@ -31,6 +31,7 @@ public class menu {
     public ImageView reqIcon;
     public JFXButton btnMembers;
     public JFXButton btnRequests;
+    public JFXButton exitBtn;
 
     //Variables
     private double xOffset = 0;
@@ -61,6 +62,10 @@ public class menu {
     } //Date formatter for date label
 
     public void initialize(String userType, int id) {
+
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ;"));
+
         initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = id;
