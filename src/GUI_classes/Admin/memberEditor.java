@@ -180,7 +180,7 @@ public class memberEditor {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent exit) { //Exit functionality
+    public void exit() { //Exit functionality
         System.exit(0);
     }
 

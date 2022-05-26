@@ -1,9 +1,8 @@
 package GUI_classes.Admin;
 
-import GUI_classes.chat;
 import GUI_classes.menu;
-import GUI_classes.tasks;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -15,10 +14,17 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -27,9 +33,11 @@ import java.util.Date;
 
 public class taskEditor {
     //FXML Components
-    public Label lblDate, lblTime;
+    public Label lblDate, lblTime, lblSubject, lblID, lblValidation;
     public ImageView memberIcon, reqIcon;
-    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnSave;
+    public JFXTextArea txtFieldSubject, txtFieldTaskID, txtFieldTaskProg, txtFieldName, txtFieldDesc;
+    public FlowPane flowPaneBtns;
 
     //Variables
     private double xOffset = 0;
@@ -59,7 +67,7 @@ public class taskEditor {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType, int userID) {
+    public void initialize(String userType, int userID, int taskID, boolean createCheck) throws IOException, ParseException {
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -78,7 +86,6 @@ public class taskEditor {
         btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-
         initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
@@ -90,6 +97,10 @@ public class taskEditor {
             reqIcon.setVisible(true);
             btnMembers.setDisable(false);
             btnRequests.setDisable(false);
+            txtFieldDesc.setEditable(true);
+            txtFieldSubject.setEditable(true);
+            txtFieldName.setEditable(true);
+
         } else {
             btnMembers.setVisible(false);
             btnRequests.setVisible(false);
@@ -97,7 +108,22 @@ public class taskEditor {
             reqIcon.setVisible(false);
             btnMembers.setDisable(true);
             btnRequests.setDisable(true);
+            flowPaneBtns.getChildren().remove(btnSave);
+            lblID.setVisible(false);
+            txtFieldTaskID.setVisible(false);
         }
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
+        JSONObject jsonObject = (JSONObject) obj;
+        boolean subCheck = (Boolean) jsonObject.get("projectSubjects");
+
+        if (subCheck) {
+            txtFieldSubject.setVisible(false);
+            lblSubject.setVisible(false);
+        }
+
+        getTask(taskID, createCheck);
     } //Initialise controller
 
     public void initTime() {
@@ -110,6 +136,46 @@ public class taskEditor {
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play(); //Updates the clock
     } //Initialise time
+
+    public void getTask(int taskID, boolean createCheck) {
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT taskid, taskname, taskdesc, taskprogress, tasksubject FROM tasks"; //gets task data from database
+            ResultSet resultSet = statement.executeQuery(queryString);
+
+            while (resultSet.next()) {
+
+                int id = resultSet.getInt("taskid");
+                String name = resultSet.getString("taskname");
+                String desc = resultSet.getString("taskdesc");
+                int prog = resultSet.getInt("taskprogress");
+                String subject = resultSet.getString("tasksubject");
+
+                if (taskID == id) {
+                    txtFieldTaskID.setText(Integer.toString(id));
+                    txtFieldName.setText(name);
+                    txtFieldDesc.setText(desc);
+                    txtFieldTaskProg.setText(prog + "%");
+                    txtFieldSubject.setText(subject);
+                }
+
+                if (taskID == 0 && !createCheck) {
+                    lblValidation.setVisible(true);
+                    lblValidation.setText("ERROR, TASK NOT FOUND! Report to Admin if issue persists");
+                    lblValidation.setTextFill(Color.RED);
+                    txtFieldName.setText("ERROR CANNOT RECEIVE TASK NAME!");
+                    txtFieldName.setStyle("-fx-text-inner-color: red;");
+                    txtFieldDesc.setText("ERROR CANNOT RECEIVE TASK DESCRIPTION!");
+                    txtFieldDesc.setStyle("-fx-text-inner-color: red;");
+                    txtFieldSubject.setText("ERROR CANNOT RECEIVE TASK SUBJECT!");
+                    txtFieldSubject.setStyle("-fx-text-inner-color: red;");
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
 
     //ADMIN AND USER FEATURES
     public void kanban(ActionEvent kanban) throws IOException {
@@ -173,6 +239,10 @@ public class taskEditor {
     }
 
     //ADMIN FEATURES
+
+    public void saveTask() {
+    }
+
     public void members(ActionEvent members) {
     }
 
@@ -180,7 +250,7 @@ public class taskEditor {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent exit) { //Exit functionality
+    public void exit() { //Exit functionality
         System.exit(0);
     }
 
@@ -217,6 +287,25 @@ public class taskEditor {
             window.setY((event.getScreenY() - yOffset));
         });
         window.setScene(menuViewScene);
+        window.show();
+    }
+
+    public void goBack(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.tasks tasks = loader.getController();
+        tasks.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
         window.show();
     }
 }

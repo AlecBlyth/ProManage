@@ -51,9 +51,7 @@ public class login {
 
                 if (txtEmail.getText().equals(compUser) && txtPassword.getText().equals(password)) {
                     check = true;
-                    System.out.println(id);
-                    if (userType.equals("ADMIN") || userType.equals("USER")) {
-                        System.out.println("Logging in as ADMIN"); //Checks for usertype
+                    if (userType.equals("ADMIN") || userType.equals("USER")) { //Checks for usertype
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml")); //Loads FXML file
                         AnchorPane root = loader.load();
                         menu MenuScene = loader.getController(); //Gets controller from menu
@@ -72,7 +70,6 @@ public class login {
                         window.show(); //shows menu
                     }
                     if (userType.equals("CLIENT")) { //Checks for client usertype
-                        System.out.println("CLIENT Login");
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
                         AnchorPane root = loader.load();
                         root.setOnMousePressed(event -> {
@@ -106,7 +103,7 @@ public class login {
 
     //NAVIGATION
 
-    public void exit(ActionEvent event) {
+    public void exit() {
         System.exit(0);
     }
 }

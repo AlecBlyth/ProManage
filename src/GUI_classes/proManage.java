@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Objects;
+
 public class proManage extends Application {
 
     //Variables
@@ -17,7 +19,7 @@ public class proManage extends Application {
     public void start(Stage primaryStage) throws Exception {
         splashScreen splash = new splashScreen(3500); //Sets duration of splash screen
         splash.showIntro(); //Show custom intro splash screen
-        Parent root = FXMLLoader.load(getClass().getResource("../FXMLs/login.fxml")); //Loads Login FXML
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("../FXMLs/login.fxml"))); //Loads Login FXML
 
         primaryStage.initStyle(StageStyle.UNDECORATED); //Removes default app controls
         root.setOnMousePressed(event -> {

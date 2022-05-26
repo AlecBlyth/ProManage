@@ -5,6 +5,7 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
@@ -45,7 +46,7 @@ public class kanban {
     @FXML
     private JFXButton draggingButton;
 
-    private static DataFormat btnFormat = new DataFormat(" "); //Allows buttons on clipboard
+    private static final DataFormat btnFormat = new DataFormat(" "); //Allows buttons on clipboard
 
     //Variables
     private double xOffset = 0;
@@ -54,6 +55,8 @@ public class kanban {
     //Passed variables
     private String currentUser;
     private int currentID;
+    private int taskID;
+    boolean createCheck = false;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -205,12 +208,43 @@ public class kanban {
         button.addEventHandler(MouseEvent.MOUSE_RELEASED, mouseEvent -> button.setCursor(Cursor.OPEN_HAND));
         button.setId(String.valueOf(id));
 
-        button.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                if (mouseEvent.getClickCount() == 2)
-                    System.out.println(button.getId());
+        button.setOnMouseClicked(new EventHandler<>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                    if (mouseEvent.getClickCount() == 2) {
+                        taskID = Integer.parseInt(button.getId());
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
+                        AnchorPane root = null;
+                        try {
+                            root = loader.load();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        GUI_classes.Admin.taskEditor taskEditorScene = loader.getController();
+                        try {
+                            taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
+                        } catch (IOException | ParseException e) {
+                            e.printStackTrace();
+                        }
+                        assert root != null;
+                        root.setOnMousePressed(event -> {
+                            xOffset = event.getSceneX();
+                            yOffset = event.getSceneY();
+                        });
+                        Scene menuViewScene = new Scene(root);
+                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                        root.setOnMouseDragged(event -> {
+                            window.setX((event.getScreenX() - xOffset));
+                            window.setY((event.getScreenY() - yOffset));
+                        });
+                        window.setScene(menuViewScene);
+                        window.show();
+                    }
+                }
             }
         });
+
         button.setOnDragDone(e -> draggingButton = null);
         return button;
     }
@@ -300,7 +334,7 @@ public class kanban {
     }
 
     //ADMIN AND USER FEATURES
-    public void kanban(ActionEvent kanban) {
+    public void kanban() {
         //Do nothing already on stage
     }
 
@@ -353,7 +387,27 @@ public class kanban {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent actionEvent) {
+
+    public void view(ActionEvent view) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.Admin.taskEditor taskEditorScene = loader.getController();
+        taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) view.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    }
+
+    public void exit() {
         System.exit(0);
     }
 

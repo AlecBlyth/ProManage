@@ -128,7 +128,7 @@ public class clientMenu {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent exit) {
+    public void exit() {
         System.exit(0);
     }
 

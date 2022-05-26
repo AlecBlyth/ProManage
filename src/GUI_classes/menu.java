@@ -8,7 +8,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -26,9 +25,8 @@ public class menu {
 
     //FXML Components
     public Label lblTime, lblTips, lblDate;
-    public ImageView memberIcon, reqIcon;
+    public ImageView memberIcon, reqIcon, imageMenu;
     public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
-    public ImageView imageMenu;
 
     //Variables
     private double xOffset = 0;
@@ -215,7 +213,7 @@ public class menu {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent exit) { //Exit functionality
+    public void exit() { //Exit functionality
         System.exit(0);
     }
 
@@ -236,7 +234,7 @@ public class menu {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) {
+    public void menu() {
         //Do nothing already here
     }
 }

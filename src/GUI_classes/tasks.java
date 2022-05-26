@@ -2,16 +2,14 @@ package GUI_classes;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.OverrunStyle;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -21,7 +19,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import object_classes.taskObject;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.sql.*;
@@ -37,11 +35,13 @@ import static javafx.geometry.Pos.CENTER;
 
 public class tasks {
     //FXML Components
-    public Label lblDate, lblTime;
+    public Label lblDate, lblTime, lblInfo;
     public ImageView memberIcon, reqIcon;
     public ScrollPane taskPane;
     public VBox taskVertical;
     public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnDeleteTask, btnEditTask, btnCreateTask;
+    public ToggleGroup toggleGroup; //Uses placeholder togglebox to get togglegroup to work and unselect tasks when other tasks are clicked.
+
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
@@ -49,6 +49,10 @@ public class tasks {
     //Passed Variables
     private String currentUser;
     private int currentID;
+    boolean createCheck = false;
+
+    //Local Variables
+    public int taskID;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -89,7 +93,6 @@ public class tasks {
         btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-
         initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
@@ -113,13 +116,12 @@ public class tasks {
             memberIcon.setVisible(false);
             reqIcon.setVisible(false);
             btnCreateTask.setVisible(false);
-            btnEditTask.setVisible(false);
             btnDeleteTask.setVisible(false);
             btnMembers.setDisable(true);
             btnRequests.setDisable(true);
             btnCreateTask.setDisable(true);
-            btnEditTask.setDisable(true);
             btnDeleteTask.setDisable(true);
+            btnEditTask.setText("View Task");
         } //User validation
 
         getTasks();
@@ -130,30 +132,22 @@ public class tasks {
         int x = 0;
         ArrayList<HBox> hBoxArrayList = new ArrayList<>();
         CopyOnWriteArrayList<ToggleButton> buttonArray = new CopyOnWriteArrayList<>();
-        ArrayList<taskObject> taskArray = new ArrayList();
         taskVertical.getChildren().clear();
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject FROM tasks"; //gets task data from database
+            String queryString = "SELECT taskid, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
                 x++;
-
                 int id = resultSet.getInt("taskid");
-                String type = resultSet.getString("tasktype");
                 String name = resultSet.getString("taskname");
                 String desc = resultSet.getString("taskdesc");
                 String hex = resultSet.getString("taskhex");
                 int prog = resultSet.getInt("taskprogress");
-                int section = resultSet.getInt("section");
                 String subject = resultSet.getString("tasksubject");
-                taskObject task = new taskObject(id, type, name, desc, hex, prog, section, subject);
-
-                taskArray.add(task);
-
                 ToggleButton toggleButton = new ToggleButton();
                 toggleButton.setMinHeight(225);
                 toggleButton.setMinWidth(248);
@@ -161,18 +155,33 @@ public class tasks {
                 toggleButton.setMaxWidth(248);
                 toggleButton.setWrapText(true);
                 toggleButton.setTextOverrun(OverrunStyle.CLIP);
-                toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 11.0;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
-                toggleButton.setText("Task ID: " + id + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+
+                if (currentUser.equals("ADMIN")) {
+                    toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+                    if (subject != null) {
+                        toggleButton.setText("Task ID: " + id + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+                    } else {
+                        toggleButton.setText("Task ID: " + id + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
+                    }
+                } else {
+                    toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+                    if (subject != null) {
+                        toggleButton.setText("Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+                    } else {
+                        toggleButton.setText("Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
+                    }
+                }
+
                 toggleButton.setId(String.valueOf(id));
                 toggleButton.setOnMouseClicked(mouseEvent -> {
                     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                         if (mouseEvent.getClickCount() == 1)
-                            System.out.println(toggleButton.getId());
-                        //SET UP TASK VIEW / EDITOR.
+                            taskID = id; //Sets ID to currently clicked task's ID
                     }
                 });
 
-                buttonArray.add(toggleButton);
+                toggleButton.setToggleGroup(toggleGroup); //Puts toggle button into toggle group to unselect/select correct tasks.
+                buttonArray.add(toggleButton); //Add toggle button to array
 
                 if (buttonArray.size() == 4) {
                     HBox taskHorizontal = new HBox();
@@ -186,7 +195,7 @@ public class tasks {
                     buttonArray.clear();
                     hBoxArrayList.add(taskHorizontal);
                 }
-                if (buttonArray.size() < 4 && x == 10) {
+                if (buttonArray.size() < 4 && x > buttonArray.size()) {
                     HBox taskHorizontal = new HBox();
                     taskHorizontal.setSpacing(5);
                     taskHorizontal.setAlignment(CENTER);
@@ -235,7 +244,7 @@ public class tasks {
         window.show();
     }
 
-    public void tasks(ActionEvent tasks) {
+    public void tasks() {
         //DO NOTHING
     }
 
@@ -261,19 +270,87 @@ public class tasks {
     public void profile(ActionEvent profile) {
     }
 
-    public void viewTask(ActionEvent view) {
-    }
+    public void editTask(ActionEvent edit) throws IOException, ParseException {
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.Admin.taskEditor taskEditorScene = loader.getController();
+        taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) edit.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+
+    } // ADMIN CAN EDIT, USER CAN ONLY VIEW
 
     //ADMIN FEATURES
-    public void createTask(ActionEvent create) {
-    }
+    public void createTask(ActionEvent create) throws IOException, ParseException {
+        createCheck = true;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.Admin.taskEditor createTaskMenu = loader.getController();
+        createTaskMenu.initialize(currentUser, currentID, taskID, createCheck);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) create.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    } //Sets create check to true which allows admin to edit
 
-    public void editTask(ActionEvent edit) {
-    }
+    public void deleteTask() {
 
-    public void deleteTask(ActionEvent delete) {
-        //taskObject selectedItem = lsvTasks.getSelectionModel().getSelectedItem();
-        //System.out.println(selectedItem.getTaskID());
+        if (taskID == 0) {
+            lblInfo.setText("Select a Task to Delete!");
+            lblInfo.setVisible(true); //Displays label
+            if (lblInfo.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
+
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Statement statement = connection.createStatement();
+            String queryString = "SELECT taskid FROM tasks"; //gets task data from database
+            String updateQuery = "DELETE from tasks WHERE taskid=?";
+            PreparedStatement ps = connection.prepareStatement(updateQuery);
+            ResultSet resultSet = statement.executeQuery(queryString);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("taskid");
+                if (taskID == id) {
+                    ps.setInt(1, id);
+                    ps.executeUpdate();
+                    getTasks();
+
+                    lblInfo.setVisible(true); //Displays label
+                    if (lblInfo.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
+                }
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public void members(ActionEvent members) {
@@ -283,7 +360,7 @@ public class tasks {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent exit) { //Exit functionality
+    public void exit() { //Exit functionality
         System.exit(0);
     }
 

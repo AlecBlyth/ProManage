@@ -253,7 +253,7 @@ public class chat {
         window.show();
     }
 
-    public void chat(ActionEvent chat) {
+    public void chat() {
         //DO NOTHING
     }
 
@@ -261,7 +261,7 @@ public class chat {
         //TODO
     }
 
-    public void sendMessage(ActionEvent sendMessage) {
+    public void sendMessage() {
 
         chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
 
@@ -303,7 +303,7 @@ public class chat {
     }
 
     //NAVIGATION
-    public void exit(ActionEvent exit) { //Exit functionality
+    public void exit() { //Exit functionality
         System.exit(0);
     }
 
