@@ -1,8 +1,5 @@
-package GUI_classes.Admin;
+package GUI_classes.Client;
 
-import GUI_classes.chat;
-import GUI_classes.menu;
-import GUI_classes.tasks;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -12,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -25,11 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-public class memberEditor {
-    //FXML Components
+public class clientRequests {
+
+    //FXML components
     public Label lblDate, lblTime;
-    public ImageView reqIcon, memberIcon;
-    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
+    public JFXButton exitBtn, btnLogout, btnProgress, btnChat, btnProfile, btnRequest;
 
     //Variables
     private double xOffset = 0;
@@ -45,7 +41,7 @@ public class memberEditor {
         cal.setTime(date);
         int day = cal.get(Calendar.DATE);
 
-        if (!((day > 10) && (day < 19))) //Allows for th st nd suffixes
+        if (!((day > 10) && (day < 19)))
             switch (day % 10) {
                 case 1:
                     return new SimpleDateFormat("d'st' MMMM yyyy").format(date);
@@ -56,104 +52,66 @@ public class memberEditor {
                 default:
                     return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
             }
-        return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
-    } //Date formatter for date label
+        return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
+    }
 
-    public void initialize(String userType, int userID) {
+    public void initialize(String userType, int id) {
+
+        currentUser = userType;
+        currentID = id;
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
         btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
-        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnProgress.setOnMouseEntered(e -> btnProgress.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnProgress.setOnMouseExited(e -> btnProgress.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
         btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnRequest.setOnMouseEntered(e -> btnRequest.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnRequest.setOnMouseExited(e -> btnRequest.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
         initTime();
-        currentUser = userType; //Sets currentUser to userType
-        currentID = userID;
-
-        if ("ADMIN".equals(userType)) {
-            btnMembers.setVisible(true);
-            btnRequests.setVisible(true);
-            memberIcon.setVisible(true);
-            reqIcon.setVisible(true);
-            btnMembers.setDisable(false);
-            btnRequests.setDisable(false);
-        } else {
-            btnMembers.setVisible(false);
-            btnRequests.setVisible(false);
-            memberIcon.setVisible(false);
-            reqIcon.setVisible(false);
-            btnMembers.setDisable(true);
-            btnRequests.setDisable(true);
-        }
-    } //Initialise controller
+    }
 
     public void initTime() {
         Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
         DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
                 event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
                 new KeyFrame(Duration.seconds(1)));
         timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play(); //Updates the clock
-    } //Initialise time
-
-    //ADMIN AND USER FEATURES
-    public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene kanbanViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(kanbanViewScene);
-        window.show();
+        timeline.play();
     }
 
-    public void tasks(ActionEvent task) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+    //CLIENT FEATURES
+    public void progress(ActionEvent progress) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
         AnchorPane root = loader.load();
-        tasks tasks = loader.getController();
-        tasks.initialize(currentUser, currentID);
+        clientProgressOverall clientProgress = loader.getController();
+        clientProgress.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene taskViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        Scene progressViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) progress.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(taskViewScene);
+        window.setScene(progressViewScene);
         window.show();
     }
 
     public void chat(ActionEvent chatRoom) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientChat.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.chat chat = loader.getController();
-        chat.initialize(currentUser, currentID);
+        clientChat clientChat = loader.getController();
+        clientChat.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -168,19 +126,16 @@ public class memberEditor {
         window.show();
     }
 
-    public void profile(ActionEvent profile) {
-    }
-
-    //ADMIN FEATURES
-    public void members(ActionEvent members) {
+    public void request() {
         //DO NOTHING
     }
 
-    public void requests(ActionEvent requests) {
+    //USER FEATURES
+    public void profile(ActionEvent profile) {
     }
 
     //NAVIGATION
-    public void exit() { //Exit functionality
+    public void exit() {
         System.exit(0);
     }
 
@@ -202,10 +157,10 @@ public class memberEditor {
     }
 
     public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
         AnchorPane root = loader.load();
-        menu menu = loader.getController();
-        menu.initialize(currentUser, currentID);
+        GUI_classes.Client.clientMenu temp = loader.getController();
+        temp.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();

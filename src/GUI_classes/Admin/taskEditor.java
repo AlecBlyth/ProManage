@@ -4,6 +4,7 @@ import GUI_classes.menu;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -46,6 +47,11 @@ public class taskEditor {
     //Passed Variables
     private String currentUser;
     private int currentID;
+
+    //Local Variables
+    public int localTaskID;
+    boolean checked = true;
+    boolean subCheck = false;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -116,9 +122,9 @@ public class taskEditor {
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
         JSONObject jsonObject = (JSONObject) obj;
-        boolean subCheck = (Boolean) jsonObject.get("projectSubjects");
+        subCheck = (Boolean) jsonObject.get("projectSubjects");
 
-        if (subCheck) {
+        if (!subCheck) {
             txtFieldSubject.setVisible(false);
             lblSubject.setVisible(false);
         }
@@ -138,6 +144,7 @@ public class taskEditor {
     } //Initialise time
 
     public void getTask(int taskID, boolean createCheck) {
+        localTaskID = taskID;
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
@@ -241,6 +248,109 @@ public class taskEditor {
     //ADMIN FEATURES
 
     public void saveTask() {
+
+        System.out.println(subCheck);
+
+        if (txtFieldDesc.getText().length() > 260) {
+            lblValidation.setText("Description is too long, please limit to 260 characters");
+            lblValidation.setTextFill(Color.RED);
+            lblValidation.setVisible(true); //Displays label
+            checked = false;
+            if (lblValidation.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
+
+        if (subCheck) {
+            if (txtFieldSubject.getText().length() > 26) {
+                lblValidation.setText("Subject Name is too long, please limit to 26 characters, if possible shorten name to 'Mr. Example Sr'");
+                lblValidation.setTextFill(Color.RED);
+                lblValidation.setVisible(true); //Displays label
+                checked = false;
+                if (lblValidation.isVisible()) { //Plays fade out animation
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.play();
+                }
+            }
+        }
+        if (txtFieldName.getText().length() > 40) {
+            lblValidation.setText("Task name is too long, please limit to 40 characters");
+            lblValidation.setTextFill(Color.RED);
+            lblValidation.setVisible(true); //Displays label
+            checked = false;
+            if (lblValidation.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
+        if (subCheck && checked) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Statement statement = connection.createStatement();
+                String queryString = "SELECT taskid, taskname, taskdesc, tasksubject FROM tasks"; //gets task data from database
+                String updateQuery = "UPDATE tasks SET taskname=?, taskdesc=?, tasksubject=? WHERE taskid=?";
+                PreparedStatement ps = connection.prepareStatement(updateQuery);
+                ResultSet resultSet = statement.executeQuery(queryString);
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("taskid");
+                    if (localTaskID == id) {
+                        ps.setString(1, txtFieldName.getText());
+                        ps.setString(2, txtFieldDesc.getText());
+                        ps.setString(3, txtFieldSubject.getText());
+                        ps.setInt(4, id);
+                        ps.executeUpdate();
+                        lblValidation.setText("Task saved!");
+                        lblValidation.setTextFill(Color.GREEN);
+                        lblValidation.setVisible(true); //Displays label
+                        if (lblValidation.isVisible()) { //Plays fade out animation
+                            FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                            fadeOut.setFromValue(1.0);
+                            fadeOut.setToValue(0.0);
+                            fadeOut.play();
+                        }
+                    }
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        if (!subCheck && checked) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Statement statement = connection.createStatement();
+                String queryString = "SELECT taskid, taskname, taskdesc FROM tasks"; //gets task data from database
+                String updateQuery = "UPDATE tasks SET taskname=?, taskdesc=? WHERE taskid=?";
+                PreparedStatement ps = connection.prepareStatement(updateQuery);
+                ResultSet resultSet = statement.executeQuery(queryString);
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("taskid");
+                    if (localTaskID == id) {
+                        ps.setString(1, txtFieldName.getText());
+                        ps.setString(2, txtFieldDesc.getText());
+                        ps.setInt(3, id);
+                        ps.executeUpdate();
+                        lblValidation.setText("Task saved!");
+                        lblValidation.setTextFill(Color.GREEN);
+                        lblValidation.setVisible(true); //Displays label
+                        if (lblValidation.isVisible()) { //Plays fade out animation
+                            FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                            fadeOut.setFromValue(1.0);
+                            fadeOut.setToValue(0.0);
+                            fadeOut.play();
+                        }
+                    }
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
     }
 
     public void members(ActionEvent members) {

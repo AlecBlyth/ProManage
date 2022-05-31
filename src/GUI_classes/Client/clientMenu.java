@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -33,6 +32,10 @@ public class clientMenu {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    //Passed Variables
+    private String currentUser;
+    private int currentID;
+
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
@@ -53,7 +56,10 @@ public class clientMenu {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     }
 
-    public void initialize() {
+    public void initialize(String userType, int id) {
+
+        currentUser = userType;
+        currentID = id;
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -67,7 +73,6 @@ public class clientMenu {
         btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
         btnRequest.setOnMouseEntered(e -> btnRequest.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnRequest.setOnMouseExited(e -> btnRequest.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-
 
         initTime();
 
@@ -103,6 +108,8 @@ public class clientMenu {
     public void progress(ActionEvent progress) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
         AnchorPane root = loader.load();
+        clientProgressOverall clientProgress = loader.getController();
+        clientProgress.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -117,10 +124,42 @@ public class clientMenu {
         window.show();
     }
 
-    public void chat(ActionEvent chat) {
+    public void chat(ActionEvent chatRoom) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientChat.fxml"));
+        AnchorPane root = loader.load();
+        clientChat clientChat = loader.getController();
+        clientChat.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
     }
 
-    public void request(ActionEvent request) {
+    public void request(ActionEvent request) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientRequests.fxml"));
+        AnchorPane root = loader.load();
+        clientRequests requests = loader.getController();
+        requests.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) request.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     //USER FEATURES
@@ -149,20 +188,7 @@ public class clientMenu {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
-        AnchorPane root = loader.load();
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
+    public void menu() throws IOException {
+        //DO NOTHING
     }
 }

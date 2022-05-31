@@ -305,6 +305,12 @@
   * Task Styling                                                                *
   *                                                                             *
   ******************************************************************************/
+  #taskVertical{
+        -fx-background-color: transparent;
+  }
+  #taskVertical > .viewport {
+       -fx-background-color: transparent;
+  }
 
   #taskPane{
       -fx-background-color: transparent;

@@ -47,7 +47,8 @@
         <Accordion layoutX="-465.0" layoutY="82.0"/>
         <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
             <children>
-                <ImageView fitHeight="200.0" fitWidth="236.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true"
+                           preserveRatio="true">
                     <image>
                         <Image url="@../../Styling/images/smallerLogo.png"/>
                     </image>

@@ -339,6 +339,7 @@ public class tasks {
                     ps.executeUpdate();
                     getTasks();
 
+                    lblInfo.setText("Task Deleted!");
                     lblInfo.setVisible(true); //Displays label
                     if (lblInfo.isVisible()) { //Plays fade out animation
                         FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);

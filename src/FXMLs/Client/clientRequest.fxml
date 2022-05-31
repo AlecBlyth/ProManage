@@ -6,7 +6,6 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,7 +16,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0"
             prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.Client.clientProgressDetailed">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.Client.clientMenu">
     <children>
         <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
             <children>
@@ -47,8 +46,7 @@
         <Accordion layoutX="-465.0" layoutY="82.0"/>
         <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
             <children>
-                <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true"
-                           preserveRatio="true">
+                <ImageView fitHeight="200.0" fitWidth="236.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../../Styling/images/smallerLogo.png"/>
                     </image>
@@ -132,36 +130,15 @@
             </children>
         </VBox>
         <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0"
-                   prefWidth="104.0" style="-fx-background-color: #262626; -fx-background-radius: 0;" text="Log Out"
-                   textFill="WHITE">
+                   prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;"
+                   text="Log Out" textFill="WHITE">
             <cursor>
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
         <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
             <children>
-                <HBox alignment="CENTER" layoutX="2.0" layoutY="6.0" prefHeight="59.0" prefWidth="1045.0">
-                    <children>
-                        <Label text="Current Progress" textFill="WHITE">
-                            <font>
-                                <Font name="Segoe UI" size="29.0"/>
-                            </font>
-                        </Label>
-                    </children>
-                </HBox>
-                <ScrollPane fx:id="taskPane" hbarPolicy="NEVER" layoutX="-1.0" layoutY="80.0" pannable="true"
-                            prefHeight="534.0" prefWidth="1045.0" stylesheets="@../../Styling/CSS/MaterialDesign.css">
-                    <content>
-                        <VBox fx:id="taskVertical" alignment="TOP_CENTER" prefHeight="531.0" prefWidth="1020.0"
-                              spacing="3.0" stylesheets="@../../Styling/CSS/MaterialDesign.css">
-                            <children>
-                                <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="235.0" prefWidth="1020.0"
-                                      spacing="10.0" stylesheets="@../../Styling/CSS/MaterialDesign.css"/>
-                            </children>
-                        </VBox>
-                    </content>
-                </ScrollPane>
-
+                <HBox alignment="CENTER" layoutX="1.0" layoutY="153.0" prefHeight="59.0" prefWidth="1045.0"/>
             </children>
         </Pane>
     </children>

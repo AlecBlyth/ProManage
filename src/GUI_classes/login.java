@@ -1,5 +1,6 @@
 package GUI_classes;
 
+import GUI_classes.Client.clientMenu;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -72,6 +73,8 @@ public class login {
                     if (userType.equals("CLIENT")) { //Checks for client usertype
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
                         AnchorPane root = loader.load();
+                        clientMenu MenuScene = loader.getController(); //Gets controller from menu
+                        MenuScene.initialize(userType, id);
                         root.setOnMousePressed(event -> {
                             xOffset = event.getSceneX();
                             yOffset = event.getSceneY();
