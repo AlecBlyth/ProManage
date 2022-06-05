@@ -133,12 +133,13 @@ public class kanban {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT section, taskhex, taskname, taskdesc, taskid FROM tasks"; //gets task data from database
+            String queryString = "SELECT section, tasktype, taskhex, taskname, taskdesc, taskid FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
             while (resultSet.next()) {
                 String colour = resultSet.getString("taskhex");
                 String name = resultSet.getString("taskname");
                 String desc = resultSet.getString("taskdesc");
+                String type = resultSet.getString("tasktype");
                 int paneID = resultSet.getInt("section");
                 int id = resultSet.getInt("taskid");
                 paneDrag(paneOne); //Allows flowpanes for button dragging
@@ -149,19 +150,19 @@ public class kanban {
 
                 switch (paneID) { //Depending on task section, add a button in flowpane
                     case 1:
-                        paneOne.getChildren().add(initButton(colour, name, desc, id)); //Creates button with colour, name, desc and id  from database
+                        paneOne.getChildren().add(initButton(colour, name, type, desc, id)); //Creates button with colour, name, desc and id  from database
                         break;
                     case 2:
-                        paneTwo.getChildren().add(initButton(colour, name, desc, id));
+                        paneTwo.getChildren().add(initButton(colour, name, type, desc, id));
                         break;
                     case 3:
-                        paneThree.getChildren().add(initButton(colour, name, desc, id));
+                        paneThree.getChildren().add(initButton(colour, name, type, desc, id));
                         break;
                     case 4:
-                        paneFour.getChildren().add(initButton(colour, name, desc, id));
+                        paneFour.getChildren().add(initButton(colour, name, type, desc, id));
                         break;
                     case 5:
-                        paneFive.getChildren().add(initButton(colour, name, desc, id));
+                        paneFive.getChildren().add(initButton(colour, name, type, desc, id));
                         break;
                 }
             }
@@ -187,12 +188,12 @@ public class kanban {
         }
     } //Initialises controller
 
-    private JFXButton initButton(String colour, String taskname, String taskdesc, int id) { //Creates and initialises button
-        JFXButton button = new JFXButton(taskname + "\n" + taskdesc); //Sets text in button
-        button.setStyle("-fx-background-color: " + colour + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;"); //Button formatting
+    private JFXButton initButton(String colour, String taskname, String tasktype, String taskdesc, int id) { //Creates and initialises button
+        JFXButton button = new JFXButton(taskname + "\n" + tasktype + "\n" + taskdesc); //Sets text in button
+        button.setStyle("-fx-background-color: " + colour + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;"); //Button formatting
         button.setFont(Font.font("Segoe UI")); //Button font
         button.setPrefWidth(195);
-        button.setPrefHeight(80);
+        button.setPrefHeight(135);
         button.setWrapText(true); //Allows text to break to allow for larger descriptions
         button.setOnDragDetected(e -> { //Allows button to be dragged from screen
             Dragboard db = button.startDragAndDrop(TransferMode.MOVE);
@@ -279,7 +280,8 @@ public class kanban {
                             ps.setInt(3, 0);
                             ps.setInt(4, id);
                             ps.executeUpdate();
-                            draggingButton.setStyle("-fx-background-color: " + "#123d82" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setStyle("-fx-background-color: " + "#123d82" + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setFont(Font.font("Segoe UI")); //Button font
                         }
                         if (pane.getId().equals(paneTwo.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 2);
@@ -287,7 +289,8 @@ public class kanban {
                             ps.setInt(3, 10);
                             ps.setInt(4, id);
                             ps.executeUpdate();
-                            draggingButton.setStyle("-fx-background-color: " + "#333f50" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setStyle("-fx-background-color: " + "#333f50" + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setFont(Font.font("Segoe UI")); //Button font
                         }
                         if (pane.getId().equals(paneThree.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 3);
@@ -295,7 +298,8 @@ public class kanban {
                             ps.setInt(3, 25);
                             ps.setInt(4, id);
                             ps.executeUpdate();
-                            draggingButton.setStyle("-fx-background-color: " + "#2d79ff" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setStyle("-fx-background-color: " + "#2d79ff" + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setFont(Font.font("Segoe UI")); //Button font
                         }
                         if (pane.getId().equals(paneFour.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 4);
@@ -303,16 +307,17 @@ public class kanban {
                             ps.setInt(3, 100);
                             ps.setInt(4, id);
                             ps.executeUpdate();
-                            draggingButton.setStyle("-fx-background-color: " + "#00b050" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setStyle("-fx-background-color: " + "#00b050" + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setFont(Font.font("Segoe UI")); //Button font
                         }
                         if (pane.getId().equals(paneFive.getId()) && draggingButton.getId().equals(String.valueOf(id))) {
                             ps.setInt(1, 5);
-                            ps.setString(2, "#c00000");
+                            ps.setString(2, "#9a0000");
                             ps.setInt(3, 0);
                             ps.setInt(4, id);
                             ps.executeUpdate();
-                            draggingButton.setStyle("-fx-background-color: " + "#c00000" + " ; -fx-text-fill: white; " + "-fx-font-weight: bold;" + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
-
+                            draggingButton.setStyle("-fx-background-color: " + "#9a0000" + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;");
+                            draggingButton.setFont(Font.font("Segoe UI")); //Button font
                         }
                     }
                 } catch (SQLException throwables) {

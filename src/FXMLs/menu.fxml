@@ -17,179 +17,149 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0"
             prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.menu">
-    <children>
-        <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
-            <children>
-                <JFXButton fx:id="exitBtn" onAction="#exit" prefHeight="143.0" prefWidth="29.0"
-                           style="-fx-background-radius: 0; -fx-effect: none; -jfx-disable-visual-focus: true;" text="X"
-                           textFill="WHITE">
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-            </children>
-        </HBox>
-        <HBox alignment="TOP_CENTER" layoutX="4.0" layoutY="3.0" prefHeight="25.0" prefWidth="200.0">
-            <children>
-                <Label fx:id="lblDate" alignment="TOP_LEFT" text="Current Time:   " textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="13.0"/>
-                    </font>
-                </Label>
-                <Label fx:id="lblTime" text="0:00" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="13.0"/>
-                    </font>
-                </Label>
-            </children>
-        </HBox>
-        <Accordion layoutX="-465.0" layoutY="82.0"/>
-        <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
-            <children>
-                <ImageView fx:id="imageMenu" fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu"
-                           pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/smallerLogo.png"/>
-                    </image>
-                </ImageView>
-                <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0" onAction="#kanban"
-                           prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0"/>
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0"
-                           prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0"/>
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnChat" alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0"
-                           prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0"/>
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile"
-                           prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER"
-                           textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0"/>
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members"
-                           prefHeight="74.0" prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0"/>
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" onAction="#requests"
-                           prefHeight="74.0" prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0"/>
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT"/>
-                    </cursor>
-                </JFXButton>
-            </children>
-        </VBox>
-        <VBox layoutX="19.0" layoutY="122.0" prefHeight="473.0" prefWidth="64.0" spacing="23.0">
-            <children>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/KanbanIcon.png"/>
-                    </image>
-                    <viewport>
-                        <Rectangle2D/>
-                    </viewport>
-                </ImageView>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/tasksIcon.png"/>
-                    </image>
-                    <viewport>
-                        <Rectangle2D/>
-                    </viewport>
-                    <VBox.margin>
-                        <Insets/>
-                    </VBox.margin>
-                </ImageView>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/teamChatIcon.png"/>
-                    </image>
-                    <viewport>
-                        <Rectangle2D/>
-                    </viewport>
-                </ImageView>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/myProfileIcon.png"/>
-                    </image>
-                    <viewport>
-                        <Rectangle2D/>
-                    </viewport>
-                </ImageView>
-                <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/membersIcon.png"/>
-                    </image>
-                    <viewport>
-                        <Rectangle2D/>
-                    </viewport>
-                </ImageView>
-                <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/requestsIcon.png"/>
-                    </image>
-                    <viewport>
-                        <Rectangle2D/>
-                    </viewport>
-                </ImageView>
-            </children>
-        </VBox>
-        <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0"
-                   prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;"
-                   text="Log Out" textFill="WHITE">
+    <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
+        <JFXButton fx:id="exitBtn" onAction="#exit" prefHeight="143.0" prefWidth="29.0"
+                   style="-fx-background-radius: 0; -fx-effect: none; -jfx-disable-visual-focus: true;" text="X"
+                   textFill="WHITE">
             <cursor>
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
-            <children>
-                <ImageView fitHeight="272.0" fitWidth="552.0" layoutX="247.0" layoutY="41.0" pickOnBounds="true"
-                           preserveRatio="true">
-                    <image>
-                        <Image url="@../Styling/images/logo.png"/>
-                    </image>
-                </ImageView>
-                <HBox alignment="CENTER" layoutX="1.0" layoutY="153.0" prefHeight="59.0" prefWidth="1045.0">
-                    <children>
-                        <Label fx:id="lblTips" text="Tips: Click on kanban to begin managing your project"
-                               textFill="#909090">
-                            <font>
-                                <Font size="17.0"/>
-                            </font>
-                        </Label>
-                    </children>
-                </HBox>
-            </children>
-        </Pane>
-    </children>
+    </HBox>
+    <HBox alignment="TOP_CENTER" layoutX="4.0" layoutY="3.0" prefHeight="25.0" prefWidth="200.0">
+        <Label fx:id="lblDate" alignment="TOP_LEFT" text="Current Time:   " textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="13.0"/>
+            </font>
+        </Label>
+        <Label fx:id="lblTime" text="0:00" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="13.0"/>
+            </font>
+        </Label>
+    </HBox>
+    <Accordion layoutX="-465.0" layoutY="82.0"/>
+    <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
+        <ImageView fx:id="imageMenu" fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu"
+                   pickOnBounds="true" preserveRatio="true">
+            <Image url="@../Styling/images/smallerLogo.png"/>
+        </ImageView>
+        <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0" onAction="#kanban"
+                   prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0"
+                   prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnChat" alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0"
+                   prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile"
+                   prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER"
+                   textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members"
+                   prefHeight="74.0" prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" onAction="#requests"
+                   prefHeight="74.0" prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+    </VBox>
+    <VBox layoutX="19.0" layoutY="122.0" prefHeight="473.0" prefWidth="64.0" spacing="23.0">
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../Styling/images/KanbanIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+            <Image url="@../Styling/images/tasksIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../Styling/images/teamChatIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../Styling/images/myProfileIcon.png"/>
+        </ImageView>
+        <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../Styling/images/membersIcon.png"/>
+        </ImageView>
+        <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../Styling/images/requestsIcon.png"/>
+        </ImageView>
+    </VBox>
+    <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0"
+               prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;"
+               text="Log Out" textFill="WHITE">
+        <cursor>
+            <Cursor fx:constant="DEFAULT"/>
+        </cursor>
+    </JFXButton>
+    <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
+        <ImageView fitHeight="272.0" fitWidth="552.0" layoutX="247.0" layoutY="41.0" pickOnBounds="true"
+                   preserveRatio="true">
+            <Image url="@../Styling/images/logo.png"/>
+        </ImageView>
+        <HBox alignment="CENTER" layoutX="1.0" layoutY="153.0" prefHeight="59.0" prefWidth="1045.0">
+            <Label fx:id="lblTips" text="Tips: Click on kanban to begin managing your project"
+                   textFill="#909090">
+                <font>
+                    <Font size="17.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </Pane>
 </AnchorPane>

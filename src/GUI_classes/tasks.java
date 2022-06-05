@@ -124,6 +124,9 @@ public class tasks {
             btnEditTask.setText("View Task");
         } //User validation
 
+        btnEditTask.setDisable(true);
+        btnDeleteTask.setDisable(true);
+
         getTasks();
 
     } //Initialise controller
@@ -137,13 +140,14 @@ public class tasks {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskid, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
+            String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
                 x++;
                 int id = resultSet.getInt("taskid");
                 String name = resultSet.getString("taskname");
+                String type = resultSet.getString("tasktype");
                 String desc = resultSet.getString("taskdesc");
                 String hex = resultSet.getString("taskhex");
                 int prog = resultSet.getInt("taskprogress");
@@ -159,16 +163,16 @@ public class tasks {
                 if (currentUser.equals("ADMIN")) {
                     toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
                     if (subject != null) {
-                        toggleButton.setText("Task ID: " + id + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+                        toggleButton.setText("Task ID: " + id + "\n" + type + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
                     } else {
-                        toggleButton.setText("Task ID: " + id + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
+                        toggleButton.setText("Task ID: " + id + "\n" + type + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
                     }
                 } else {
                     toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
                     if (subject != null) {
-                        toggleButton.setText("Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+                        toggleButton.setText("Task: " + name + "\n" + type + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
                     } else {
-                        toggleButton.setText("Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
+                        toggleButton.setText("Task: " + name + "\n" + type + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
                     }
                 }
 
@@ -177,6 +181,8 @@ public class tasks {
                     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                         if (mouseEvent.getClickCount() == 1)
                             taskID = id; //Sets ID to currently clicked task's ID
+                        btnEditTask.setDisable(false); //Added better validation
+                        btnDeleteTask.setDisable(false);
                     }
                 });
 
@@ -294,6 +300,7 @@ public class tasks {
     //ADMIN FEATURES
     public void createTask(ActionEvent create) throws IOException, ParseException {
         createCheck = true;
+        taskID = 0;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
         AnchorPane root = loader.load();
         GUI_classes.Admin.taskEditor createTaskMenu = loader.getController();

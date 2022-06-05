@@ -2,6 +2,7 @@ package GUI_classes.Admin;
 
 import GUI_classes.menu;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -19,6 +20,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -31,15 +33,18 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
+
+@SuppressWarnings({"unchecked"})
 
 public class taskEditor {
     //FXML Components
-    public Label lblDate, lblTime, lblSubject, lblID, lblValidation;
+    public Label lblDate, lblTime, lblSubject, lblID, lblValidation, lblProg, lblNum;
     public ImageView memberIcon, reqIcon;
     public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnSave;
-    public JFXTextArea txtFieldSubject, txtFieldTaskID, txtFieldTaskProg, txtFieldName, txtFieldDesc;
+    public JFXTextArea txtFieldSubject, txtFieldName, txtFieldDesc;
     public FlowPane flowPaneBtns;
-
+    public JFXComboBox<String> choBoxTypes;
     //Variables
     private double xOffset = 0;
     private double yOffset = 0;
@@ -52,6 +57,10 @@ public class taskEditor {
     public int localTaskID;
     boolean checked = true;
     boolean subCheck = false;
+    boolean createEnabled = false;
+
+    Random rnd = new Random();
+    int uniqueID = rnd.nextInt(9999);
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -106,6 +115,7 @@ public class taskEditor {
             txtFieldDesc.setEditable(true);
             txtFieldSubject.setEditable(true);
             txtFieldName.setEditable(true);
+            choBoxTypes.setDisable(false);
 
         } else {
             btnMembers.setVisible(false);
@@ -116,20 +126,25 @@ public class taskEditor {
             btnRequests.setDisable(true);
             flowPaneBtns.getChildren().remove(btnSave);
             lblID.setVisible(false);
-            txtFieldTaskID.setVisible(false);
+            lblNum.setVisible(false);
+            choBoxTypes.setDisable(true);
         }
+
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
         JSONObject jsonObject = (JSONObject) obj;
+        JSONArray types = (JSONArray) jsonObject.get("projectTasks");
+        choBoxTypes.getItems().addAll(types);
         subCheck = (Boolean) jsonObject.get("projectSubjects");
 
         if (!subCheck) {
             txtFieldSubject.setVisible(false);
             lblSubject.setVisible(false);
         }
-
         getTask(taskID, createCheck);
+        createEnabled = createCheck;
+
     } //Initialise controller
 
     public void initTime() {
@@ -148,22 +163,23 @@ public class taskEditor {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskid, taskname, taskdesc, taskprogress, tasksubject FROM tasks"; //gets task data from database
+            String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskprogress, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
 
                 int id = resultSet.getInt("taskid");
                 String name = resultSet.getString("taskname");
+                String type = resultSet.getString("tasktype");
                 String desc = resultSet.getString("taskdesc");
                 int prog = resultSet.getInt("taskprogress");
                 String subject = resultSet.getString("tasksubject");
-
                 if (taskID == id) {
-                    txtFieldTaskID.setText(Integer.toString(id));
+                    lblNum.setText(Integer.toString(id));
                     txtFieldName.setText(name);
+                    choBoxTypes.setValue(type);
                     txtFieldDesc.setText(desc);
-                    txtFieldTaskProg.setText(prog + "%");
+                    lblProg.setText(prog + "%");
                     txtFieldSubject.setText(subject);
                 }
 
@@ -178,7 +194,15 @@ public class taskEditor {
                     txtFieldSubject.setText("ERROR CANNOT RECEIVE TASK SUBJECT!");
                     txtFieldSubject.setStyle("-fx-text-inner-color: red;");
                 }
+                if (createCheck) {
+                    txtFieldName.setText("");
+                    txtFieldDesc.setText("");
+                    txtFieldSubject.setText("");
+                    lblProg.setText("0%");
+                    lblNum.setText(String.valueOf(uniqueID));
+                }
             }
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -249,10 +273,21 @@ public class taskEditor {
 
     public void saveTask() {
 
-        System.out.println(subCheck);
+        if (localTaskID == 0 && !createEnabled) {
+            lblValidation.setText("No ID Generated!, Something is broken!");
+            lblValidation.setTextFill(Color.RED);
+            lblValidation.setVisible(true); //Displays label
+            checked = false;
+            if (lblValidation.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
 
         if (txtFieldDesc.getText().length() > 260) {
-            lblValidation.setText("Description is too long, please limit to 260 characters");
+            lblValidation.setText("Description is too long, please limit to 270 characters");
             lblValidation.setTextFill(Color.RED);
             lblValidation.setVisible(true); //Displays label
             checked = false;
@@ -290,22 +325,103 @@ public class taskEditor {
                 fadeOut.play();
             }
         }
-        if (subCheck && checked) {
+
+        if (!subCheck && createEnabled && checked) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
+                PreparedStatement ps = connection.prepareStatement(insertQuery);
+                ps.setInt(1, uniqueID);
+                ps.setString(2, choBoxTypes.getValue());
+                ps.setString(3, txtFieldName.getText());
+                ps.setString(4, txtFieldDesc.getText());
+                ps.setString(5, "#123d82");
+                ps.setInt(6, 0);
+                ps.setInt(7, 1);
+                ps.execute();
+                lblValidation.setText("Task created!");
+                lblValidation.setTextFill(Color.GREEN);
+                lblValidation.setVisible(true); //Displays label
+                if (lblValidation.isVisible()) { //Plays fade out animation
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.play();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    lblValidation.setText("Duplicate ID!");
+                    lblValidation.setTextFill(Color.RED);
+                    lblValidation.setVisible(true); //Displays label
+                    if (lblValidation.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
+                }
+            }
+        }
+
+        if (subCheck && createEnabled && checked) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
+                PreparedStatement ps = connection.prepareStatement(insertQuery);
+                ps.setInt(1, uniqueID);
+                ps.setString(2, choBoxTypes.getValue());
+                ps.setString(3, txtFieldName.getText());
+                ps.setString(4, txtFieldDesc.getText());
+                ps.setString(5, "#123d82");
+                ps.setInt(6, 0);
+                ps.setInt(7, 1);
+                ps.setString(8, "");
+                ps.execute();
+                lblValidation.setText("Task created!");
+                lblValidation.setTextFill(Color.GREEN);
+                lblValidation.setVisible(true); //Displays label
+                if (lblValidation.isVisible()) { //Plays fade out animation
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.play();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    lblValidation.setText("Duplicate ID!");
+                    lblValidation.setTextFill(Color.RED);
+                    lblValidation.setVisible(true); //Displays label
+                    if (lblValidation.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
+                }
+            }
+        }
+
+
+        if (subCheck && checked && !createEnabled) {
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                 Statement statement = connection.createStatement();
-                String queryString = "SELECT taskid, taskname, taskdesc, tasksubject FROM tasks"; //gets task data from database
-                String updateQuery = "UPDATE tasks SET taskname=?, taskdesc=?, tasksubject=? WHERE taskid=?";
+                String queryString = "SELECT taskid, tasktype, taskname, taskdesc, tasksubject FROM tasks"; //gets task data from database
+                String updateQuery = "UPDATE tasks SET taskname=?, tasktype=?, taskdesc=?, tasksubject=? WHERE taskid=?";
                 PreparedStatement ps = connection.prepareStatement(updateQuery);
                 ResultSet resultSet = statement.executeQuery(queryString);
                 while (resultSet.next()) {
                     int id = resultSet.getInt("taskid");
                     if (localTaskID == id) {
                         ps.setString(1, txtFieldName.getText());
-                        ps.setString(2, txtFieldDesc.getText());
-                        ps.setString(3, txtFieldSubject.getText());
-                        ps.setInt(4, id);
+                        ps.setString(2, choBoxTypes.getValue());
+                        ps.setString(3, txtFieldDesc.getText());
+                        ps.setString(4, txtFieldSubject.getText());
+                        ps.setInt(5, id);
                         ps.executeUpdate();
+                        connection.close();
                         lblValidation.setText("Task saved!");
                         lblValidation.setTextFill(Color.GREEN);
                         lblValidation.setVisible(true); //Displays label
@@ -321,20 +437,21 @@ public class taskEditor {
                 throwables.printStackTrace();
             }
         }
-        if (!subCheck && checked) {
+        if (!subCheck && checked && !createEnabled) {
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                 Statement statement = connection.createStatement();
-                String queryString = "SELECT taskid, taskname, taskdesc FROM tasks"; //gets task data from database
-                String updateQuery = "UPDATE tasks SET taskname=?, taskdesc=? WHERE taskid=?";
+                String queryString = "SELECT taskid, tasktype, taskname, taskdesc FROM tasks"; //gets task data from database
+                String updateQuery = "UPDATE tasks SET taskname=?, tasktype=?, taskdesc=? WHERE taskid=?";
                 PreparedStatement ps = connection.prepareStatement(updateQuery);
                 ResultSet resultSet = statement.executeQuery(queryString);
                 while (resultSet.next()) {
                     int id = resultSet.getInt("taskid");
                     if (localTaskID == id) {
                         ps.setString(1, txtFieldName.getText());
-                        ps.setString(2, txtFieldDesc.getText());
-                        ps.setInt(3, id);
+                        ps.setString(2, choBoxTypes.getValue());
+                        ps.setString(3, txtFieldDesc.getText());
+                        ps.setInt(4, id);
                         ps.executeUpdate();
                         lblValidation.setText("Task saved!");
                         lblValidation.setTextFill(Color.GREEN);

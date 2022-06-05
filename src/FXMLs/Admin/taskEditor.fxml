@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
@@ -15,237 +16,233 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.Admin.taskEditor">
-    <children>
-        <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
-            <children>
-                <JFXButton fx:id="exitBtn" onAction="#exit" prefHeight="143.0" prefWidth="29.0" style="-fx-background-radius: 0; -fx-effect: none; -jfx-disable-visual-focus: true;" text="X" textFill="WHITE">
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-            </children>
-        </HBox>
-        <HBox alignment="TOP_CENTER" layoutX="4.0" layoutY="3.0" prefHeight="25.0" prefWidth="200.0">
-            <children>
-                <Label fx:id="lblDate" alignment="TOP_LEFT" text="Current Time:   " textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="13.0" />
-                    </font>
-                </Label>
-                <Label fx:id="lblTime" text="0:00" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="13.0" />
-                    </font>
-                </Label>
-            </children>
-        </HBox>
-        <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
-            <children>
-                <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/smallerLogo.png" />
-                    </image>
-                </ImageView>
-                <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0" prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnChat" alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0" prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile" prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0" prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-                <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" onAction="#requests" prefHeight="74.0" prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
-                    <font>
-                        <Font name="Segoe UI Light" size="23.0" />
-                    </font>
-                    <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                    </cursor>
-                </JFXButton>
-            </children>
-        </VBox>
-        <VBox layoutX="19.0" layoutY="122.0" prefHeight="473.0" prefWidth="64.0" spacing="23.0">
-            <children>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/KanbanIcon.png" />
-                    </image>
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                </ImageView>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/tasksIcon.png" />
-                    </image>
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin>
-                </ImageView>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/teamChatIcon.png" />
-                    </image>
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                </ImageView>
-                <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/myProfileIcon.png" />
-                    </image>
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                </ImageView>
-                <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/membersIcon.png" />
-                    </image>
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                </ImageView>
-                <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
-                    <image>
-                        <Image url="@../../Styling/images/requestsIcon.png" />
-                    </image>
-                    <viewport>
-                        <Rectangle2D />
-                    </viewport>
-                </ImageView>
-            </children>
-        </VBox>
-        <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0"
+            prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.Admin.taskEditor">
+    <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
+        <JFXButton fx:id="exitBtn" onAction="#exit" prefHeight="143.0" prefWidth="29.0"
+                   style="-fx-background-radius: 0; -fx-effect: none; -jfx-disable-visual-focus: true;" text="X"
+                   textFill="WHITE">
             <cursor>
-                <Cursor fx:constant="DEFAULT" />
+                <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
-         <children>
-            <FlowPane fx:id="flowPaneBtns" alignment="CENTER" hgap="20.0" layoutX="60.0" layoutY="534.0" prefHeight="83.0" prefWidth="927.0" rowValignment="BASELINE">
-               <children>
-                  <JFXButton onAction="#goBack" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: #123d82; -fx-background-radius: 0;" text="Go Back" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe UI" size="12.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </JFXButton>
-                  <JFXButton fx:id="btnSave" onAction="#saveTask" prefHeight="50.0" prefWidth="134.0" style="-fx-background-color: green; -fx-background-radius: 0;" text="Save Changes" textFill="WHITE">
-                     <font>
-                        <Font name="Segoe UI" size="12.0" />
-                     </font>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </JFXButton>
-               </children>
-            </FlowPane>
-            <FlowPane alignment="BOTTOM_CENTER" layoutX="-7.0" layoutY="62.0" prefHeight="490.0" prefWidth="1052.0">
-               <children>
-                  <Pane prefHeight="516.0" prefWidth="670.0">
-                     <children>
-                        <Label fx:id="lblID" layoutX="57.0" layoutY="35.0" prefHeight="56.0" prefWidth="98.0" text="Task ID: " textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="57.0" layoutY="91.0" prefHeight="56.0" prefWidth="98.0" text="Task: " textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="57.0" layoutY="147.0" prefHeight="56.0" prefWidth="132.0" text="Description:" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </Label>
-                        <Label layoutX="57.0" layoutY="356.0" prefHeight="56.0" prefWidth="98.0" text="Progress:" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblSubject" layoutX="57.0" layoutY="412.0" prefHeight="56.0" prefWidth="98.0" text="Subject:" textFill="WHITE">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </Label>
-                        <JFXTextArea fx:id="txtFieldDesc" editable="false" layoutX="56.0" layoutY="201.0" prefHeight="150.0" prefWidth="559.0" promptText="Enter task description (Max 270 characters)" style="-fx-text-inner-color: white;" unFocusColor="#262d36" wrapText="true">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </JFXTextArea>
-                        <JFXTextArea fx:id="txtFieldName" editable="false" layoutX="110.0" layoutY="104.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="400.0" promptText="Enter Task Name... (Max 36 Characters)" style="-fx-text-inner-color: white;" unFocusColor="#262d36">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </JFXTextArea>
-                        <JFXTextArea fx:id="txtFieldTaskProg" editable="false" layoutX="153.0" layoutY="371.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="85.0" promptText="ERROR" style="-fx-text-inner-color: white; -fx-prompt-text-fill: red;" unFocusColor="#262d36">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </JFXTextArea>
-                        <JFXTextArea fx:id="txtFieldTaskID" editable="false" layoutX="140.0" layoutY="48.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="75.0" promptText="ERROR" style="-fx-text-inner-color: white; -fx-prompt-text-fill: red;" unFocusColor="#262d36">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </JFXTextArea>
-                        <JFXTextArea fx:id="txtFieldSubject" editable="false" layoutX="138.0" layoutY="426.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="411.0" promptText="Enter subject's name (Max 26 Characters)" style="-fx-text-inner-color: white;" unFocusColor="#262d36">
-                           <font>
-                              <Font name="Segoe UI" size="22.0" />
-                           </font>
-                        </JFXTextArea>
-                     </children>
-                  </Pane>
-               </children>
-            </FlowPane>
-            <FlowPane alignment="CENTER" layoutY="14.0" prefHeight="62.0" prefWidth="1045.0">
-               <children>
-                  <Label fx:id="lblValidation" text="INFO MESSAGE" textFill="RED" visible="false">
-                     <font>
-                        <Font name="Segoe UI" size="24.0" />
-                     </font>
-                  </Label>
-               </children>
-            </FlowPane>
-         </children></Pane>
-    </children>
+    </HBox>
+    <HBox alignment="TOP_CENTER" layoutX="4.0" layoutY="3.0" prefHeight="25.0" prefWidth="200.0">
+        <Label fx:id="lblDate" alignment="TOP_LEFT" text="Current Time:   " textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="13.0"/>
+            </font>
+        </Label>
+        <Label fx:id="lblTime" text="0:00" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="13.0"/>
+            </font>
+        </Label>
+    </HBox>
+    <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
+        <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../../Styling/images/smallerLogo.png"/>
+        </ImageView>
+        <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0"
+                   prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0"
+                   prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnChat" alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0"
+                   prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile" prefHeight="74.0"
+                   prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0"
+                   prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" onAction="#requests" prefHeight="74.0"
+                   prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+    </VBox>
+    <VBox layoutX="19.0" layoutY="122.0" prefHeight="473.0" prefWidth="64.0" spacing="23.0">
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/KanbanIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+            <Image url="@../../Styling/images/tasksIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/teamChatIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/myProfileIcon.png"/>
+        </ImageView>
+        <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/membersIcon.png"/>
+        </ImageView>
+        <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/requestsIcon.png"/>
+        </ImageView>
+    </VBox>
+    <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0"
+               style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE">
+        <cursor>
+            <Cursor fx:constant="DEFAULT"/>
+        </cursor>
+    </JFXButton>
+    <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
+        <FlowPane fx:id="flowPaneBtns" alignment="CENTER" hgap="20.0" layoutX="59.0" layoutY="570.0" prefHeight="83.0"
+                  prefWidth="927.0" rowValignment="BASELINE">
+            <JFXButton onAction="#goBack" prefHeight="50.0" prefWidth="134.0"
+                       style="-fx-background-color: #123d82; -fx-background-radius: 0;" text="Go Back" textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="12.0"/>
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </JFXButton>
+            <JFXButton fx:id="btnSave" onAction="#saveTask" prefHeight="50.0" prefWidth="134.0"
+                       style="-fx-background-color: green; -fx-background-radius: 0;" text="Save Changes"
+                       textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="12.0"/>
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </JFXButton>
+        </FlowPane>
+        <FlowPane alignment="CENTER" layoutY="11.0" prefHeight="62.0" prefWidth="1045.0">
+            <Label fx:id="lblValidation" text="INFO MESSAGE" textFill="RED" visible="false">
+                <font>
+                    <Font name="Segoe UI" size="24.0"/>
+                </font>
+            </Label>
+        </FlowPane>
+        <VBox alignment="TOP_RIGHT" layoutX="179.0" layoutY="67.0" prefHeight="496.0" prefWidth="125.0">
+            <Label fx:id="lblID" prefHeight="60.0" prefWidth="82.0" text="Task ID: " textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="22.0"/>
+                </font>
+            </Label>
+            <Label prefHeight="60.0" prefWidth="54.0" text="Type:" textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="22.0"/>
+                </font>
+            </Label>
+            <Label prefHeight="60.0" prefWidth="54.0" text="Task: " textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="22.0"/>
+                </font>
+            </Label>
+            <Label prefHeight="60.0" prefWidth="100.0" text="Progress:" textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="22.0"/>
+                </font>
+            </Label>
+            <Label alignment="TOP_RIGHT" prefHeight="104.0" prefWidth="116.0" text="Description:" textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="22.0"/>
+                </font>
+            </Label>
+            <Label fx:id="lblSubject" prefHeight="60.0" prefWidth="77.0" text="Subject:" textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="22.0"/>
+                </font>
+            </Label>
+        </VBox>
+        <Label fx:id="lblNum" layoutX="304.0" layoutY="69.0" prefHeight="55.0" prefWidth="100.0" text="9999"
+               textFill="WHITE">
+            <font>
+                <Font name="Segoe UI" size="22.0"/>
+            </font>
+        </Label>
+        <Label fx:id="lblProg" layoutX="304.0" layoutY="239.0" prefHeight="78.0" prefWidth="100.0" text="100%"
+               textFill="WHITE">
+            <font>
+                <Font name="Segoe UI" size="22.0"/>
+            </font>
+        </Label>
+        <JFXTextArea fx:id="txtFieldName" editable="false" layoutX="304.0" layoutY="203.0" minHeight="-Infinity"
+                     prefHeight="35.0" prefWidth="400.0" promptText="Enter Task Name... (Max 40 Characters)"
+                     style="-fx-text-inner-color: white;" unFocusColor="#535050">
+            <font>
+                <Font name="Segoe UI" size="22.0"/>
+            </font>
+        </JFXTextArea>
+        <JFXTextArea fx:id="txtFieldSubject" editable="false" layoutX="304.0" layoutY="427.0" minHeight="-Infinity"
+                     prefHeight="35.0" prefWidth="400.0" promptText="Enter subject's name (Max 26 Characters)"
+                     style="-fx-text-inner-color: white;" unFocusColor="#535050">
+            <font>
+                <Font name="Segoe UI" size="22.0"/>
+            </font>
+        </JFXTextArea>
+        <JFXComboBox fx:id="choBoxTypes" layoutX="304.0" layoutY="131.0" prefHeight="35.0" prefWidth="400.0"
+                     stylesheets="@../../Styling/CSS/MaterialDesign.css" unFocusColor="#535050"/>
+        <JFXTextArea fx:id="txtFieldDesc" editable="false" layoutX="304.0" layoutY="307.0" prefHeight="100.0"
+                     prefWidth="574.0" promptText="Enter task description (Max 270 characters)"
+                     style="-fx-text-inner-color: white;" stylesheets="@../../Styling/CSS/MaterialDesign.css"
+                     unFocusColor="#535050" wrapText="true">
+            <font>
+                <Font name="Segoe UI" size="22.0"/>
+            </font>
+        </JFXTextArea>
+    </Pane>
 </AnchorPane>

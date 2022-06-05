@@ -319,3 +319,48 @@
      -fx-background-color: transparent;
   }
 
+/*******************************************************************************
+ *                                                                             *
+ * ComboBox, ChoiceBox COMMON                                                 *
+ *                                                                             *
+ ******************************************************************************/
+.combo-box-base, .choice-box {
+    -fx-font-family: 'Segoe UI';
+    -fx-text-fill: white;
+	-fx-background-color: transparent;
+	-fx-border-width: 0 0 2 0;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+	-fx-font-size : 13pt;
+}
+
+.combo-box .list-cell{
+    -fx-font-family: 'Segoe UI';
+    -fx-text-fill: white;
+}
+
+.combo-box:focused, .choice-box:focused {
+	-fx-border-color: #4287ff;
+}
+
+.combo-box-base>.label, .choice-box>.label {
+	-fx-padding: 0.7em 0.7em 0.7em 0em;
+}
+
+.combo-box-base>.arrow-button, .choice-box>.open-button {
+	-fx-padding: 1.2em 0.7em 1.2em 0.5em;
+	-fx-background-radius: 0.0 2.0 2.0 0.0;
+}
+
+.combo-box-base>.arrow-button>.arrow, .choice-box>.open-button>.arrow {
+	-fx-background-color: #214480;
+}
+
+.combo-box-base .arrow-button:hover .arrow, .spinner .increment-arrow-button:hover .increment-arrow,
+	.spinner .decrement-arrow-button:hover .decrement-arrow {
+	-fx-background-color: #4287ff;
+}
+
+.menu-item:focused {
+	-fx-background-color: #1a1a1a;
+}

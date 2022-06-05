@@ -96,12 +96,13 @@ public class clientProgressDetailed {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskid, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
+            String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
                 x++;
                 String name = resultSet.getString("taskname");
+                String type = resultSet.getString("tasktype");
                 String desc = resultSet.getString("taskdesc");
                 String hex = resultSet.getString("taskhex");
                 int prog = resultSet.getInt("taskprogress");
@@ -116,9 +117,9 @@ public class clientProgressDetailed {
 
                 toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
                 if (subject != null) {
-                    toggleButton.setText("Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
+                    toggleButton.setText("Task: " + name + "\n" + type + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
                 } else {
-                    toggleButton.setText("Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
+                    toggleButton.setText("Task: " + name + "\n" + type + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
                 }
 
                 toggleButton.setDisable(true);
@@ -170,6 +171,8 @@ public class clientProgressDetailed {
     public void progress(ActionEvent progress) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
         AnchorPane root = loader.load();
+        clientProgressOverall progressOverall = loader.getController();
+        progressOverall.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
