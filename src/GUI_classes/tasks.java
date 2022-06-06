@@ -212,6 +212,17 @@ public class tasks {
                     taskHorizontal.getChildren().addAll(buttonArray);
                     hBoxArrayList.add(taskHorizontal);
                 }
+                if (buttonArray.size() < 4 && x < 4){
+                    HBox taskHorizontal = new HBox();
+                    taskHorizontal.setSpacing(5);
+                    taskHorizontal.setAlignment(CENTER);
+                    taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+                    taskHorizontal.minHeight(Region.USE_PREF_SIZE);
+                    taskHorizontal.prefWidth(1020);
+                    taskHorizontal.prefHeight(235);
+                    taskHorizontal.getChildren().addAll(buttonArray);
+                    hBoxArrayList.add(taskHorizontal);
+                }
             }
             taskVertical.getChildren().addAll(hBoxArrayList);
         } catch (SQLException throwables) {

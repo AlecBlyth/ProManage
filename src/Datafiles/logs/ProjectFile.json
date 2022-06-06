@@ -12,11 +12,10 @@
 ],
 "projectTasks" :[
   "Example",
-  "Testing Task",
-  "Normal Test",
-  "Extreme Test 1",
-  "Creating Task Test",
-  "Extreme Validation Test"
+  "Example Test",
+  "Normal",
+  "Complete",
+  "Extreme Test "
 ],
 "projectLabels" :[
   "T1",

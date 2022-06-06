@@ -12,6 +12,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
@@ -133,13 +134,14 @@ public class kanban {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT section, tasktype, taskhex, taskname, taskdesc, taskid FROM tasks"; //gets task data from database
+            String queryString = "SELECT tasksubject, section, tasktype, taskhex, taskname, taskdesc, taskid FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
             while (resultSet.next()) {
                 String colour = resultSet.getString("taskhex");
                 String name = resultSet.getString("taskname");
                 String desc = resultSet.getString("taskdesc");
                 String type = resultSet.getString("tasktype");
+                String subject = resultSet.getString("tasksubject");
                 int paneID = resultSet.getInt("section");
                 int id = resultSet.getInt("taskid");
                 paneDrag(paneOne); //Allows flowpanes for button dragging
@@ -150,19 +152,19 @@ public class kanban {
 
                 switch (paneID) { //Depending on task section, add a button in flowpane
                     case 1:
-                        paneOne.getChildren().add(initButton(colour, name, type, desc, id)); //Creates button with colour, name, desc and id  from database
+                        paneOne.getChildren().add(initButton(colour, name, type, subject, desc, id)); //Creates button with colour, name, desc and id  from database
                         break;
                     case 2:
-                        paneTwo.getChildren().add(initButton(colour, name, type, desc, id));
+                        paneTwo.getChildren().add(initButton(colour, name, type, subject, desc, id));
                         break;
                     case 3:
-                        paneThree.getChildren().add(initButton(colour, name, type, desc, id));
+                        paneThree.getChildren().add(initButton(colour, name, type, subject, desc, id));
                         break;
                     case 4:
-                        paneFour.getChildren().add(initButton(colour, name, type, desc, id));
+                        paneFour.getChildren().add(initButton(colour, name, type, subject, desc, id));
                         break;
                     case 5:
-                        paneFive.getChildren().add(initButton(colour, name, type, desc, id));
+                        paneFive.getChildren().add(initButton(colour, name, type, subject, desc, id));
                         break;
                 }
             }
@@ -188,8 +190,15 @@ public class kanban {
         }
     } //Initialises controller
 
-    private JFXButton initButton(String colour, String taskname, String tasktype, String taskdesc, int id) { //Creates and initialises button
-        JFXButton button = new JFXButton(taskname + "\n" + tasktype + "\n" + taskdesc); //Sets text in button
+    private JFXButton initButton(String colour, String taskname, String tasktype, String subject, String taskdesc, int id) { //Creates and initialises button
+
+        JFXButton button = new JFXButton();
+
+        if(subject == null) {
+            button.setText(taskname + "\n" + tasktype + "\n" + taskdesc); //Sets text in button
+        } else {
+            button.setText(taskname + "\n" + tasktype + "\n" + subject + "\n" + taskdesc); //Sets text in button
+        }
         button.setStyle("-fx-background-color: " + colour + " ; -fx-text-fill: white; " + "-fx-background-radius: 0;" + "-fx-font-size:10.0;" + "-fx-alignment: TOP-LEFT;"); //Button formatting
         button.setFont(Font.font("Segoe UI")); //Button font
         button.setPrefWidth(195);
@@ -245,6 +254,21 @@ public class kanban {
                 }
             }
         });
+
+        button.setOnMouseEntered(mouseEvent -> {
+            if (taskdesc.length() > 200) {
+                Tooltip tt = new Tooltip();
+                tt.setText("Description: " + "\n" + taskdesc);
+                tt.setMaxWidth(250);
+                tt.setWrapText(true);
+                tt.setStyle("-fx-font: normal 15 Segoe; "
+                        + "-fx-base: #AE3522; "
+                        + "-fx-text-fill: white;"
+                        + "-fx-background-radius: 0;");
+
+                button.setTooltip(tt);
+            }
+        }); //If task description is too long, allow user to hover and get description.
 
         button.setOnDragDone(e -> draggingButton = null);
         return button;

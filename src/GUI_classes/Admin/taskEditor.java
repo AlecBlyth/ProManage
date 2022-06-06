@@ -340,6 +340,8 @@ public class taskEditor {
                 ps.setInt(7, 1);
                 ps.execute();
                 lblValidation.setText("Task created!");
+                uniqueID = rnd.nextInt(9999);
+                lblNum.setText(String.valueOf(uniqueID));
                 lblValidation.setTextFill(Color.GREEN);
                 lblValidation.setVisible(true); //Displays label
                 if (lblValidation.isVisible()) { //Plays fade out animation
@@ -379,6 +381,8 @@ public class taskEditor {
                 ps.setString(8, "");
                 ps.execute();
                 lblValidation.setText("Task created!");
+                uniqueID = rnd.nextInt(9999);
+                lblNum.setText(String.valueOf(uniqueID));
                 lblValidation.setTextFill(Color.GREEN);
                 lblValidation.setVisible(true); //Displays label
                 if (lblValidation.isVisible()) { //Plays fade out animation
