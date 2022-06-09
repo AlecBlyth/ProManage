@@ -7,10 +7,11 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -18,7 +19,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0"
             prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.kanban">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.Admin.requests">
     <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
         <JFXButton fx:id="exitBtn" onAction="#exit" prefHeight="143.0" prefWidth="29.0"
                    style="-fx-background-radius: 0; -fx-effect: none; -jfx-disable-visual-focus: true;" text="X"
@@ -43,12 +44,11 @@
     <Accordion layoutX="-465.0" layoutY="82.0"/>
 
     <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
-        <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true"
-                   preserveRatio="true">
-            <Image url="@../Styling/images/smallerLogo.png"/>
+        <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../../Styling/images/smallerLogo.png"/>
         </ImageView>
-        <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0"
-                   prefHeight="74.0" prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
+        <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0"
+                   prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -74,9 +74,8 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile"
-                   prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER"
-                   textFill="WHITE">
+        <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile" prefHeight="74.0"
+                   prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -84,8 +83,8 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members"
-                   prefHeight="74.0" prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
+        <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0"
+                   prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -93,8 +92,8 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" onAction="#requests"
-                   prefHeight="74.0" prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
+        <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" prefHeight="74.0" prefWidth="236.0"
+                   text="Requests" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -108,7 +107,7 @@
             <viewport>
                 <Rectangle2D/>
             </viewport>
-            <Image url="@../Styling/images/KanbanIcon.png"/>
+            <Image url="@../../Styling/images/KanbanIcon.png"/>
         </ImageView>
         <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
             <viewport>
@@ -117,78 +116,94 @@
             <VBox.margin>
                 <Insets/>
             </VBox.margin>
-            <Image url="@../Styling/images/tasksIcon.png"/>
+            <Image url="@../../Styling/images/tasksIcon.png"/>
         </ImageView>
         <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
             <viewport>
                 <Rectangle2D/>
             </viewport>
-            <Image url="@../Styling/images/teamChatIcon.png"/>
+            <Image url="@../../Styling/images/teamChatIcon.png"/>
         </ImageView>
         <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
             <viewport>
                 <Rectangle2D/>
             </viewport>
-            <Image url="@../Styling/images/myProfileIcon.png"/>
+            <Image url="@../../Styling/images/myProfileIcon.png"/>
         </ImageView>
         <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
             <viewport>
                 <Rectangle2D/>
             </viewport>
-            <Image url="@../Styling/images/membersIcon.png"/>
+            <Image url="@../../Styling/images/membersIcon.png"/>
         </ImageView>
         <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
             <viewport>
                 <Rectangle2D/>
             </viewport>
-            <Image url="@../Styling/images/requestsIcon.png"/>
+            <Image url="@../../Styling/images/requestsIcon.png"/>
         </ImageView>
     </VBox>
 
-    <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0"
-               prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;"
-               text="Log Out" textFill="WHITE">
+    <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0"
+               style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE">
         <cursor>
             <Cursor fx:constant="DEFAULT"/>
         </cursor>
     </JFXButton>
-    <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
-        <HBox alignment="CENTER" layoutX="8.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
-            <Label fx:id="lblBacklog" text="Backlog" textAlignment="CENTER" textFill="WHITE"/>
-        </HBox>
-        <HBox alignment="CENTER" layoutX="215.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
-            <Label fx:id="lblTodo" text="To Do" textFill="WHITE"/>
-        </HBox>
-        <HBox alignment="CENTER" layoutX="422.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
-            <Label fx:id="lblProgress" text="In Progress" textFill="WHITE"/>
-        </HBox>
-        <HBox alignment="CENTER" layoutX="629.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
-            <Label fx:id="lblComplete" text="Complete" textFill="WHITE"/>
-        </HBox>
-        <HBox alignment="CENTER" layoutX="836.0" layoutY="9.0" prefHeight="43.0" prefWidth="202.0">
-            <Label fx:id="lblBlocked" text="Blocked" textFill="WHITE"/>
-        </HBox>
-        <ScrollPane hbarPolicy="NEVER" layoutX="9.0" layoutY="58.0" prefHeight="585.0" prefWidth="1030.0"
-                    style="-fx-background-color: #262626;" stylesheets="@../Styling/CSS/theme.css"
-                    vbarPolicy="ALWAYS">
-            <HBox alignment="CENTER" maxHeight="-Infinity" prefHeight="583.0" prefWidth="1012.0"
-                  spacing="3.0" style="-fx-background-color: #262626;">
-                <FlowPane fx:id="paneOne" alignment="TOP_CENTER" columnHalignment="CENTER"
-                          maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0"
-                          rowValignment="TOP" style="-fx-background-color: white;" vgap="3.0"/>
-                <FlowPane fx:id="paneTwo" alignment="TOP_CENTER" maxWidth="-Infinity"
-                          minWidth="-Infinity" prefWidth="200.0" style="-fx-background-color: white;"
-                          vgap="3.0"/>
-                <FlowPane fx:id="paneThree" alignment="TOP_CENTER" maxWidth="-Infinity"
-                          minWidth="-Infinity" prefHeight="562.0" prefWidth="200.0"
-                          style="-fx-background-color: white;" vgap="3.0"/>
-                <FlowPane fx:id="paneFour" alignment="TOP_CENTER" maxWidth="-Infinity"
-                          minWidth="-Infinity" prefWidth="200.0" style="-fx-background-color: white;"
-                          vgap="3.0"/>
-                <FlowPane fx:id="paneFive" alignment="TOP_CENTER" maxWidth="-Infinity"
-                          minWidth="-Infinity" prefWidth="200.0" style="-fx-background-color: white;"
-                          vgap="3.0"/>
-            </HBox>
+    <Pane layoutX="236.0" layoutY="13.0" prefHeight="655.0" prefWidth="1045.0">
+        <ScrollPane fx:id="taskPane" hbarPolicy="NEVER" layoutX="-1.0" layoutY="14.0" pannable="true" prefHeight="534.0"
+                    prefWidth="1045.0" stylesheets="@../../Styling/CSS/MaterialDesign.css">
+            <VBox fx:id="taskVertical" alignment="TOP_CENTER" prefHeight="531.0" prefWidth="1020.0" spacing="3.0"
+                  stylesheets="@../../Styling/CSS/MaterialDesign.css">
+                <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="235.0" prefWidth="1020.0" spacing="10.0"/>
+            </VBox>
         </ScrollPane>
+        <HBox alignment="CENTER" layoutX="78.0" layoutY="548.0" prefHeight="74.0" prefWidth="888.0" spacing="3.5"
+              style="-fx-background-color: transparent;;">
+            <JFXButton fx:id="btnClientChat" onAction="#chatClient" prefHeight="50.0" prefWidth="134.0"
+                       style="-fx-background-color: #4287ff; -fx-background-radius: 0;" text="Client Chat"
+                       textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="12.0"/>
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </JFXButton>
+            <JFXButton fx:id="btnApprove" onAction="#approveRequest" prefHeight="50.0" prefWidth="134.0"
+                       style="-fx-background-color: #009a00; -fx-background-radius: 0;" text="Approve Request"
+                       textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="12.0"/>
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </JFXButton>
+            <JFXButton fx:id="btnDecline" minHeight="-Infinity" minWidth="-Infinity" onAction="#declineRequest"
+                       prefHeight="50.0" prefWidth="134.0"
+                       style="-fx-background-color: #660000; -fx-background-radius: 0;" text="Decline Request"
+                       textFill="WHITE">
+                <font>
+                    <Font name="Segoe UI" size="12.0"/>
+                </font>
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+            </JFXButton>
+        </HBox>
+        <ToggleButton layoutX="-1.0" layoutY="626.0" mnemonicParsing="false" visible="false">
+            <toggleGroup>
+                <ToggleGroup fx:id="toggleGroup"/>
+            </toggleGroup>
+        </ToggleButton>
+        <HBox alignment="CENTER" layoutY="618.0" prefHeight="25.0" prefWidth="1045.0" spacing="3.5"
+              style="-fx-background-color: transparent;;">
+            <Label fx:id="lblInfo" text="Request Denied!" textFill="RED" visible="false">
+                <font>
+                    <Font name="Segoe UI" size="20.0"/>
+                </font>
+            </Label>
+        </HBox>
     </Pane>
 </AnchorPane>

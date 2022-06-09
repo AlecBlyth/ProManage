@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.sql.*;
 
 
-public class login {
+public class loginController {
 
     //FXML Components
     public JFXTextField txtEmail;
@@ -99,6 +99,7 @@ public class login {
                     }
                 }
             }
+            connection.close();
         } catch (SQLException | IOException throwables) {
             throwables.printStackTrace();
         }

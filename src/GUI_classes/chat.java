@@ -1,5 +1,6 @@
 package GUI_classes;
 
+import GUI_classes.Admin.users;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
@@ -23,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import bluebub.Bubble;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.sql.*;
@@ -253,12 +255,23 @@ public class chat {
         window.show();
     }
 
-    public void chat() {
-        //DO NOTHING
-    }
-
-    public void profile(ActionEvent profile) {
-        //TODO
+    public void profile(ActionEvent profile) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     public void sendMessage() {
@@ -296,10 +309,42 @@ public class chat {
     } //Allows user to send message via CTRL + Enter
 
     //ADMIN FEATURES
-    public void members(ActionEvent members) {
+    public void members(ActionEvent members) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
+        AnchorPane root = loader.load();
+        users users = loader.getController();
+        users.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) members.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
     }
 
-    public void requests(ActionEvent requests) {
+    public void requests(ActionEvent requests) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.Admin.requests controller = loader.getController();
+        controller.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) requests.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
     }
 
     //NAVIGATION

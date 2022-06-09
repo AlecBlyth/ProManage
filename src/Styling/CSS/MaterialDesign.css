@@ -302,7 +302,7 @@
 
  /*******************************************************************************
   *                                                                             *
-  * Task Styling                                                                *
+  * Task/User Styling                                                                *
   *                                                                             *
   ******************************************************************************/
   #taskVertical{
@@ -317,6 +317,18 @@
   }
   #taskPane > .viewport {
      -fx-background-color: transparent;
+  }
+  #userVertical{
+      -fx-background-color: transparent;
+  }
+  #userVertical > .viewport {
+      -fx-background-color: transparent;
+  }
+  #userPane{
+      -fx-background-color: transparent;
+  }
+  #userPane > .viewport {
+      -fx-background-color: transparent;
   }
 
 /*******************************************************************************

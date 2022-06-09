@@ -43,12 +43,11 @@
     <Accordion layoutX="-465.0" layoutY="82.0"/>
 
     <VBox layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;">
-        <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true"
-                   preserveRatio="true">
+        <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#menu" pickOnBounds="true" preserveRatio="true">
             <Image url="@/Styling/images/smallerLogo.png"/>
         </ImageView>
-        <JFXButton fx:id="btnProgress" alignment="CENTER" graphicTextGap="0.0" onAction="#progress"
-                   prefHeight="74.0" prefWidth="236.0" text="Progress" textAlignment="CENTER" textFill="WHITE">
+        <JFXButton fx:id="btnProgress" alignment="CENTER" graphicTextGap="0.0" onAction="#progress" prefHeight="74.0"
+                   prefWidth="236.0" text="Progress" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -56,8 +55,8 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnChat" alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0"
-                   prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
+        <JFXButton fx:id="btnChat" alignment="CENTER" graphicTextGap="0.0" prefHeight="74.0" prefWidth="236.0"
+                   text="Chat" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="26.0"/>
             </font>
@@ -65,9 +64,8 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile"
-                   prefHeight="74.0" prefWidth="236.0" text="My Profile" textAlignment="CENTER"
-                   textFill="WHITE">
+        <JFXButton fx:id="btnProfile" alignment="CENTER" graphicTextGap="0.0" onAction="#profile" prefHeight="74.0"
+                   prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -75,8 +73,8 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnRequest" alignment="CENTER" graphicTextGap="0.0" onAction="#request"
-                   prefHeight="74.0" prefWidth="236.0" text="Request" textAlignment="CENTER" textFill="WHITE">
+        <JFXButton fx:id="btnRequest" alignment="CENTER" graphicTextGap="0.0" onAction="#request" prefHeight="74.0"
+                   prefWidth="236.0" text="Request" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>
             </font>
@@ -114,18 +112,9 @@
             <Image url="@../../Styling/images/requestsIcon.png"/>
         </ImageView>
     </VBox>
-
-    <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0"
-               prefWidth="104.0" style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;"
-               text="Log Out" textFill="WHITE">
-        <cursor>
-            <Cursor fx:constant="DEFAULT"/>
-        </cursor>
-    </JFXButton>
     <Pane layoutX="236.0" layoutY="25.0" prefHeight="655.0" prefWidth="1045.0">
-        <JFXTextArea fx:id="txtMessage" focusColor="#1649e1" layoutX="238.0" layoutY="560.0"
-                     onKeyPressed="#CTRLEnter" prefHeight="58.0" prefWidth="570.0"
-                     promptText="Type message here  (CTRL + Enter to Send)"
+        <JFXTextArea fx:id="txtMessage" focusColor="#1649e1" layoutX="238.0" layoutY="560.0" onKeyPressed="#CTRLEnter"
+                     prefHeight="58.0" prefWidth="570.0" promptText="Type message here  (CTRL + Enter to Send)"
                      stylesheets="@/Styling/CSS/MaterialDesign.css">
             <font>
                 <Font name="Segoe UI" size="13.0"/>
@@ -135,8 +124,7 @@
                     prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: rgba(0, 0, 0, 0);"
                     stylesheets="@/Styling/CSS/MaterialDesign.css" vvalue="1.0">
             <VBox fx:id="chatLine" alignment="TOP_RIGHT" prefHeight="498.0" prefWidth="678.0"
-                  style="-fx-background-color: rgba(0, 0, 0, 0);"
-                  stylesheets="@/Styling/CSS/MaterialDesign.css"/>
+                  style="-fx-background-color: rgba(0, 0, 0, 0);" stylesheets="@/Styling/CSS/MaterialDesign.css"/>
         </ScrollPane>
         <JFXButton fx:id="btnSend" layoutX="831.0" layoutY="567.0" onAction="#sendMessage" prefHeight="43.0"
                    prefWidth="85.0" style="-fx-background-color: #2d79ff; -fx-background-radius: 0;" text="Send"
@@ -149,4 +137,114 @@
             </cursor>
         </JFXButton>
     </Pane>
+    <VBox fx:id="adminMenu" layoutY="25.0" prefHeight="655.0" prefWidth="236.0" style="-fx-background-color: #2d7aff;"
+          visible="false">
+        <ImageView fitHeight="200.0" fitWidth="236.0" onMouseClicked="#adminMenu" pickOnBounds="true"
+                   preserveRatio="true">
+            <Image url="@../../Styling/images/smallerLogo.png"/>
+        </ImageView>
+        <JFXButton fx:id="btnKanban" alignment="CENTER" graphicTextGap="0.0" onAction="#kanban" prefHeight="74.0"
+                   prefWidth="236.0" text="Kanban" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0"
+                   prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnChat1" alignment="CENTER" graphicTextGap="0.0" onAction="#chat" prefHeight="74.0"
+                   prefWidth="236.0" text="Chat" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnProfile1" alignment="CENTER" graphicTextGap="0.0" onAction="#profile" prefHeight="74.0"
+                   prefWidth="236.0" text="My Profile" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnMembers" alignment="CENTER" graphicTextGap="0.0" onAction="#members" prefHeight="74.0"
+                   prefWidth="236.0" text="Members" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+        <JFXButton fx:id="btnRequests" alignment="CENTER" graphicTextGap="0.0" onAction="#requests" prefHeight="74.0"
+                   prefWidth="236.0" text="Requests" textAlignment="CENTER" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Light" size="23.0"/>
+            </font>
+            <cursor>
+                <Cursor fx:constant="DEFAULT"/>
+            </cursor>
+        </JFXButton>
+    </VBox>
+    <VBox fx:id="adminImgs" layoutX="19.0" layoutY="122.0" prefHeight="473.0" prefWidth="64.0" spacing="23.0"
+          visible="false">
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/KanbanIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+            <Image url="@../../Styling/images/tasksIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/teamChatIcon.png"/>
+        </ImageView>
+        <ImageView fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/myProfileIcon.png"/>
+        </ImageView>
+        <ImageView fx:id="memberIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/membersIcon.png"/>
+        </ImageView>
+        <ImageView fx:id="reqIcon" fitHeight="50.0" fitWidth="50.0" preserveRatio="true">
+            <viewport>
+                <Rectangle2D/>
+            </viewport>
+            <Image url="@../../Styling/images/requestsIcon.png"/>
+        </ImageView>
+    </VBox>
+
+    <JFXButton fx:id="btnLogout" layoutX="66.0" layoutY="595.0" onAction="#logOut" prefHeight="29.0" prefWidth="104.0"
+               style="-fx-background-color: #262626 #262626; -fx-background-radius: 0;" text="Log Out" textFill="WHITE">
+        <cursor>
+            <Cursor fx:constant="DEFAULT"/>
+        </cursor>
+    </JFXButton>
 </AnchorPane>

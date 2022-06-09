@@ -1,7 +1,10 @@
 package GUI_classes.Client;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -11,21 +14,31 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.IOException;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 public class clientRequests {
 
     //FXML components
-    public Label lblDate, lblTime;
-    public JFXButton exitBtn, btnLogout, btnProgress, btnChat, btnProfile, btnRequest;
+    public Label lblDate, lblTime, lblSubject, lblValidation;
+    public JFXButton exitBtn, btnLogout, btnProgress, btnChat, btnProfile, btnRequest, btnSendRequest;
+    public JFXTextArea txtFieldDesc, txtFieldSubject, txtFieldName;
+    public JFXComboBox<String> choBoxTypes;
 
     //Variables
     private double xOffset = 0;
@@ -34,6 +47,13 @@ public class clientRequests {
     //Passed Variables
     private String currentUser;
     private int currentID;
+
+    //Local Variables
+    boolean checked = true;
+    boolean subCheck = false;
+
+    Random rnd = new Random();
+    int uniqueID = rnd.nextInt(9999);
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -55,7 +75,7 @@ public class clientRequests {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     }
 
-    public void initialize(String userType, int id) {
+    public void initialize(String userType, int id) throws IOException, ParseException {
 
         currentUser = userType;
         currentID = id;
@@ -74,6 +94,18 @@ public class clientRequests {
         btnRequest.setOnMouseExited(e -> btnRequest.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
         initTime();
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
+        JSONObject jsonObject = (JSONObject) obj;
+        JSONArray types = (JSONArray) jsonObject.get("projectTasks");
+        choBoxTypes.getItems().addAll(types);
+        subCheck = (Boolean) jsonObject.get("projectSubjects");
+
+        if (!subCheck) {
+            txtFieldSubject.setVisible(false);
+            lblSubject.setVisible(false);
+        }
     }
 
     public void initTime() {
@@ -126,12 +158,24 @@ public class clientRequests {
         window.show();
     }
 
-    public void request() {
-        //DO NOTHING
-    }
-
     //USER FEATURES
-    public void profile(ActionEvent profile) {
+    public void profile(ActionEvent profile) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     //NAVIGATION
@@ -173,5 +217,126 @@ public class clientRequests {
         });
         window.setScene(menuViewScene);
         window.show();
+    }
+
+    public void sendRequest() {
+
+        if (txtFieldDesc.getText().length() > 260) {
+            lblValidation.setText("Description is too long, please limit to 270 characters");
+            lblValidation.setTextFill(Color.RED);
+            lblValidation.setVisible(true); //Displays label
+            checked = false;
+            if (lblValidation.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
+
+        if (subCheck) {
+            if (txtFieldSubject.getText().length() > 26) {
+                lblValidation.setText("Subject Name is too long, please limit to 26 characters, if possible shorten name to 'Mr. Example Sr'");
+                lblValidation.setTextFill(Color.RED);
+                lblValidation.setVisible(true); //Displays label
+                checked = false;
+                if (lblValidation.isVisible()) { //Plays fade out animation
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.play();
+                }
+            }
+        }
+        if (txtFieldName.getText().length() > 40) {
+            lblValidation.setText("Task name is too long, please limit to 40 characters");
+            lblValidation.setTextFill(Color.RED);
+            lblValidation.setVisible(true); //Displays label
+            checked = false;
+            if (lblValidation.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
+
+        if (!subCheck) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String insertQuery = "INSERT INTO requests (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
+                PreparedStatement ps = connection.prepareStatement(insertQuery);
+                ps.setInt(1, uniqueID);
+                ps.setString(2, choBoxTypes.getValue());
+                ps.setString(3, txtFieldName.getText());
+                ps.setString(4, txtFieldDesc.getText());
+                ps.setString(5, "#123d82");
+                ps.setInt(6, 0);
+                ps.setInt(7, 1);
+                ps.execute();
+                lblValidation.setText("Request Sent!");
+                uniqueID = rnd.nextInt(9999);
+                lblValidation.setTextFill(Color.GREEN);
+                lblValidation.setVisible(true); //Displays label
+                if (lblValidation.isVisible()) { //Plays fade out animation
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.play();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    lblValidation.setText("Error, please try submitting again!");
+                    lblValidation.setTextFill(Color.RED);
+                    lblValidation.setVisible(true); //Displays label
+                    if (lblValidation.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
+                }
+            }
+        }
+        if (subCheck) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String insertQuery = "INSERT INTO requests (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
+                PreparedStatement ps = connection.prepareStatement(insertQuery);
+                ps.setInt(1, uniqueID);
+                ps.setString(2, choBoxTypes.getValue());
+                ps.setString(3, txtFieldName.getText());
+                ps.setString(4, txtFieldDesc.getText());
+                ps.setString(5, "#123d82");
+                ps.setInt(6, 0);
+                ps.setInt(7, 1);
+                ps.setString(8, txtFieldSubject.getText());
+                ps.execute();
+                lblValidation.setText("Request Sent!");
+                uniqueID = rnd.nextInt(9999);
+                lblValidation.setTextFill(Color.GREEN);
+                lblValidation.setVisible(true); //Displays label
+                if (lblValidation.isVisible()) { //Plays fade out animation
+                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                    fadeOut.setFromValue(1.0);
+                    fadeOut.setToValue(0.0);
+                    fadeOut.play();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    lblValidation.setText("Error, please try submitting again!");
+                    lblValidation.setTextFill(Color.RED);
+                    lblValidation.setVisible(true); //Displays label
+                    if (lblValidation.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblValidation);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
+                }
+            }
+        }
     }
 }

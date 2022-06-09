@@ -1,6 +1,7 @@
-package GUI_classes;
+package GUI_classes.Admin;
 
-import GUI_classes.Admin.users;
+import GUI_classes.menu;
+import GUI_classes.tasks;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -34,14 +35,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static javafx.geometry.Pos.CENTER;
 
-public class tasks {
+public class users {
     //FXML Components
     public Label lblDate, lblTime, lblInfo;
-    public ImageView memberIcon, reqIcon;
-    public ScrollPane taskPane;
-    public VBox taskVertical;
-    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnDeleteTask, btnEditTask, btnCreateTask;
-    public ToggleGroup toggleGroup; //Uses placeholder togglebox to get togglegroup to work and unselect tasks when other tasks are clicked.
+    public ImageView reqIcon, memberIcon;
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnCreateUser, btnDeleteUser, btnEditUser;
+    public ScrollPane userPane;
+    public VBox userVertical;
+    public ToggleGroup toggleGroup;
 
     //Variables
     private double xOffset = 0;
@@ -50,10 +51,9 @@ public class tasks {
     //Passed Variables
     private String currentUser;
     private int currentID;
-    boolean createCheck = false;
 
-    //Local Variables
-    public int taskID;
+    //Local variables
+    private int userID;
 
     //SYSTEM METHODS
     public static String getFormattedDate(Date date) {
@@ -98,134 +98,112 @@ public class tasks {
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
 
-        if ("ADMIN".equals(userType)) {
-            btnMembers.setVisible(true);
-            btnRequests.setVisible(true);
-            memberIcon.setVisible(true);
-            reqIcon.setVisible(true);
-            btnCreateTask.setVisible(true);
-            btnEditTask.setVisible(true);
-            btnDeleteTask.setVisible(true);
-            btnCreateTask.setDisable(false);
-            btnEditTask.setDisable(false);
-            btnDeleteTask.setDisable(false);
-            btnMembers.setDisable(false);
-            btnRequests.setDisable(false);
-        } else {
-            btnMembers.setVisible(false);
-            btnRequests.setVisible(false);
-            memberIcon.setVisible(false);
-            reqIcon.setVisible(false);
-            btnCreateTask.setVisible(false);
-            btnDeleteTask.setVisible(false);
-            btnMembers.setDisable(true);
-            btnRequests.setDisable(true);
-            btnCreateTask.setDisable(true);
-            btnDeleteTask.setDisable(true);
-            btnEditTask.setText("View Task");
-        } //User validation
+        btnEditUser.setDisable(true);
+        btnDeleteUser.setDisable(true);
 
-        btnEditTask.setDisable(true);
-        btnDeleteTask.setDisable(true);
-
-        getTasks();
+        getUsers();
 
     } //Initialise controller
 
-    public void getTasks() {
+    public void getUsers() {
         int x = 0;
         ArrayList<HBox> hBoxArrayList = new ArrayList<>();
         CopyOnWriteArrayList<ToggleButton> buttonArray = new CopyOnWriteArrayList<>();
-        taskVertical.getChildren().clear();
+        userVertical.getChildren().clear();
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
+            String queryString = "SELECT userID, usertype, email, firstname, surname, role, department FROM userdata"; //gets user data from database
             ResultSet resultSet = statement.executeQuery(queryString);
 
             while (resultSet.next()) {
                 x++;
-                int id = resultSet.getInt("taskid");
-                String name = resultSet.getString("taskname");
-                String type = resultSet.getString("tasktype");
-                String desc = resultSet.getString("taskdesc");
-                String hex = resultSet.getString("taskhex");
-                int prog = resultSet.getInt("taskprogress");
-                String subject = resultSet.getString("tasksubject");
+                int id = resultSet.getInt("userID");
+                String type = resultSet.getString("usertype");
+
+                String firstname = resultSet.getString("firstname");
+                String surname = resultSet.getString("surname");
+
+                String dept = resultSet.getString("department");
+                String role = resultSet.getString("role");
+
+                String email = resultSet.getString("email");
+
                 ToggleButton toggleButton = new ToggleButton();
-                toggleButton.setMinHeight(225);
-                toggleButton.setMinWidth(248);
-                toggleButton.setMaxHeight(225);
-                toggleButton.setMaxWidth(248);
+                toggleButton.setMinHeight(150);
+                toggleButton.setMinWidth(220);
+                toggleButton.setMaxHeight(150);
+                toggleButton.setMaxWidth(220);
                 toggleButton.setWrapText(true);
                 toggleButton.setTextOverrun(OverrunStyle.CLIP);
 
-                if (currentUser.equals("ADMIN")) {
-                    toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
-                    if (subject != null) {
-                        toggleButton.setText("Task ID: " + id + "\n" + type + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
-                    } else {
-                        toggleButton.setText("Task ID: " + id + "\n" + type + "\n" + "Task: " + name + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
-                    }
-                } else {
-                    toggleButton.setStyle("-fx-base: " + hex + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
-                    if (subject != null) {
-                        toggleButton.setText("Task: " + name + "\n" + type + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog + "\n" + "SUBJECT: " + subject);
-                    } else {
-                        toggleButton.setText("Task: " + name + "\n" + type + "\n" + "\n" + "Description:" + "\n" + desc + "\n" + "PROGRESS: " + prog);
-                    }
+                switch (type) {
+                    case "ADMIN":
+                        toggleButton.setStyle("-fx-base: " + "#9a0000" + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+                        break;
+                    case "USER":
+                        toggleButton.setStyle("-fx-base: " + "#2d79ff" + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+                        break;
+                    case "CLIENT":
+                        toggleButton.setStyle("-fx-base: " + "#009a00" + ";" + "-fx-background-radius: 0;" + "-fx-font-size: 10.5;" + "-fx-alignment: TOP-LEFT;" + "-fx-focus-color: white;" + "-fx-font-family: Segoe UI; " + "fx-focus-color: white;");
+                        break;
                 }
+                toggleButton.setText("User ID: " + id + "\n" + type + "\n" + "Firstname: " + firstname + "\n" + "Surname: " + surname + "\n" + "Department: " + dept + "\n" + "Role: " + role + "\n" + "\n" + "Email: " + email);
 
                 toggleButton.setId(String.valueOf(id));
                 toggleButton.setOnMouseClicked(mouseEvent -> {
                     if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                         if (mouseEvent.getClickCount() == 1)
-                            taskID = id; //Sets ID to currently clicked task's ID
-                        btnEditTask.setDisable(false); //Added better validation
-                        btnDeleteTask.setDisable(false);
+                            userID = id; //Sets ID to currently clicked user's ID
+                        System.out.println(userID);
+                        btnEditUser.setDisable(false); //Added better validation
+                        btnDeleteUser.setDisable(false);
+                        if (currentID == userID) {
+                            btnDeleteUser.setDisable(true);
+                        }
                     }
                 });
 
-                toggleButton.setToggleGroup(toggleGroup); //Puts toggle button into toggle group to unselect/select correct tasks.
+                toggleButton.setToggleGroup(toggleGroup); //Puts toggle button into toggle group to unselect/select correct users.
                 buttonArray.add(toggleButton); //Add toggle button to array
 
                 if (buttonArray.size() == 4) {
-                    HBox taskHorizontal = new HBox();
-                    taskHorizontal.setSpacing(5);
-                    taskHorizontal.setAlignment(CENTER);
-                    taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
-                    taskHorizontal.minHeight(Region.USE_PREF_SIZE);
-                    taskHorizontal.prefWidth(1020);
-                    taskHorizontal.prefHeight(235);
-                    taskHorizontal.getChildren().addAll(buttonArray);
+                    HBox userHorizontal = new HBox();
+                    userHorizontal.setSpacing(5);
+                    userHorizontal.setAlignment(CENTER);
+                    userHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+                    userHorizontal.minHeight(Region.USE_PREF_SIZE);
+                    userHorizontal.prefWidth(1020);
+                    userHorizontal.prefHeight(235);
+                    userHorizontal.getChildren().addAll(buttonArray);
                     buttonArray.clear();
-                    hBoxArrayList.add(taskHorizontal);
+                    hBoxArrayList.add(userHorizontal);
                 }
                 if (buttonArray.size() < 4 && x > buttonArray.size()) {
-                    HBox taskHorizontal = new HBox();
-                    taskHorizontal.setSpacing(5);
-                    taskHorizontal.setAlignment(CENTER);
-                    taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
-                    taskHorizontal.minHeight(Region.USE_PREF_SIZE);
-                    taskHorizontal.prefWidth(1020);
-                    taskHorizontal.prefHeight(235);
-                    taskHorizontal.getChildren().addAll(buttonArray);
-                    hBoxArrayList.add(taskHorizontal);
+                    HBox userHorizontal = new HBox();
+                    userHorizontal.setSpacing(5);
+                    userHorizontal.setAlignment(CENTER);
+                    userHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+                    userHorizontal.minHeight(Region.USE_PREF_SIZE);
+                    userHorizontal.prefWidth(1020);
+                    userHorizontal.prefHeight(235);
+                    userHorizontal.getChildren().addAll(buttonArray);
+                    hBoxArrayList.add(userHorizontal);
                 }
                 if (buttonArray.size() < 4 && x < 4) {
-                    HBox taskHorizontal = new HBox();
-                    taskHorizontal.setSpacing(5);
-                    taskHorizontal.setAlignment(CENTER);
-                    taskHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
-                    taskHorizontal.minHeight(Region.USE_PREF_SIZE);
-                    taskHorizontal.prefWidth(1020);
-                    taskHorizontal.prefHeight(235);
-                    taskHorizontal.getChildren().addAll(buttonArray);
-                    hBoxArrayList.add(taskHorizontal);
+                    HBox userHorizontal = new HBox();
+                    userHorizontal.setSpacing(5);
+                    userHorizontal.setAlignment(CENTER);
+                    userHorizontal.minWidth(Region.USE_COMPUTED_SIZE);
+                    userHorizontal.minHeight(Region.USE_PREF_SIZE);
+                    userHorizontal.prefWidth(1020);
+                    userHorizontal.prefHeight(235);
+                    userHorizontal.getChildren().addAll(buttonArray);
+                    hBoxArrayList.add(userHorizontal);
                 }
             }
-            taskVertical.getChildren().addAll(hBoxArrayList);
+            userVertical.getChildren().addAll(hBoxArrayList);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -252,20 +230,39 @@ public class tasks {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
+        Scene kanbanViewScene = new Scene(root);
         Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
+        window.setScene(kanbanViewScene);
+        window.show();
+    }
+
+    public void tasks(ActionEvent task) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
         window.show();
     }
 
     public void chat(ActionEvent chatRoom) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
-        chat chat = loader.getController();
+        GUI_classes.chat chat = loader.getController();
         chat.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -282,10 +279,11 @@ public class tasks {
     }
 
     public void profile(ActionEvent profile) throws IOException, ParseException {
+        int selectedID = currentID;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
         AnchorPane root = loader.load();
-        profile createUser = loader.getController();
-        createUser.initialize(currentUser, currentID, false, currentID);
+        GUI_classes.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, selectedID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
@@ -300,52 +298,50 @@ public class tasks {
         window.show();
     }
 
-    public void editTask(ActionEvent edit) throws IOException, ParseException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.Admin.taskEditor taskEditorScene = loader.getController();
-        taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) edit.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
-
-    } // ADMIN CAN EDIT, USER CAN ONLY VIEW
-
     //ADMIN FEATURES
-    public void createTask(ActionEvent create) throws IOException, ParseException {
-        createCheck = true;
-        taskID = 0;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
+
+    public void createUser(ActionEvent createUser) throws IOException, ParseException {
+        int selectedID = 0;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.Admin.taskEditor createTaskMenu = loader.getController();
-        createTaskMenu.initialize(currentUser, currentID, taskID, createCheck);
+        GUI_classes.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, true, selectedID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
         Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) create.getSource()).getScene().getWindow();
+        Stage window = (Stage) ((Node) createUser.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
         window.setScene(menuViewScene);
         window.show();
-    } //Sets create check to true which allows admin to edit
+    }
 
-    public void deleteTask() {
-        if (taskID == 0) {
-            lblInfo.setText("Select a Task to Delete!");
+    public void editUser(ActionEvent editUser) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, userID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) editUser.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    }
+
+    public void deleteUser() {
+        if (userID == 0) {
+            lblInfo.setText("Select a User to Delete!");
             lblInfo.setVisible(true); //Displays label
             if (lblInfo.isVisible()) { //Plays fade out animation
                 FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
@@ -354,22 +350,30 @@ public class tasks {
                 fadeOut.play();
             }
         }
-
+        if (userID == currentID) {
+            lblInfo.setText("Cannot delete own account while using!");
+            lblInfo.setVisible(true); //Displays label
+            if (lblInfo.isVisible()) { //Plays fade out animation
+                FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
+                fadeOut.setFromValue(1.0);
+                fadeOut.setToValue(0.0);
+                fadeOut.play();
+            }
+        }
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT taskid FROM tasks"; //gets task data from database
-            String updateQuery = "DELETE from tasks WHERE taskid=?";
+            String queryString = "SELECT userID FROM userdata"; //gets task data from database
+            String updateQuery = "DELETE from userdata WHERE userID=?";
             PreparedStatement ps = connection.prepareStatement(updateQuery);
             ResultSet resultSet = statement.executeQuery(queryString);
             while (resultSet.next()) {
-                int id = resultSet.getInt("taskid");
-                if (taskID == id) {
+                int id = resultSet.getInt("userID");
+                if (userID == id) {
                     ps.setInt(1, id);
                     ps.executeUpdate();
-                    getTasks();
-
-                    lblInfo.setText("Task Deleted!");
+                    getUsers();
+                    lblInfo.setText("User Deleted!");
                     lblInfo.setVisible(true); //Displays label
                     if (lblInfo.isVisible()) { //Plays fade out animation
                         FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
@@ -384,23 +388,8 @@ public class tasks {
         }
     }
 
-    public void members(ActionEvent members) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
-        AnchorPane root = loader.load();
-        users users = loader.getController();
-        users.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene chatViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) members.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(chatViewScene);
-        window.show();
+    public void members() {
+        //DO NOTHING
     }
 
     public void requests(ActionEvent requests) throws IOException {

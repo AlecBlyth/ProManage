@@ -57,7 +57,7 @@
                 <Cursor fx:constant="DEFAULT"/>
             </cursor>
         </JFXButton>
-        <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" onAction="#tasks" prefHeight="74.0"
+        <JFXButton fx:id="btnTasks" alignment="CENTER" graphicTextGap="0.0" prefHeight="74.0"
                    prefWidth="236.0" text="Tasks" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Light" size="23.0"/>

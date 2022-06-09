@@ -1,5 +1,8 @@
 package GUI_classes.Client;
 
+import GUI_classes.Admin.users;
+import GUI_classes.chat;
+import GUI_classes.tasks;
 import bluebub.Bubble;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -15,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -22,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.sql.*;
@@ -39,6 +44,11 @@ public class clientChat {
     public ScrollPane chatPane;
     public Label lblDate, lblTime;
     public JFXButton exitBtn, btnLogout, btnProgress, btnChat, btnProfile, btnRequest, btnSend;
+
+    //Admin components
+    public VBox adminImgs, adminMenu;
+    public JFXButton btnKanban, btnTasks, btnChat1, btnProfile1, btnMembers, btnRequests;
+    public ImageView reqIcon, memberIcon;
 
     //Variables
     private double xOffset = 0;
@@ -102,6 +112,11 @@ public class clientChat {
         currentID = id;
         isRunning = true;
 
+        if (currentUser.equals("ADMIN")) {
+            adminImgs.setVisible(true);
+            adminMenu.setVisible(true);
+        }
+
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
             Statement statement = connection.createStatement(); //Creates a statement
@@ -162,6 +177,22 @@ public class clientChat {
                 HBox hBox = new HBox(12); //Needed for chat bubbles
                 HBox hBox2 = new HBox(12);
 
+                if (username.equals("Automated Message") && email.equals("TRUE")) {
+                    Bubble b1 = new Bubble(message, username + " : " + time); //Current user bubble
+                    b1.setBubbleColor(Color.rgb(0, 154, 0));
+                    hBox.setAlignment(Pos.CENTER_RIGHT); //Aligns bubble to the right if the message belongs to current user.
+                    hBox.setPadding(new Insets(6.5));
+                    hBox.setSpacing(90);
+                    hBox.getChildren().addAll(b1);
+                } else if (username.equals("Automated Message") && email.equals("FALSE")) {
+                    Bubble b2 = new Bubble(message, username + " : " + time); //Current user bubble
+                    b2.setBubbleColor(Color.rgb(154, 0, 0));
+                    hBox.setAlignment(Pos.CENTER_RIGHT); //Aligns bubble to the right if the message belongs to current user.
+                    hBox.setPadding(new Insets(6.5));
+                    hBox.setSpacing(90);
+                    hBox.getChildren().addAll(b2);
+                }
+
                 if (email.equals(currentEmail)) {
                     Bubble b1 = new Bubble(message, username + " : " + time); //Current user bubble
                     b1.setBubbleColor(Color.rgb(33, 150, 243));
@@ -169,7 +200,7 @@ public class clientChat {
                     hBox.setPadding(new Insets(6.5));
                     hBox.setSpacing(90);
                     hBox.getChildren().addAll(b1);
-                } else {
+                } else if (!username.equals("Automated Message")) {
                     Bubble b2 = new Bubble(message, username + " : " + time); //Other user's bubble
                     hBox2.setAlignment(Pos.CENTER_LEFT); //Aligns bubble to left if the message isn't from the current user.
                     b2.setBubbleColor(Color.rgb(4, 44, 76));
@@ -249,15 +280,159 @@ public class clientChat {
         window.show();
     }
 
-    public void chat() {
-        //DO NOTHING
-    }
-
-    public void request(ActionEvent request) {
+    public void request(ActionEvent request) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientRequest.fxml"));
+        AnchorPane root = loader.load();
+        clientRequests requests = loader.getController();
+        requests.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) request.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     //USER FEATURES
-    public void profile(ActionEvent profile) {
+    public void profile(ActionEvent profile) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    }
+
+    //ADMIN FEATURES
+
+    public void members(ActionEvent members) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
+        AnchorPane root = loader.load();
+        users users = loader.getController();
+        users.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) members.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
+    }
+
+    public void chat(ActionEvent chatRoom) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
+        AnchorPane root = loader.load();
+        chat chat = loader.getController();
+        chat.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
+    }
+
+    public void tasks(ActionEvent task) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
+        window.show();
+    }
+
+    public void kanban(ActionEvent kanban) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.kanban kanbanScene = loader.getController();
+        kanbanScene.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene kanbanViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(kanbanViewScene);
+        window.show();
+    }
+
+    public void requests(ActionEvent requests) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.Admin.requests controller = loader.getController();
+        controller.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) requests.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
+    }
+
+    public void adminMenu(MouseEvent mouseEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
+        AnchorPane root = loader.load();
+        GUI_classes.menu menu = loader.getController();
+        menu.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     //NAVIGATION
