@@ -4,9 +4,6 @@ ProManage is a university project that attempts to bring Agile methodology to va
 This project is written mostly in Java and CSS. The framework being used is JavaFX. The companion program is written in C++ and can be found here, [JSON Creator](https://github.com/AlecBlyth/JSONCreator-UniWork) The companion program creates a JSON file in a format that is read and used by the JavaFX program 
 
 The software architecture being used is Model View Controller.
-Model = Server with data 
-View = FXML files 
-Controller = classes that manipulate and create data for model.  
 
 ## Libraries used  
 -	[Bluebub]( https://github.com/b3z/bluebub)
