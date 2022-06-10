@@ -1,9 +1,9 @@
-package GUI_classes;
+package Controllers;
 
-import GUI_classes.Admin.users;
-import GUI_classes.Client.clientChat;
-import GUI_classes.Client.clientProgressOverall;
-import GUI_classes.Client.clientRequests;
+import Controllers.Admin.users;
+import Controllers.Client.clientChat;
+import Controllers.Client.clientProgressOverall;
+import Controllers.Client.clientRequests;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
@@ -39,27 +39,21 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+@SuppressWarnings({"unchecked"})
+
 public class profile {
+
     //FXML Components
-    public Label lblDate, lblTime, lblID, lblNum;
-    public ImageView reqIcon, memberIcon;
-    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
-    public Label lblValidation;
-    public JFXButton btnSave;
-    public JFXComboBox<String> choBoxTypes, choBoxDept, choBoxRole;
+    public VBox clientBox, clientImages; //CLIENT ONLY
+    public JFXButton btnProgress, btnRequest, btnChat1, btnProfile1; //CLIENT ONLY
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnSave;
     public JFXTextArea txtFieldFirstname, txtFieldsurName, txtFieldEmail;
     public JFXPasswordField txtFieldPassword;
+    public JFXComboBox<String> choBoxTypes, choBoxDept, choBoxRole;
+    public ImageView reqIcon, memberIcon;
+    public Label lblDate, lblTime, lblID, lblNum, lblValidation;
 
-    //Client exclusive
-    public VBox clientBox;
-    public JFXButton btnProgress;
-    public JFXButton btnRequest;
-    public VBox clientImages;
-    public JFXButton btnChat1;
-    public JFXButton btnProfile1;
-
-
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -68,14 +62,13 @@ public class profile {
     private int currentID;
 
     //Local Variables
-    public int localUserID;
+    Random rnd = new Random();
     boolean checked = true;
     boolean createEnabled = false;
+    public int localUserID;
+    public int uniqueID = rnd.nextInt(9999);
 
-    Random rnd = new Random();
-    int uniqueID = rnd.nextInt(9999);
-
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -95,7 +88,27 @@ public class profile {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play(); //Updates the clock
+    } //Initialise time
+
     public void initialize(String userType, int userID, boolean createCheck, int selectedID) throws IOException, ParseException {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
+        JSONObject jsonObject = (JSONObject) obj;
+        JSONArray roles = (JSONArray) jsonObject.get("projectRoles");
+        JSONArray depts = (JSONArray) jsonObject.get("projectDepts");
+        choBoxTypes.getItems().addAll("ADMIN", "CLIENT", "USER");
+        choBoxRole.getItems().addAll(roles);
+        choBoxDept.getItems().addAll(depts);
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -114,13 +127,10 @@ public class profile {
         btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-        initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
         localUserID = selectedID;
-
-        System.out.println(userType);
-
+        createEnabled = createCheck;
 
         if ("CLIENT".equals(userType)) {
             clientBox.setDisable(false);
@@ -147,16 +157,7 @@ public class profile {
             choBoxRole.setDisable(true);
         }
 
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
-        JSONObject jsonObject = (JSONObject) obj;
-        JSONArray roles = (JSONArray) jsonObject.get("projectRoles");
-        JSONArray depts = (JSONArray) jsonObject.get("projectDepts");
-        choBoxTypes.getItems().addAll("ADMIN", "CLIENT", "USER");
-        choBoxRole.getItems().addAll(roles);
-        choBoxDept.getItems().addAll(depts);
-
-        createEnabled = createCheck;
+        initTime();
         getUsers(selectedID, createCheck);
 
     } //Initialise controller
@@ -222,76 +223,6 @@ public class profile {
         }
     }
 
-
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play(); //Updates the clock
-    } //Initialise time
-
-    //ADMIN AND USER FEATURES
-    public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene kanbanViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(kanbanViewScene);
-        window.show();
-    }
-
-    public void tasks(ActionEvent task) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
-        AnchorPane root = loader.load();
-        tasks tasks = loader.getController();
-        tasks.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene taskViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(taskViewScene);
-        window.show();
-    }
-
-    public void chat(ActionEvent chatRoom) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.chat chat = loader.getController();
-        chat.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene chatViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(chatViewScene);
-        window.show();
-    }
-
     public void saveUser() {
 
         if (localUserID == 0 && !createEnabled) {
@@ -349,7 +280,6 @@ public class profile {
         String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(txtFieldEmail.getText());
-        System.out.println(m);
         if (m.matches()) {
             checked = true;
         } else {
@@ -390,6 +320,7 @@ public class profile {
                     fadeOut.setToValue(0.0);
                     fadeOut.play();
                 }
+                connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
                 if (e instanceof SQLIntegrityConstraintViolationException) {
@@ -438,13 +369,72 @@ public class profile {
                         }
                     }
                 }
+                connection.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         }
     }
 
-    //ADMIN FEATURES
+    //ADMIN AND USER NAVIGATION METHODS
+    public void kanban(ActionEvent kanban) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.kanban kanbanScene = loader.getController();
+        kanbanScene.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene kanbanViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(kanbanViewScene);
+        window.show();
+    }
+
+    public void tasks(ActionEvent task) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
+        window.show();
+    }
+
+    public void chat(ActionEvent chatRoom) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.chat chat = loader.getController();
+        chat.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
+    }
+
+    //ADMIN NAVIGATION METHODS
     public void members(ActionEvent members) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
         AnchorPane root = loader.load();
@@ -464,10 +454,10 @@ public class profile {
         window.show();
     }
 
-    public void requests(ActionEvent requests) throws IOException {
+    public void requests(ActionEvent requests) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.Admin.requests controller = loader.getController();
+        Controllers.Admin.requests controller = loader.getController();
         controller.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -483,7 +473,7 @@ public class profile {
         window.show();
     }
 
-    //CLIENT FEATURES
+    //CLIENT NAVIGATION METHODS
     public void request(ActionEvent request) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientRequest.fxml"));
         AnchorPane root = loader.load();
@@ -541,9 +531,44 @@ public class profile {
         window.show();
     }
 
-    //NAVIGATION
-    public void exit() { //Exit functionality
-        System.exit(0);
+    //NAVIGATION METHODS
+    public void menu(MouseEvent mouseEvent) throws IOException {
+
+        if (currentUser.equals("CLIENT")) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
+            AnchorPane root = loader.load();
+            Controllers.Client.clientMenu temp = loader.getController();
+            temp.initialize(currentUser, currentID);
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+            Scene menuViewScene = new Scene(root);
+            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            root.setOnMouseDragged(event -> {
+                window.setX((event.getScreenX() - xOffset));
+                window.setY((event.getScreenY() - yOffset));
+            });
+            window.setScene(menuViewScene);
+            window.show();
+        } else {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
+            AnchorPane root = loader.load();
+            menu menu = loader.getController();
+            menu.initialize(currentUser, currentID);
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+            Scene menuViewScene = new Scene(root);
+            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            root.setOnMouseDragged(event -> {
+                window.setX((event.getScreenX() - xOffset));
+                window.setY((event.getScreenY() - yOffset));
+            });
+            window.setScene(menuViewScene);
+            window.show();
+        }
     }
 
     public void logOut(ActionEvent logout) throws IOException {
@@ -563,22 +588,8 @@ public class profile {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
-        AnchorPane root = loader.load();
-        menu menu = loader.getController();
-        menu.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
+    public void exit() { //Exit functionality
+        System.exit(0);
     }
+
 }

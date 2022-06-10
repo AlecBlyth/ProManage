@@ -19,7 +19,7 @@ It does however run when compiled by Intellji IDEa.
 -	Import database files into MySQL server, or create new databases with same structure and names. 
 -	In your IDE, set the SDK to [Java13]( https://openjdk.java.net/projects/jdk/13/)
 -	Set VM options to --module-path "PATH TO JAVAFX13" --add-modules javafx.controls,javafx.fxml 
--	Set Main class to “GUI_classes.proManage”
+-	Set Main class to “Controllers.proManage”
 -	Run and compile 
 
 ## License

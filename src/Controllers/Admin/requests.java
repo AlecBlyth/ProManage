@@ -1,8 +1,8 @@
-package GUI_classes.Admin;
+package Controllers.Admin;
 
-import GUI_classes.Client.clientChat;
-import GUI_classes.menu;
-import GUI_classes.tasks;
+import Controllers.Client.clientChat;
+import Controllers.menu;
+import Controllers.tasks;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -23,8 +23,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -39,15 +42,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static javafx.geometry.Pos.CENTER;
 
 public class requests {
+
     //FXML Components
-    public Label lblDate, lblTime, lblInfo;
-    public ImageView reqIcon, memberIcon;
+    public ScrollPane taskPane;
+    public VBox taskVertical;
     public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnDecline, btnApprove, btnClientChat;
     public ToggleGroup toggleGroup;
-    public VBox taskVertical;
-    public ScrollPane taskPane;
+    public ImageView reqIcon, memberIcon;
+    public Label lblDate, lblTime, lblInfo;
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -64,9 +68,9 @@ public class requests {
     String requestName;
     String taskdesc;
     String tasksubject;
+    boolean subCheck = false;
 
-
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -86,7 +90,23 @@ public class requests {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
-    public void initialize(String userType, int userID) {
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play(); //Updates the clock
+    } //Initialise time
+
+    public void initialize(String userType, int userID) throws IOException, ParseException {
+
+        JSONParser parser = new JSONParser();
+        Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
+        JSONObject jsonObject = (JSONObject) obj;
+        subCheck = (Boolean) jsonObject.get("projectSubjects");
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -105,13 +125,12 @@ public class requests {
         btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-        initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
-
         btnApprove.setDisable(true);
         btnDecline.setDisable(true);
 
+        initTime();
         getRequests();
 
     } //Initialise controller
@@ -247,34 +266,68 @@ public class requests {
                     }
                 }
             }
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        try {
-            System.out.println(tasktype);
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
-            String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
-            PreparedStatement ps = connection.prepareStatement(insertQuery);
-            ps.setInt(1, uniqueID);
-            ps.setString(2, tasktype);
-            ps.setString(3, requestName);
-            ps.setString(4, taskdesc);
-            ps.setString(5, "#123d82");
-            ps.setInt(6, 0);
-            ps.setInt(7, 1);
-            ps.execute();
-            uniqueID = rnd.nextInt(9999);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            if (e instanceof SQLIntegrityConstraintViolationException) {
-                lblInfo.setText("Duplicate ID, try again!");
-                lblInfo.setTextFill(Color.RED);
-                lblInfo.setVisible(true); //Displays label
-                if (lblInfo.isVisible()) { //Plays fade out animation
-                    FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
-                    fadeOut.setFromValue(1.0);
-                    fadeOut.setToValue(0.0);
-                    fadeOut.play();
+
+        if (!subCheck) {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
+                PreparedStatement ps = connection.prepareStatement(insertQuery);
+                ps.setInt(1, uniqueID);
+                ps.setString(2, tasktype);
+                ps.setString(3, requestName);
+                ps.setString(4, taskdesc);
+                ps.setString(5, "#123d82");
+                ps.setInt(6, 0);
+                ps.setInt(7, 1);
+                ps.execute();
+                uniqueID = rnd.nextInt(9999);
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    lblInfo.setText("Duplicate ID, try again!");
+                    lblInfo.setTextFill(Color.RED);
+                    lblInfo.setVisible(true); //Displays label
+                    if (lblInfo.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
+                }
+            }
+        } else {
+            try {
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
+                PreparedStatement ps = connection.prepareStatement(insertQuery);
+                ps.setInt(1, uniqueID);
+                ps.setString(2, tasktype);
+                ps.setString(3, requestName);
+                ps.setString(4, taskdesc);
+                ps.setString(5, "#123d82");
+                ps.setInt(6, 0);
+                ps.setInt(7, 1);
+                ps.setString(8, tasksubject);
+                ps.execute();
+                uniqueID = rnd.nextInt(9999);
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                if (e instanceof SQLIntegrityConstraintViolationException) {
+                    lblInfo.setText("Duplicate ID, try again!");
+                    lblInfo.setTextFill(Color.RED);
+                    lblInfo.setVisible(true); //Displays label
+                    if (lblInfo.isVisible()) { //Plays fade out animation
+                        FadeTransition fadeOut = new FadeTransition(Duration.millis(1550), lblInfo);
+                        fadeOut.setFromValue(1.0);
+                        fadeOut.setToValue(0.0);
+                        fadeOut.play();
+                    }
                 }
             }
         }
@@ -316,6 +369,7 @@ public class requests {
                     }
                 }
             }
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -346,7 +400,6 @@ public class requests {
             preparedStatement.setString(4, time);
             preparedStatement.executeUpdate();
             connection.close();
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -371,22 +424,11 @@ public class requests {
         window.show();
     }
 
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play(); //Updates the clock
-    } //Initialise time
-
-    //ADMIN AND USER FEATURES
+    //ADMIN NAVIGATION METHODS
     public void kanban(ActionEvent kanban) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.kanban kanbanScene = loader.getController();
+        Controllers.kanban kanbanScene = loader.getController();
         kanbanScene.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -424,7 +466,7 @@ public class requests {
     public void chat(ActionEvent chatRoom) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.chat chat = loader.getController();
+        Controllers.chat chat = loader.getController();
         chat.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -443,7 +485,7 @@ public class requests {
     public void profile(ActionEvent profile) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.profile controller = loader.getController();
+        Controllers.profile controller = loader.getController();
         controller.initialize(currentUser, currentID, false, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -459,7 +501,6 @@ public class requests {
         window.show();
     }
 
-    //ADMIN FEATURES
     public void members(ActionEvent members) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
         AnchorPane root = loader.load();
@@ -480,8 +521,23 @@ public class requests {
     }
 
     //NAVIGATION
-    public void exit() { //Exit functionality
-        System.exit(0);
+    public void menu(MouseEvent mouseEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
+        AnchorPane root = loader.load();
+        menu menu = loader.getController();
+        menu.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     public void logOut(ActionEvent logout) throws IOException {
@@ -501,22 +557,8 @@ public class requests {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
-        AnchorPane root = loader.load();
-        menu menu = loader.getController();
-        menu.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
+    public void exit() { //Exit functionality
+        System.exit(0);
     }
+
 }

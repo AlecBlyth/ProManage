@@ -17,7 +17,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0"
             prefWidth="1280.0" style="-fx-background-color: #262626;" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI_classes.Client.clientProgressDetailed">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Client.clientProgressDetailed">
     <HBox alignment="TOP_RIGHT" prefHeight="0.0" prefWidth="1280.0" style="-fx-background-color: #2d7aff;">
         <JFXButton fx:id="exitBtn" onAction="#exit" prefHeight="143.0" prefWidth="29.0"
                    style="-fx-background-radius: 0; -fx-effect: none; -jfx-disable-visual-focus: true;" text="X"

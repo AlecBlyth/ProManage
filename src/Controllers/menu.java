@@ -1,6 +1,6 @@
-package GUI_classes;
+package Controllers;
 
-import GUI_classes.Admin.users;
+import Controllers.Admin.users;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.*;
 import javafx.event.ActionEvent;
@@ -26,11 +26,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class menu {
 
     //FXML Components
-    public Label lblTime, lblTips, lblDate;
-    public ImageView memberIcon, reqIcon, imageMenu;
     public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
+    public ImageView memberIcon, reqIcon, imageMenu;
+    public Label lblTime, lblTips, lblDate;
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -38,7 +38,7 @@ public class menu {
     private String currentUser;
     private int currentID;
 
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -58,28 +58,18 @@ public class menu {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play(); //Updates the clock
+    } //Initialise time
+
     public void initialize(String userType, int id) {
-
-        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
-        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
-        btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
-        btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
-        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-
-        initTime();
-        currentUser = userType; //Sets currentUser to userType
-        currentID = id;
 
         ArrayList<String> tips = new ArrayList<>(); //Arraylist for tips
 
@@ -133,24 +123,35 @@ public class menu {
         tip.setCycleCount(Animation.INDEFINITE);
         tip.play();
 
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+
+        currentUser = userType; //Sets currentUser to userType
+        currentID = id;
+
+        initTime();
+
     } //Initialise controller
 
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play(); //Updates the clock
-    } //Initialise time
-
-    //ADMIN AND USER FEATURES
+    //ADMIN AND USER NAVIGATION METHODS
     public void kanban(ActionEvent kanban) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.kanban kanbanScene = loader.getController();
+        Controllers.kanban kanbanScene = loader.getController();
         kanbanScene.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -223,7 +224,7 @@ public class menu {
         window.show();
     }
 
-    //ADMIN FEATURES
+    //ADMIN NAVIGATION METHODS
     public void members(ActionEvent members) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
         AnchorPane root = loader.load();
@@ -243,10 +244,10 @@ public class menu {
         window.show();
     }
 
-    public void requests(ActionEvent requests) throws IOException {
+    public void requests(ActionEvent requests) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.Admin.requests controller = loader.getController();
+        Controllers.Admin.requests controller = loader.getController();
         controller.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -262,11 +263,7 @@ public class menu {
         window.show();
     }
 
-    //NAVIGATION
-    public void exit() { //Exit functionality
-        System.exit(0);
-    }
-
+    //NAVIGATION METHODS
     public void logOut(ActionEvent logout) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml"));
         AnchorPane root = loader.load();
@@ -282,5 +279,9 @@ public class menu {
         });
         window.setScene(loginViewScene);
         window.show();
+    }
+
+    public void exit() { //Exit functionality
+        System.exit(0);
     }
 }

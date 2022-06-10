@@ -1,6 +1,6 @@
-package GUI_classes;
+package Controllers;
 
-import GUI_classes.Admin.users;
+import Controllers.Admin.users;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -39,28 +39,27 @@ import java.util.Date;
 public class kanban {
 
     //FXML Components
-    public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked, lblDate, lblTime;
-    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
-    public ImageView memberIcon, reqIcon;
-
     @FXML
     private FlowPane paneOne, paneTwo, paneThree, paneFour, paneFive;
     @FXML
     private JFXButton draggingButton;
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn;
+    public ImageView memberIcon, reqIcon;
+    public Label lblBacklog, lblTodo, lblProgress, lblComplete, lblBlocked, lblDate, lblTime;
 
     private static final DataFormat btnFormat = new DataFormat(" "); //Allows buttons on clipboard
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
     //Passed variables
-    private String currentUser;
+    boolean createCheck = false;
     private int currentID;
     private int taskID;
-    boolean createCheck = false;
+    private String currentUser;
 
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -80,56 +79,33 @@ public class kanban {
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
 
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
     public void initialize(String userType, int userID) {
 
-        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
-        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
-        btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
-        btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
-        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
-        btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
-        btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        JSONParser parser = new JSONParser(); //Used to read from JSON file
+        try {
+            Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
+            JSONObject jsonObject = (JSONObject) obj;
+            JSONArray testList = (JSONArray) jsonObject.get("projectLabels"); //Gets custom kanban labels from JSON file
 
+            lblBacklog.setText(testList.get(0).toString()); //Sets labels to custom labels
+            lblTodo.setText(testList.get(1).toString());
+            lblProgress.setText(testList.get(2).toString());
+            lblComplete.setText(testList.get(3).toString());
+            lblBlocked.setText(testList.get(4).toString());
 
-        initTime();
-
-        currentUser = userType; //Sets currentUser to userType
-        currentID = userID;
-        switch (userType) {
-            case "USER":
-                btnMembers.setVisible(false);
-                btnRequests.setVisible(false);
-                memberIcon.setVisible(false);
-                reqIcon.setVisible(false);
-                btnMembers.setDisable(true);
-                btnRequests.setDisable(true);
-                break;
-            case "ADMIN":
-                btnMembers.setVisible(true);
-                btnRequests.setVisible(true);
-                memberIcon.setVisible(true);
-                reqIcon.setVisible(true);
-                btnMembers.setDisable(false);
-                btnRequests.setDisable(false);
-                break;
-            default:
-                btnMembers.setVisible(false);
-                btnRequests.setVisible(false);
-                memberIcon.setVisible(false);
-                reqIcon.setVisible(false);
-                btnMembers.setDisable(true);
-                btnRequests.setDisable(true);
-                System.out.println("USER HAS NO USERTYPE");
-                break;
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -169,26 +145,61 @@ public class kanban {
                         break;
                 }
             }
-
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
-        JSONParser parser = new JSONParser(); //Used to read from JSON file
-        try {
-            Object obj = parser.parse(new FileReader("src/Datafiles/logs/ProjectFile.json"));
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray testList = (JSONArray) jsonObject.get("projectLabels"); //Gets custom kanban labels from JSON file
+        exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseEntered(e -> btnLogout.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
+        btnLogout.setOnMouseExited(e -> btnLogout.setStyle("-fx-background-color: #262626; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseEntered(e -> btnProfile.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnProfile.setOnMouseExited(e -> btnProfile.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseEntered(e -> btnMembers.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnMembers.setOnMouseExited(e -> btnMembers.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseEntered(e -> btnRequests.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnRequests.setOnMouseExited(e -> btnRequests.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseEntered(e -> btnKanban.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnKanban.setOnMouseExited(e -> btnKanban.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseEntered(e -> btnTasks.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnTasks.setOnMouseExited(e -> btnTasks.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
+        btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-            lblBacklog.setText(testList.get(0).toString()); //Sets labels to custom labels
-            lblTodo.setText(testList.get(1).toString());
-            lblProgress.setText(testList.get(2).toString());
-            lblComplete.setText(testList.get(3).toString());
-            lblBlocked.setText(testList.get(4).toString());
+        currentUser = userType; //Sets currentUser to userType
+        currentID = userID;
 
-        } catch (ParseException | IOException e) {
-            e.printStackTrace();
+        switch (userType) {
+            case "USER":
+                btnMembers.setVisible(false);
+                btnRequests.setVisible(false);
+                memberIcon.setVisible(false);
+                reqIcon.setVisible(false);
+                btnMembers.setDisable(true);
+                btnRequests.setDisable(true);
+                break;
+            case "ADMIN":
+                btnMembers.setVisible(true);
+                btnRequests.setVisible(true);
+                memberIcon.setVisible(true);
+                reqIcon.setVisible(true);
+                btnMembers.setDisable(false);
+                btnRequests.setDisable(false);
+                break;
+            default:
+                btnMembers.setVisible(false);
+                btnRequests.setVisible(false);
+                memberIcon.setVisible(false);
+                reqIcon.setVisible(false);
+                btnMembers.setDisable(true);
+                btnRequests.setDisable(true);
+                System.out.println("USER HAS NO USERTYPE");
+                break;
         }
+
+        initTime();
+
     } //Initialises controller
 
     private JFXButton initButton(String colour, String taskname, String tasktype, String subject, String taskdesc, int id) { //Creates and initialises button
@@ -232,7 +243,7 @@ public class kanban {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        GUI_classes.Admin.taskEditor taskEditorScene = loader.getController();
+                        Controllers.Admin.taskEditor taskEditorScene = loader.getController();
                         try {
                             taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
                         } catch (IOException | ParseException e) {
@@ -345,6 +356,7 @@ public class kanban {
                             draggingButton.setFont(Font.font("Segoe UI")); //Button font
                         }
                     }
+                    connection.close();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -352,19 +364,26 @@ public class kanban {
         });
     }
 
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+    public void view(ActionEvent view) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.Admin.taskEditor taskEditorScene = loader.getController();
+        taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) view.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
-    //ADMIN AND USER FEATURES
-
+    //ADMIN AND USER NAVIGATION METHODS
     public void tasks(ActionEvent task) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
         AnchorPane root = loader.load();
@@ -422,7 +441,7 @@ public class kanban {
         window.show();
     }
 
-    //ADMIN FEATURES
+    //ADMIN NAVIGATION METHODS
     public void members(ActionEvent members) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
         AnchorPane root = loader.load();
@@ -442,10 +461,10 @@ public class kanban {
         window.show();
     }
 
-    public void requests(ActionEvent requests) throws IOException {
+    public void requests(ActionEvent requests) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.Admin.requests controller = loader.getController();
+        Controllers.Admin.requests controller = loader.getController();
         controller.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -460,27 +479,8 @@ public class kanban {
         window.setScene(chatViewScene);
         window.show();
     }
-    //NAVIGATION
 
-    public void view(ActionEvent view) throws IOException, ParseException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/taskEditor.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.Admin.taskEditor taskEditorScene = loader.getController();
-        taskEditorScene.initialize(currentUser, currentID, taskID, createCheck);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) view.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
-    }
-
+    //NAVIGATION METHODS
     public void exit() {
         System.exit(0);
     }
@@ -520,4 +520,5 @@ public class kanban {
         window.setScene(menuViewScene);
         window.show();
     }
+
 }

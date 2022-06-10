@@ -1,7 +1,6 @@
-package GUI_classes.Client;
+package Controllers.Client;
 
 import com.jfoenix.controls.JFXButton;
-import eu.hansolo.medusa.Gauge;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -10,40 +9,35 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
-import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 
-public class clientProgressOverall {
+public class clientMenu {
 
-    //FXML Components
-    public Gauge gaugeProgress;
-    public Label lblDate, lblTime;
+    //FXML components
     public JFXButton exitBtn, btnLogout, btnProgress, btnChat, btnProfile, btnRequest;
+    public Label lblDate, lblTime, lblTips;
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
-    private int sum = 0;
-    private int completeTotal;
 
     //Passed Variables
     private String currentUser;
     private int currentID;
 
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -63,7 +57,34 @@ public class clientProgressOverall {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     }
 
-    public void initialize(String userType, int userID) {
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    public void initialize(String userType, int id) {
+
+        ArrayList<String> tips = new ArrayList<>();
+
+        tips.add("Tip: Click on progress view your project's progress");
+        tips.add("Tip: Click on chat to communicate with project manager");
+        tips.add("Tip: Click on request to manage project requests");
+        tips.add("Tip: Click on my Profile to edit your profile");
+
+        Timeline tip = new Timeline(new KeyFrame(Duration.seconds(10), e -> {
+            int x = ThreadLocalRandom.current().nextInt(0, 3 + 1);
+            lblTips.setText(tips.get(x));
+        }),
+                new KeyFrame(Duration.seconds(1))
+        );
+        tip.setCycleCount(Animation.INDEFINITE);
+        tip.play();
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -78,54 +99,31 @@ public class clientProgressOverall {
         btnRequest.setOnMouseEntered(e -> btnRequest.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnRequest.setOnMouseExited(e -> btnRequest.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
+        currentUser = userType;
+        currentID = id;
+
         initTime();
-        currentUser = userType; //Sets currentUser to userType
-        currentID = userID;
-
-        ArrayList<Integer> TaskProgress = new ArrayList<>();
-
-        gaugeProgress.barColorProperty().setValue(Color.rgb(45, 121, 255)); //Changes colour of gauge bar
-        gaugeProgress.valueColorProperty().setValue(Color.WHITE); //Changes font colour of gauge
-
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL server
-            Statement statement = connection.createStatement();
-            String queryString = "SELECT taskprogress FROM tasks";
-            ResultSet resultSet = statement.executeQuery(queryString);
-
-            while (resultSet.next()) {
-                int taskprog = resultSet.getInt("taskprogress");
-                TaskProgress.add(taskprog);
-                completeTotal = completeTotal + 1;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-        for (Integer tempSum : TaskProgress) { //Calculates average percentage
-            sum += tempSum;
-        }
-        completeTotal = completeTotal * 100;
-        double currentProgress = sum;
-        double totalPercentage = currentProgress / completeTotal * 100;
-        gaugeProgress.setValue(totalPercentage); //Sets gauge value to total percentage
 
     }
 
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-    }
-
-    //CLIENT FEATURES
-    public void progress() {
-        //Do nothing since already on stage.
+    //CLIENT NAVIGATION METHODS
+    public void progress(ActionEvent progress) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
+        AnchorPane root = loader.load();
+        clientProgressOverall clientProgress = loader.getController();
+        clientProgress.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene progressViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) progress.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(progressViewScene);
+        window.show();
     }
 
     public void chat(ActionEvent chatRoom) throws IOException {
@@ -144,6 +142,25 @@ public class clientProgressOverall {
             window.setY((event.getScreenY() - yOffset));
         });
         window.setScene(chatViewScene);
+        window.show();
+    }
+
+    public void profile(ActionEvent profile) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
         window.show();
     }
 
@@ -166,50 +183,7 @@ public class clientProgressOverall {
         window.show();
     }
 
-    public void btnViewmore(ActionEvent viewMore) throws IOException, SQLException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgressDetailed.fxml"));
-        AnchorPane root = loader.load();
-        clientProgressDetailed clientProgressDetailed = loader.getController();
-        clientProgressDetailed.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene detailedViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) viewMore.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(detailedViewScene);
-        window.show();
-    }
-
-    //USER FEATURES
-    public void profile(ActionEvent profile) throws IOException, ParseException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.profile controller = loader.getController();
-        controller.initialize(currentUser, currentID, false, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
-    }
-
-    //NAVIGATION
-    public void exit() {
-        System.exit(0);
-    }
-
+    //NAVIGATION METHODS
     public void logOut(ActionEvent logout) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/login.fxml"));
         AnchorPane root = loader.load();
@@ -227,22 +201,8 @@ public class clientProgressOverall {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
-        AnchorPane root = loader.load();
-        clientMenu menu = loader.getController();
-        menu.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
+    public void exit() {
+        System.exit(0);
     }
+
 }

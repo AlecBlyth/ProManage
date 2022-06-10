@@ -1,7 +1,7 @@
-package GUI_classes.Admin;
+package Controllers.Admin;
 
-import GUI_classes.menu;
-import GUI_classes.tasks;
+import Controllers.menu;
+import Controllers.tasks;
 import com.jfoenix.controls.JFXButton;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -36,15 +36,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static javafx.geometry.Pos.CENTER;
 
 public class users {
+
     //FXML Components
-    public Label lblDate, lblTime, lblInfo;
-    public ImageView reqIcon, memberIcon;
-    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnCreateUser, btnDeleteUser, btnEditUser;
     public ScrollPane userPane;
     public VBox userVertical;
+    public JFXButton btnMembers, btnRequests, btnLogout, btnKanban, btnTasks, btnChat, btnProfile, exitBtn, btnCreateUser, btnDeleteUser, btnEditUser;
     public ToggleGroup toggleGroup;
+    public ImageView reqIcon, memberIcon;
+    public Label lblDate, lblTime, lblInfo;
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -55,7 +56,7 @@ public class users {
     //Local variables
     private int userID;
 
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public static String getFormattedDate(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -74,6 +75,17 @@ public class users {
             }
         return new SimpleDateFormat("d'th' MMMM yyyy").format(date);
     } //Date formatter for date label
+
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play(); //Updates the clock
+    } //Initialise time
 
     public void initialize(String userType, int userID) {
 
@@ -94,13 +106,12 @@ public class users {
         btnChat.setOnMouseEntered(e -> btnChat.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnChat.setOnMouseExited(e -> btnChat.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-        initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = userID;
-
         btnEditUser.setDisable(true);
         btnDeleteUser.setDisable(true);
 
+        initTime();
         getUsers();
 
     } //Initialise controller
@@ -204,107 +215,17 @@ public class users {
                 }
             }
             userVertical.getChildren().addAll(hBoxArrayList);
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  "); //Gets date and changes label to date
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play(); //Updates the clock
-    } //Initialise time
-
-    //ADMIN AND USER FEATURES
-    public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene kanbanViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(kanbanViewScene);
-        window.show();
-    }
-
-    public void tasks(ActionEvent task) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
-        AnchorPane root = loader.load();
-        tasks tasks = loader.getController();
-        tasks.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene taskViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(taskViewScene);
-        window.show();
-    }
-
-    public void chat(ActionEvent chatRoom) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.chat chat = loader.getController();
-        chat.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene chatViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(chatViewScene);
-        window.show();
-    }
-
-    public void profile(ActionEvent profile) throws IOException, ParseException {
-        int selectedID = currentID;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.profile controller = loader.getController();
-        controller.initialize(currentUser, currentID, false, selectedID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
-    }
-
-    //ADMIN FEATURES
-
     public void createUser(ActionEvent createUser) throws IOException, ParseException {
         int selectedID = 0;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.profile controller = loader.getController();
+        Controllers.profile controller = loader.getController();
         controller.initialize(currentUser, currentID, true, selectedID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -323,7 +244,7 @@ public class users {
     public void editUser(ActionEvent editUser) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.profile controller = loader.getController();
+        Controllers.profile controller = loader.getController();
         controller.initialize(currentUser, currentID, false, userID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -383,19 +304,94 @@ public class users {
                     }
                 }
             }
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public void members() {
-        //DO NOTHING
+    //ADMIN NAVIGATION METHODS
+    public void kanban(ActionEvent kanban) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.kanban kanbanScene = loader.getController();
+        kanbanScene.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene kanbanViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(kanbanViewScene);
+        window.show();
     }
 
-    public void requests(ActionEvent requests) throws IOException {
+    public void tasks(ActionEvent task) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/tasks.fxml"));
+        AnchorPane root = loader.load();
+        tasks tasks = loader.getController();
+        tasks.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene taskViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) task.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(taskViewScene);
+        window.show();
+    }
+
+    public void chat(ActionEvent chatRoom) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.chat chat = loader.getController();
+        chat.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
+    }
+
+    public void profile(ActionEvent profile) throws IOException, ParseException {
+        int selectedID = currentID;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, selectedID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    }
+
+    public void requests(ActionEvent requests) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.Admin.requests controller = loader.getController();
+        Controllers.Admin.requests controller = loader.getController();
         controller.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -411,9 +407,24 @@ public class users {
         window.show();
     }
 
-    //NAVIGATION
-    public void exit() { //Exit functionality
-        System.exit(0);
+    //NAVIGATION METHODS
+    public void menu(MouseEvent mouseEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
+        AnchorPane root = loader.load();
+        menu menu = loader.getController();
+        menu.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     public void logOut(ActionEvent logout) throws IOException {
@@ -433,22 +444,8 @@ public class users {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
-        AnchorPane root = loader.load();
-        menu menu = loader.getController();
-        menu.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
+    public void exit() { //Exit functionality
+        System.exit(0);
     }
+
 }

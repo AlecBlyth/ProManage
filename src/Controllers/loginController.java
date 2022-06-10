@@ -1,6 +1,6 @@
-package GUI_classes;
+package Controllers;
 
-import GUI_classes.Client.clientMenu;
+import Controllers.Client.clientMenu;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -21,16 +21,16 @@ import java.sql.*;
 public class loginController {
 
     //FXML Components
+    public JFXButton btnMembers, btnRequests, btnLogout, exitBtn;
     public JFXTextField txtEmail;
     public JFXPasswordField txtPassword;
     public Label lblWarning; //Label used to alert user of incorrect login
-    public JFXButton btnMembers, btnRequests, btnLogout, exitBtn;
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0; //Used to allow user to move GUI around screen
     private double yOffset = 0;
 
-    //SYSTEM METHOD
+    //CONTROLLER METHOD
     public void initialize() {
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -105,7 +105,7 @@ public class loginController {
         }
     }
 
-    //NAVIGATION
+    //NAVIGATION METHODS
 
     public void exit() {
         System.exit(0);

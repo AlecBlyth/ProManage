@@ -1,4 +1,4 @@
-package GUI_classes;
+package Controllers;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class proManage extends Application {
 
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 

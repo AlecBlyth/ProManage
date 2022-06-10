@@ -1,4 +1,4 @@
-package GUI_classes;
+package Controllers;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,10 +6,10 @@ import java.io.File;
 
 public class splashScreen extends JWindow {
 
-    //Variables
+    //Local Variables
     private final int duration;
 
-    //SYSTEM METHODS
+    //CONTROLLER METHODS
     public splashScreen(int d) {
         duration = d;
     }

@@ -1,8 +1,8 @@
-package GUI_classes.Client;
+package Controllers.Client;
 
-import GUI_classes.Admin.users;
-import GUI_classes.chat;
-import GUI_classes.tasks;
+import Controllers.Admin.users;
+import Controllers.chat;
+import Controllers.tasks;
 import bluebub.Bubble;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -39,18 +39,16 @@ import java.util.Date;
 public class clientChat {
 
     //FXML components
-    public JFXTextArea txtMessage;
-    public VBox chatLine; //Replaces text field, used for modernisation.
     public ScrollPane chatPane;
-    public Label lblDate, lblTime;
+    public VBox chatLine;
+    public VBox adminImgs, adminMenu; //ADMIN ONLY
     public JFXButton exitBtn, btnLogout, btnProgress, btnChat, btnProfile, btnRequest, btnSend;
+    public JFXButton btnKanban, btnTasks, btnChat1, btnProfile1, btnMembers, btnRequests; // ADMIN ONLY
+    public JFXTextArea txtMessage;
+    public ImageView reqIcon, memberIcon; //ADMIN ONLY
+    public Label lblDate, lblTime;
 
-    //Admin components
-    public VBox adminImgs, adminMenu;
-    public JFXButton btnKanban, btnTasks, btnChat1, btnProfile1, btnMembers, btnRequests;
-    public ImageView reqIcon, memberIcon;
-
-    //Variables
+    //Scene Variables
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -64,8 +62,7 @@ public class clientChat {
     private String currentEmail;
     private int currentID;
 
-    //SYSTEM METHODS
-
+    //CONTROLLER METHODS
     final KeyCombination KeyCodeCombination = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.CONTROL_DOWN); //Used for key combo input
 
     public static String getFormattedDate(Date date) {
@@ -87,10 +84,20 @@ public class clientChat {
         return new SimpleDateFormat("d'th' MMMM yyyy    ").format(date);
     }
 
+    public void initTime() {
+        Calendar cal = Calendar.getInstance();
+        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
+        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
+                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
+                new KeyFrame(Duration.seconds(1)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
     public void initialize(String userType, int id) {
 
-        currentUser = userType;
-        currentID = id;
+        chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
 
         exitBtn.setOnMouseEntered(e -> exitBtn.setStyle("-fx-background-color: RED; -fx-background-radius: 0;"));
         exitBtn.setOnMouseExited(e -> exitBtn.setStyle("-fx-background-color: ; -fx-background-radius: 0;"));
@@ -105,17 +112,9 @@ public class clientChat {
         btnRequest.setOnMouseEntered(e -> btnRequest.setStyle("-fx-background-color: #4287ff; -fx-background-radius: 0;"));
         btnRequest.setOnMouseExited(e -> btnRequest.setStyle("-fx-background-color: #2d7aff; -fx-background-radius: 0;"));
 
-        chatPane.vvalueProperty().bind(chatLine.heightProperty()); //Auto scrolls to bottom of scroll pane by by binding to vertical box's height value.
-
-        initTime();
         currentUser = userType; //Sets currentUser to userType
         currentID = id;
         isRunning = true;
-
-        if (currentUser.equals("ADMIN")) {
-            adminImgs.setVisible(true);
-            adminMenu.setVisible(true);
-        }
 
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
@@ -129,10 +128,18 @@ public class clientChat {
                     currentUsername = resultSet.getString("firstname") + " " + resultSet.getString("surname"); //Gets name from database and generates a username.
                 }
             }
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
 
         }
+
+        if (currentUser.equals("ADMIN")) {
+            adminImgs.setVisible(true);
+            adminMenu.setVisible(true);
+        }
+
+        initTime();
         messageThread = new Thread(this::messageThread);
         messageThread.start();
 
@@ -210,20 +217,10 @@ public class clientChat {
                 }
                 chatLine.getChildren().addAll(hBox, hBox2); //Adds generated bubbles to vbox
             }
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
-
-    public void initTime() {
-        Calendar cal = Calendar.getInstance();
-        lblDate.setText(getFormattedDate(cal.getTime()) + "  |  ");
-        DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0),
-                event -> lblTime.setText(LocalTime.now().format(SHORT_TIME_FORMATTER))),
-                new KeyFrame(Duration.seconds(1)));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
     }
 
     public void sendMessage() {
@@ -246,7 +243,6 @@ public class clientChat {
 
                 preparedStatement.executeUpdate();
                 connection.close();
-
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -260,7 +256,7 @@ public class clientChat {
         }
     } //Allows user to send message via CTRL + Enter
 
-    //CLIENT FEATURES
+    //CLIENT NAVIGATION METHODS
     public void progress(ActionEvent progress) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientProgress.fxml"));
         AnchorPane root = loader.load();
@@ -279,6 +275,25 @@ public class clientChat {
         window.setScene(progressViewScene);
         window.show();
     }
+
+    public void profile(ActionEvent profile) throws IOException, ParseException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.profile controller = loader.getController();
+        controller.initialize(currentUser, currentID, false, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
+    } //ADMIN CAN USE TOO
 
     public void request(ActionEvent request) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientRequest.fxml"));
@@ -299,63 +314,23 @@ public class clientChat {
         window.show();
     }
 
-    //USER FEATURES
-    public void profile(ActionEvent profile) throws IOException, ParseException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/profile.fxml"));
+    //ADMIN NAVIGATION METHODS
+    public void kanban(ActionEvent kanban) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.profile controller = loader.getController();
-        controller.initialize(currentUser, currentID, false, currentID);
+        Controllers.kanban kanbanScene = loader.getController();
+        kanbanScene.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) profile.getSource()).getScene().getWindow();
+        Scene kanbanViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(menuViewScene);
-        window.show();
-    }
-
-    //ADMIN FEATURES
-
-    public void members(ActionEvent members) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
-        AnchorPane root = loader.load();
-        users users = loader.getController();
-        users.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene chatViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) members.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(chatViewScene);
-        window.show();
-    }
-
-    public void chat(ActionEvent chatRoom) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
-        AnchorPane root = loader.load();
-        chat chat = loader.getController();
-        chat.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene chatViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(chatViewScene);
+        window.setScene(kanbanViewScene);
         window.show();
     }
 
@@ -378,29 +353,48 @@ public class clientChat {
         window.show();
     }
 
-    public void kanban(ActionEvent kanban) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/kanban.fxml"));
+    public void chat(ActionEvent chatRoom) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/chat.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.kanban kanbanScene = loader.getController();
-        kanbanScene.initialize(currentUser, currentID);
+        chat chat = loader.getController();
+        chat.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
             yOffset = event.getSceneY();
         });
-        Scene kanbanViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) kanban.getSource()).getScene().getWindow();
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) chatRoom.getSource()).getScene().getWindow();
         root.setOnMouseDragged(event -> {
             window.setX((event.getScreenX() - xOffset));
             window.setY((event.getScreenY() - yOffset));
         });
-        window.setScene(kanbanViewScene);
+        window.setScene(chatViewScene);
         window.show();
     }
 
-    public void requests(ActionEvent requests) throws IOException {
+    public void members(ActionEvent members) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/users.fxml"));
+        AnchorPane root = loader.load();
+        users users = loader.getController();
+        users.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene chatViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) members.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(chatViewScene);
+        window.show();
+    }
+
+    public void requests(ActionEvent requests) throws IOException, ParseException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Admin/requests.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.Admin.requests controller = loader.getController();
+        Controllers.Admin.requests controller = loader.getController();
         controller.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -419,7 +413,7 @@ public class clientChat {
     public void adminMenu(MouseEvent mouseEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/menu.fxml"));
         AnchorPane root = loader.load();
-        GUI_classes.menu menu = loader.getController();
+        Controllers.menu menu = loader.getController();
         menu.initialize(currentUser, currentID);
         root.setOnMousePressed(event -> {
             xOffset = event.getSceneX();
@@ -435,9 +429,24 @@ public class clientChat {
         window.show();
     }
 
-    //NAVIGATION
-    public void exit() {
-        System.exit(0);
+    //NAVIGATION METHODS
+    public void menu(MouseEvent mouseEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
+        AnchorPane root = loader.load();
+        Controllers.Client.clientMenu temp = loader.getController();
+        temp.initialize(currentUser, currentID);
+        root.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        Scene menuViewScene = new Scene(root);
+        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        root.setOnMouseDragged(event -> {
+            window.setX((event.getScreenX() - xOffset));
+            window.setY((event.getScreenY() - yOffset));
+        });
+        window.setScene(menuViewScene);
+        window.show();
     }
 
     public void logOut(ActionEvent logout) throws IOException {
@@ -457,22 +466,8 @@ public class clientChat {
         window.show();
     }
 
-    public void menu(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXMLs/Client/clientMenu.fxml"));
-        AnchorPane root = loader.load();
-        GUI_classes.Client.clientMenu temp = loader.getController();
-        temp.initialize(currentUser, currentID);
-        root.setOnMousePressed(event -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        Scene menuViewScene = new Scene(root);
-        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        root.setOnMouseDragged(event -> {
-            window.setX((event.getScreenX() - xOffset));
-            window.setY((event.getScreenY() - yOffset));
-        });
-        window.setScene(menuViewScene);
-        window.show();
+    public void exit() {
+        System.exit(0);
     }
+
 }
