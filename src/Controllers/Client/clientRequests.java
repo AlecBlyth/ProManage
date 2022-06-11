@@ -136,7 +136,7 @@ public class clientRequests {
             }
         }
 
-        if (subCheck) {
+        if (!subCheck) {
             if (txtFieldSubject.getText().length() > 26) {
                 lblValidation.setText("Subject Name is too long, please limit to 26 characters, if possible shorten name to 'Mr. Example Sr'");
                 lblValidation.setTextFill(Color.RED);
@@ -163,7 +163,7 @@ public class clientRequests {
             }
         }
 
-        if (!subCheck) {
+        if (subCheck) {
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO requests (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
@@ -202,7 +202,7 @@ public class clientRequests {
                 }
             }
         }
-        if (subCheck) {
+        if (!subCheck) {
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO requests (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
