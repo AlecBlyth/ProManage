@@ -83,7 +83,7 @@ public class clientProgressOverall {
         gaugeProgress.valueColorProperty().setValue(Color.WHITE); //Changes font colour of gauge
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connect to mySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connect to mySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskprogress FROM tasks";
             ResultSet resultSet = statement.executeQuery(queryString);

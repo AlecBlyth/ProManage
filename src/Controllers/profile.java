@@ -165,7 +165,7 @@ public class profile {
     public void getUsers(int selectedID, boolean createCheck) {
         localUserID = selectedID;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT userID, usertype, email, firstname, surname, role, password, department FROM userdata"; //gets user data from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -297,7 +297,7 @@ public class profile {
 
         if (createEnabled && checked) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO userdata (email, password, usertype, firstname, surname, role, department, userID)" + "values(?,?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setString(1, txtFieldEmail.getText());
@@ -339,7 +339,7 @@ public class profile {
 
         if (checked && !createEnabled) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 Statement statement = connection.createStatement();
                 String queryString = "SELECT email, password, usertype, firstname, surname, role, department, userID FROM userdata"; //gets task data from database
                 String updateQuery = "UPDATE userdata SET email=?, password=?, usertype=?, firstname=?, surname=?, role=?, department=? WHERE userID=?";

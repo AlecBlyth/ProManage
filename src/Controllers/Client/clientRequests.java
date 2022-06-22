@@ -165,7 +165,7 @@ public class clientRequests {
 
         if (subCheck) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO requests (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setInt(1, uniqueID);
@@ -204,7 +204,7 @@ public class clientRequests {
         }
         if (!subCheck) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO requests (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setInt(1, uniqueID);

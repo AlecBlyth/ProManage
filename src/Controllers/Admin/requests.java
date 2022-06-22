@@ -142,7 +142,7 @@ public class requests {
         taskVertical.getChildren().clear();
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM requests"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -238,7 +238,7 @@ public class requests {
             }
         }
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskid, taskname, tasktype, taskdesc, tasksubject FROM requests"; //gets task data from database
             String updateQuery = "DELETE from requests WHERE taskid=?";
@@ -273,7 +273,7 @@ public class requests {
 
         if (!subCheck) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setInt(1, uniqueID);
@@ -302,7 +302,7 @@ public class requests {
             }
         } else {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setInt(1, uniqueID);
@@ -345,7 +345,7 @@ public class requests {
             }
         }
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskid, taskname FROM requests"; //gets task data from database
             String updateQuery = "DELETE from requests WHERE taskid=?";
@@ -391,7 +391,7 @@ public class requests {
         DateTimeFormatter SHORT_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
         String time = LocalTime.now().format(SHORT_TIME_FORMATTER);
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             String queryString = "insert into clientchatlog (username, email, message, create_time)" + " VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(queryString);
             preparedStatement.setString(1, "Automated Message");

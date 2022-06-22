@@ -117,7 +117,7 @@ public class chat {
         isRunning = true;
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to local mySQL server
             Statement statement = connection.createStatement(); //Creates a statement
             String queryString = "SELECT email, firstname, surname, userID FROM userdata"; //gets user details from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -174,7 +174,7 @@ public class chat {
         chatLine.getChildren().clear(); //Clears chatbox to avoid looping duplicate messages
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT username, email, message, time FROM teamchatlog"; //gets message data from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -227,7 +227,7 @@ public class chat {
         while (!txtMessage.getText().isEmpty()) {
 
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String queryString = "insert into teamchatlog (username, email, message, time)" + " VALUES (?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(queryString);
                 preparedStatement.setString(1, currentUsername);

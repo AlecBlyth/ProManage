@@ -1,0 +1,33 @@
+{
+"projectType" :"Medical",
+"projectRoles" :[
+  "Surgeon",
+  "General Practitioner",
+  "Nurse",
+  "Technician",
+  "IT Admin"
+],
+"projectDepts" :[
+  "Surgery",
+  "Nursing",
+  "Technician",
+  "IT"
+],
+"projectTasks" :[
+  "Screening",
+  "Check-up",
+  "Surgery",
+  "Testing",
+  "Interview",
+  "Appointment"
+],
+"projectLabels" :[
+  "Ingoing",
+  "Appointment",
+  "Ongoing",
+  "Outgoing",
+  "Cancelled"
+],
+"projectSubjects" :
+  true
+}

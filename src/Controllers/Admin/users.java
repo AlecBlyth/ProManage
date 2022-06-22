@@ -123,7 +123,7 @@ public class users {
         userVertical.getChildren().clear();
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT userID, usertype, email, firstname, surname, role, department FROM userdata"; //gets user data from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -282,7 +282,7 @@ public class users {
             }
         }
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT userID FROM userdata"; //gets task data from database
             String updateQuery = "DELETE from userdata WHERE userID=?";

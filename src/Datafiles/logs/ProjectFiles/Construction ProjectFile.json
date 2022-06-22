@@ -1,0 +1,39 @@
+{
+"projectType" :"Construction",
+"projectRoles" :[
+  "Foreman",
+  "Plumber",
+  "Electrician",
+  "Bricklayer",
+  "Manager",
+  "Safety Officer",
+  "Admin"
+],
+"projectDepts" :[
+  "Plumbing",
+  "Management",
+  "Electrical",
+  "Construction",
+  "Human Resources",
+  "IT"
+],
+"projectTasks" :[
+  "Bricklaying",
+  "Plumbing",
+  "Financing",
+  "Cables",
+  "Pipes",
+  "Woodwork",
+  "Glass",
+  "IT"
+],
+"projectLabels" :[
+  "Materials",
+  "Construction",
+  "Setup",
+  "Finished",
+  "Blocked"
+],
+"projectSubjects" :
+  false
+}

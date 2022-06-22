@@ -106,7 +106,7 @@ public class clientProgressDetailed {
         taskVertical.getChildren().clear();
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);

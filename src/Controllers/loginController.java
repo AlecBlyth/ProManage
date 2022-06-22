@@ -39,7 +39,7 @@ public class loginController {
     public void login(ActionEvent login) {
         boolean check = false; //Boolean that checks for successful login
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to local mySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to local mySQL server
             Statement statement = connection.createStatement(); //Creates a statement
             String queryString = "SELECT email, password, usertype, userID FROM userdata"; //gets user details from database
             ResultSet resultSet = statement.executeQuery(queryString);

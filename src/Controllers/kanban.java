@@ -109,7 +109,7 @@ public class kanban {
         }
 
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT tasksubject, section, tasktype, taskhex, taskname, taskdesc, taskid FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -302,7 +302,7 @@ public class kanban {
                 pane.getChildren().add(draggingButton); //Adds button to new pane
                 e.setDropCompleted(true); //finish dragging
                 try {
-                    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                    Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                     Statement statement = connection.createStatement();
                     String queryString = "SELECT taskid FROM tasks"; //gets task data from database
                     String updateQuery = "UPDATE tasks SET section=?, taskhex=?, taskprogress=? WHERE taskid=?";

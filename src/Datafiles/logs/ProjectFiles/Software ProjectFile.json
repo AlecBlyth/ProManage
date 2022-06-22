@@ -1,0 +1,35 @@
+{
+"projectType" :"Software Engineering",
+"projectRoles" :[
+  "Tester",
+  "Engineer",
+  "Project Manager",
+  "Admin",
+  "QA Engineer",
+  "Security Engineer"
+],
+"projectDepts" :[
+  "QA",
+  "Management",
+  "Engineering",
+  "IT"
+],
+"projectTasks" :[
+  "Testing",
+  "Java",
+  "C#",
+  "C++",
+  "Database",
+  "App development"
+],
+"projectLabels" :
+[
+  "Backlog",
+  "In Progress",
+  "Testing",
+  "Complete",
+  "Blocked"
+],
+"projectSubjects" :
+  false
+}

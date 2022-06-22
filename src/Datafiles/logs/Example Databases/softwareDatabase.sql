@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
--- Host: localhost    Database: companyusers
+-- Host: localhost    Database: companydatabase
 -- ------------------------------------------------------
 -- Server version	8.0.22
 
@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `clientchatlog`;
 CREATE TABLE `clientchatlog` (
   `username` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `message` varchar(32) NOT NULL,
-  `create_time` varchar(32) DEFAULT NULL
+  `message` text NOT NULL,
+  `time` varchar(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -36,7 +36,6 @@ CREATE TABLE `clientchatlog` (
 
 LOCK TABLES `clientchatlog` WRITE;
 /*!40000 ALTER TABLE `clientchatlog` DISABLE KEYS */;
-INSERT INTO `clientchatlog` VALUES ('George Doe','client@ABM.org','This is a test message','01:34'),('Alec Goodsir','admin@ABM.org','This is a test message','04:41'),('Automated Message','NULL','Test2  HAS BEEN APPROVED','05:28'),('Automated Message','TRUE','TestHAS BEEN APPROVED','05:34'),('Automated Message','TRUE','test HAS BEEN APPROVED','05:43'),('Automated Message','FALSE','test HAS BEEN DECLINED','05:43'),('Automated Message','FALSE','test HAS BEEN DECLINED','05:43'),('Automated Message','FALSE','test HAS BEEN DECLINED','05:43'),('Automated Message','FALSE','test HAS BEEN DECLINED','05:45');
 /*!40000 ALTER TABLE `clientchatlog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -50,12 +49,13 @@ DROP TABLE IF EXISTS `requests`;
 CREATE TABLE `requests` (
   `taskid` int NOT NULL,
   `tasktype` varchar(255) NOT NULL,
-  `taskname` varchar(255) NOT NULL,
-  `taskdesc` varchar(270) NOT NULL,
+  `taskname` varchar(255) DEFAULT NULL,
+  `taskdesc` varchar(270) DEFAULT NULL,
   `taskhex` varchar(255) NOT NULL,
   `taskprogress` int NOT NULL,
   `section` int NOT NULL,
-  `tasksubject` varchar(255) NOT NULL,
+  `tasksubject` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`taskid`),
   UNIQUE KEY `taskid_UNIQUE` (`taskid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -79,14 +79,14 @@ DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
   `taskid` int NOT NULL,
   `tasktype` varchar(255) NOT NULL,
-  `taskname` varchar(255) NOT NULL,
+  `taskname` varchar(255) DEFAULT NULL,
   `taskdesc` varchar(270) DEFAULT NULL,
   `taskhex` varchar(255) NOT NULL,
   `taskprogress` int NOT NULL,
-  `section` int DEFAULT NULL,
+  `section` int NOT NULL,
   `tasksubject` varchar(255) DEFAULT NULL,
-  UNIQUE KEY `taskid_UNIQUE` (`taskid`),
-  UNIQUE KEY `idx_tasks_taskid` (`taskid`)
+  PRIMARY KEY (`taskid`),
+  UNIQUE KEY `taskid_UNIQUE` (`taskid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -96,7 +96,6 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (3052,'Complete','Completed Task','This task is complete or in progress and is a normal task. ','#00b050',100,4,'Test Subject #1000'),(3879,'Extreme Test ','Extreme Task ','Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer volutpat lobortis velit, nec mollis sapien ornare nec. Morbi congue quam eget molestie ultrices. Fusce pharetra convallis aliquam. Nulla sagittis auctor euismod. Aliquam eu volutpat mauris ye','#9a0000',0,5,'Mr. Example Example Senior'),(3905,'Complete','test','test','#123d82',0,1,NULL),(4930,'Example Test','Test','Test','#123d82',0,1,NULL),(7180,'Normal','Normal Task','This is a normal task with a normal amount of text and data','#2d79ff',25,3,'Example Exampleson'),(7517,'Example Test','Example Name 2','This example has more text than first example','#333f50',10,2,'Example Subject Two'),(8845,'Example','Example 1','Example Description ','#123d82',0,1,'Example Subject ');
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +107,7 @@ DROP TABLE IF EXISTS `teamchatlog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `teamchatlog` (
-  `username` varchar(16) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `message` text NOT NULL,
   `time` varchar(32) DEFAULT NULL
@@ -121,7 +120,6 @@ CREATE TABLE `teamchatlog` (
 
 LOCK TABLES `teamchatlog` WRITE;
 /*!40000 ALTER TABLE `teamchatlog` DISABLE KEYS */;
-INSERT INTO `teamchatlog` VALUES ('Alec Goodsir','admin@ABM.org','This is a test message.','03:06'),('Admin User','admin','1','03:11'),('Admin User','admin','t','03:47'),('Admin User','admin','Test','04:02'),('Admin User','admin','This is a test message','04:02'),('Admin User','admin','Test','05:04'),('Admin User','admin','Test','05:06'),('Scott Davidson','user@ABM.org','This is a test message','02:47'),('Admin User','admin','This is a test message','01:18'),('Admin User','admin','This is a test message to see how fast the messaging is.','01:20'),('Alec Goodsir','admin@ABM.org','Test\n','02:17');
 /*!40000 ALTER TABLE `teamchatlog` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,18 +131,17 @@ DROP TABLE IF EXISTS `userdata`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `userdata` (
+  `userID` int NOT NULL AUTO_INCREMENT,
   `email` varchar(320) DEFAULT NULL,
-  `password` varchar(500) DEFAULT NULL,
+  `password` varchar(500) NOT NULL,
   `usertype` varchar(10) DEFAULT NULL,
   `firstname` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
   `role` varchar(45) DEFAULT NULL,
   `department` varchar(45) DEFAULT NULL,
-  `userID` int NOT NULL AUTO_INCREMENT,
   UNIQUE KEY `userID_UNIQUE` (`userID`),
-  UNIQUE KEY `idx_userdata_userID` (`userID`),
-  UNIQUE KEY `idx_userdata_email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=858 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=1007 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +150,7 @@ CREATE TABLE `userdata` (
 
 LOCK TABLES `userdata` WRITE;
 /*!40000 ALTER TABLE `userdata` DISABLE KEYS */;
-INSERT INTO `userdata` VALUES ('admin@ABM.org','test','ADMIN','Alec','Goodsir','Project Manager','N/A',1),('user@ABM.org','test','USER','Scott','Davidson','Programmer','Software',2),('client@ABM.org','test','CLIENT','George','Test','Client','N/A',3);
+INSERT INTO `userdata` VALUES (1000,'TBerners@bunnyCorp.org','worldweb','ADMIN','Tim','Berners-Lee','Admin','IT'),(1001,'KZuse@bunnyCorp.org','program','USER','Konrad','Zuse','Engineer','Engineering'),(1002,'CBabbage@bunnyCorp.org','digital','USER','Charles','Babbage','Tester','QA'),(1003,'AdaL@bunnyCorp.org','lovelace','USER','Ada','Lovelace','QA Engineer','QA'),(1004,'ECodd@bunnyCorp.org','database','USER','Edgar','Codd','Security Engineer','QA'),(1005,'CSinclair@bunnyCorp.org','spectrum','ADMIN','Clive','Sinclair','Project Manager','Management'),(1006,'ASmith@ABM.org','economy','CLIENT','Adam','Smith',NULL,NULL);
 /*!40000 ALTER TABLE `userdata` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -166,4 +163,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-09 18:05:59
+-- Dump completed on 2022-06-22 14:24:46

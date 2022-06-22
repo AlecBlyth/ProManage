@@ -162,7 +162,7 @@ public class taskEditor {
     public void getTask(int taskID, boolean createCheck) {
         localTaskID = taskID;
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
             String queryString = "SELECT taskid, tasktype, taskname, taskdesc, taskprogress, tasksubject FROM tasks"; //gets task data from database
             ResultSet resultSet = statement.executeQuery(queryString);
@@ -266,7 +266,7 @@ public class taskEditor {
 
         if (!subCheck && createEnabled && checked) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section)" + "values(?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setInt(1, uniqueID);
@@ -307,7 +307,7 @@ public class taskEditor {
 
         if (subCheck && createEnabled && checked) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 String insertQuery = "INSERT INTO tasks (taskid, tasktype, taskname, taskdesc, taskhex, taskprogress, section, tasksubject)" + "values(?,?,?,?,?,?,?,?)";
                 PreparedStatement ps = connection.prepareStatement(insertQuery);
                 ps.setInt(1, uniqueID);
@@ -350,7 +350,7 @@ public class taskEditor {
 
         if (subCheck && checked && !createEnabled) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 Statement statement = connection.createStatement();
                 String queryString = "SELECT taskid, tasktype, taskname, taskdesc, tasksubject FROM tasks"; //gets task data from database
                 String updateQuery = "UPDATE tasks SET taskname=?, tasktype=?, taskdesc=?, tasksubject=? WHERE taskid=?";
@@ -384,7 +384,7 @@ public class taskEditor {
         }
         if (!subCheck && checked && !createEnabled) {
             try {
-                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companyusers", "root", "admin"); //Connects to MySQL server
+                Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
                 Statement statement = connection.createStatement();
                 String queryString = "SELECT taskid, tasktype, taskname, taskdesc FROM tasks"; //gets task data from database
                 String updateQuery = "UPDATE tasks SET taskname=?, tasktype=?, taskdesc=? WHERE taskid=?";
