@@ -166,13 +166,13 @@ public class clientChat {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
             Statement statement = connection.createStatement();
-            String queryString = "SELECT username, email, message, create_time FROM clientchatlog"; //gets message data from database
+            String queryString = "SELECT username, email, message, time FROM clientchatlog"; //gets message data from database
             ResultSet resultSet = statement.executeQuery(queryString);
             while (resultSet.next()) {
                 String email = resultSet.getString("email");
                 String username = resultSet.getString("username");
                 String message = resultSet.getString("message");
-                String time = resultSet.getString("create_time");
+                String time = resultSet.getString("time");
 
                 StringBuilder sb = new StringBuilder(message); //In order to fit into message bubbles, message is spilt after 70 characters and given a space.
                 int x = 0;
@@ -234,7 +234,7 @@ public class clientChat {
 
             try {
                 Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
-                String queryString = "insert into clientchatlog (username, email, message, create_time)" + " VALUES (?, ?, ?, ?)";
+                String queryString = "insert into clientchatlog (username, email, message, time)" + " VALUES (?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(queryString);
                 preparedStatement.setString(1, currentUsername);
                 preparedStatement.setString(2, currentEmail);

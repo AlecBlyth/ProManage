@@ -392,7 +392,7 @@ public class requests {
         String time = LocalTime.now().format(SHORT_TIME_FORMATTER);
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/companydatabase", "root", "admin"); //Connects to MySQL server
-            String queryString = "insert into clientchatlog (username, email, message, create_time)" + " VALUES (?, ?, ?, ?)";
+            String queryString = "insert into clientchatlog (username, email, message, time)" + " VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(queryString);
             preparedStatement.setString(1, "Automated Message");
             preparedStatement.setString(2, bool);

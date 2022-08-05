@@ -1,34 +1,35 @@
 {
-  "projectType": "Test",
-  "projectRoles": [
+  "projectType" :"Software Engineering",
+  "projectRoles" :[
+    "Tester",
+    "Engineer",
     "Project Manager",
-    "Client",
-    "User",
     "Admin",
-    "Programmer",
-    "Engineer"
+    "QA Engineer",
+    "Security Engineer"
   ],
-  "projectDepts": [
-    "Software",
-    "N/A",
+  "projectDepts" :[
+    "QA",
     "Management",
+    "Engineering",
+    "IT"
+  ],
+  "projectTasks" :[
     "Testing",
-    "Validation",
-    "Example"
+    "Java",
+    "C#",
+    "C++",
+    "Database",
+    "App development"
   ],
-  "projectTasks": [
-    "Example",
-    "Example Test",
-    "Normal",
-    "Complete",
-    "Extreme Test "
-  ],
-  "projectLabels": [
+  "projectLabels" :
+  [
     "Backlog",
     "In Progress",
     "Testing",
     "Complete",
     "Blocked"
   ],
-  "projectSubjects": false
+  "projectSubjects" :
+  false
 }
