@@ -5,6 +5,12 @@ This project is written mostly in Java and CSS. The framework being used is Java
 
 The software architecture being used is Model View Controller.
 
+### Application Demo 
+Application running based on a software project type 
+
+[ProManage]( https://github.com/AlecBlyth/ProManage/wiki/3:-ProManage-Demo)
+
+
 ## Libraries used  
 -	[Bluebub]( https://github.com/b3z/bluebub)
 -	[Jfoenix-9.0.1]( https://github.com/sshahine/JFoenix)
